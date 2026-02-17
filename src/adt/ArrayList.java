@@ -3,7 +3,9 @@ package adt;
 // <T> meaning: <> generic data type, inside <> is a parameter holder, T = Type.
 // Generic data type can represent any Primitive Data Type: String, int...
 
-public class ArrayList<T> implements ListInterface<T> {
+import java.io.Serializable;
+
+public class ArrayList<T> implements ListInterface<T>, Serializable {
     private T[] array;
     private int numberOfEntries; // Current Array Value contains.
     private static final int DEFAULT_CAPACITY = 5;
@@ -28,7 +30,7 @@ public class ArrayList<T> implements ListInterface<T> {
     
     public boolean add(int index, T newValue){
         boolean successful = true;
-        if((index >= 1) && (index <= numberOfEntries + 1)){
+        if((index >= 0) && (index <= numberOfEntries + 1)){
             if(this.isFull()){
                 this.doubleArray();
             }
@@ -54,16 +56,18 @@ public class ArrayList<T> implements ListInterface<T> {
         for(int i = 0; i < this.size(); i++){
             if(array[i].equals(o)){
                 indicator = true;
+                break;
             }
         }
         return indicator;
     }
     
     public int indexOf (Object o){
-        int index_count = 0;
+        int index_count = -1;
         for(int i = 0; i < this.size(); i++){
             if(array[i].equals(o)){
                 index_count = i;
+                break;
             }
         }
         return index_count;
@@ -87,9 +91,17 @@ public class ArrayList<T> implements ListInterface<T> {
     
     public boolean remove(int index){
         // T removal_value = array[index];
-        for(int i = index; i < this.size() - 1; i++){
-            array[i] = array[i++];
+        if (index < 0 || index >= numberOfEntries) {
+            return false;
         }
+        
+        for(int i = index; i < this.size() - 1; i++){
+            array[i] = array[i + 1];
+        }
+        
+        numberOfEntries--; 
+        array[numberOfEntries] = null; // remove the deleted stuff
+
         return true;
     }
     
