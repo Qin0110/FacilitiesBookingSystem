@@ -11,8 +11,7 @@ import entity.Student;
 import entity.Schedule;
 
 
-public class BookingMaintenance {
-
+public class BookingManagement {
 
     private class WaitlistRecord {
         String scheduleId;
@@ -27,10 +26,10 @@ public class BookingMaintenance {
     private ListInterface<Booking> bookingList;
     private ListInterface<WaitlistRecord> masterWaitlist; 
 
-    private StudentMaintenance studentManager;
-    private ScheduleMaintenance scheduleManager;
+    private StudentManagement studentManager;
+    private ScheduleManagement scheduleManager;
 
-    public BookingMaintenance(StudentMaintenance studentManager, ScheduleMaintenance scheduleManager) {
+    public BookingManagement(StudentManagement studentManager, ScheduleManagement scheduleManager) {
         this.bookingList = new ArrayList<>();
         this.masterWaitlist = new ArrayList<>();
         this.studentManager = studentManager;
@@ -39,10 +38,12 @@ public class BookingMaintenance {
 
     public String createBooking(String studentId, String scheduleId) {
         Student student = studentManager.getStudentById(studentId);
-        if (student == null) return "INVALID_STUDENT";
+        if (student == null) 
+            return "INVALID_STUDENT";
 
         Schedule schedule = scheduleManager.getScheduleById(scheduleId);
-        if (schedule == null) return "INVALID_SCHEDULE";
+        if (schedule == null) 
+            return "INVALID_SCHEDULE";
 
         if (schedule.getAvailability().equalsIgnoreCase("Available")) {
             Booking newBooking = new Booking(schedule.getFacilityId(), studentId, scheduleId, schedule.getStartingTime(), schedule.getEndingTime());
@@ -107,7 +108,7 @@ public class BookingMaintenance {
     public Booking getBooking(String facilityId, String studentId, String scheduleId) {
         for (int i = 0; i < bookingList.size(); i++) {
             Booking b = bookingList.get(i);
-            if (b.getFacilityId().equals(facilityId) && b.getStudentId().equals(studentId) && b.getScheduleId().equals(scheduleId)) {
+            if (b.getBookingId().equals(facilityId) && b.getStudentId().equals(studentId) && b.getScheduleId().equals(scheduleId)) {
                 return b;
             }
         }

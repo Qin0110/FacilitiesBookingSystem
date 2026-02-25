@@ -5,13 +5,12 @@ import entity.Student;
 import adt.ArrayList;
 import adt.ListInterface;
 
-public class StudentMaintenance {
+public class StudentManagement {
 
     private ListInterface<Student> studentList;
 
-    public StudentMaintenance() {
+    public StudentManagement() {
         this.studentList = new ArrayList<>();
-       
     }
 
     public boolean addStudent(Student newStudent) {
@@ -37,7 +36,6 @@ public class StudentMaintenance {
         return studentList;
     }
     
- 
     public boolean updateStudentProgramme(String studentId, String newProgramme) {
         Student s = getStudentById(studentId);
         if (s != null) {

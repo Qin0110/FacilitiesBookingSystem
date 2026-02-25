@@ -7,17 +7,18 @@ import java.util.Objects;
 
 public class Booking implements Serializable {
     
-    private String facilityId;   
+    private String bookingId;
     private String studentId;    
     private String scheduleId;   
-    
     private String approvedBy;   
+    
+    
     private LocalDateTime arrivalTime;
     private LocalDateTime leavingTime;
     private String status;     
 
-    public Booking(String facilityId, String studentId, String scheduleId, LocalDateTime arrivalTime, LocalDateTime leavingTime) {
-        this.facilityId = facilityId;
+    public Booking(String bookingId, String studentId, String scheduleId, LocalDateTime arrivalTime, LocalDateTime leavingTime) {
+        this.bookingId = bookingId;
         this.studentId = studentId;
         this.scheduleId = scheduleId;
         this.arrivalTime = arrivalTime;
@@ -26,8 +27,8 @@ public class Booking implements Serializable {
         this.approvedBy = "N/A"; 
     }
 
-    public String getFacilityId() { 
-        return facilityId; 
+    public String getBookingId() { 
+        return bookingId; 
     }
     
     public String getStudentId() {
@@ -77,21 +78,21 @@ public class Booking implements Serializable {
         if (obj == null || getClass() != obj.getClass()) return false;
         Booking booking = (Booking) obj;
         // The booking is only considered a duplicate if ALL THREE keys match exactly
-        return facilityId.equals(booking.facilityId) &&
+        return bookingId.equals(booking.bookingId) &&
                studentId.equals(booking.studentId) &&
                scheduleId.equals(booking.scheduleId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(facilityId, studentId, scheduleId);
+        return Objects.hash(bookingId, studentId, scheduleId);
     }
 
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        return String.format("Facility: %s | Student: %s | Schedule: %s | Arrival: %s | Leaving: %s | Status: %s | Approved By: %s", 
-                facilityId, 
+        return String.format("Booking ID: %s | Student: %s | Schedule: %s | Arrival: %s | Leaving: %s | Status: %s | Approved By: %s", 
+                bookingId, 
                 studentId, 
                 scheduleId,
                 arrivalTime.format(formatter), 

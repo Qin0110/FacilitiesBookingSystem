@@ -16,12 +16,25 @@ public class Student implements Serializable {
         this.programme = programme;
     }
 
-    public String getStudentId() { return studentId; }
-    public String getName() { return name; }
-    public String getProgramme() { return programme; }
+    public String getStudentId() { 
+        return studentId; 
+    }
+    
+    public String getName() { 
+        return name; 
+    }
+    
+    public String getProgramme() { 
+        return programme; 
+    }
 
-    public void setName(String name) { this.name = name; }
-    public void setProgramme(String programme) { this.programme = programme; }
+    public void setName(String name) { 
+        this.name = name; 
+    }
+    
+    public void setProgramme(String programme) { 
+        this.programme = programme; 
+    }
 
     @Override
     public boolean equals(Object obj) {

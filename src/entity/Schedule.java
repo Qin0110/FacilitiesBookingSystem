@@ -23,15 +23,37 @@ public class Schedule {
         this.availability = "Available"; 
     }
 
-    public String getScheduleId() { return scheduleId; }
-    public String getFacilityId() { return facilityId; }
-    public LocalDateTime getStartingTime() { return startingTime; }
-    public LocalDateTime getEndingTime() { return endingTime; }
-    public String getAvailability() { return availability; }
+    public String getScheduleId() { 
+        return scheduleId; 
+    }
+    
+    public String getFacilityId() { 
+        return facilityId; 
+    }
+    
+    public LocalDateTime getStartingTime() { 
+        return startingTime; 
+    }
+    
+    public LocalDateTime getEndingTime() { 
+        return endingTime; 
+    }
+    
+    public String getAvailability() { 
+        return availability; 
+    }
 
-    public void setStartingTime(LocalDateTime startingTime) { this.startingTime = startingTime; }
-    public void setEndingTime(LocalDateTime endingTime) { this.endingTime = endingTime; }
-    public void setAvailability(String availability) { this.availability = availability; }
+    public void setStartingTime(LocalDateTime startingTime) { 
+        this.startingTime = startingTime; 
+    }
+    
+    public void setEndingTime(LocalDateTime endingTime) {
+        this.endingTime = endingTime; 
+    }
+    
+    public void setAvailability(String availability) {
+        this.availability = availability; 
+    }
 
     @Override
     public boolean equals(Object obj) {

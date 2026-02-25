@@ -9,13 +9,13 @@ import entity.Facility;
 /**
  * Controls the logic for managing facilities.
  */
-public class FacilityMaintenance {
+public class FacilityManagement {
 
     private ListInterface<Facility> facilityList;
     private FacilityDAO facilityDAO = new FacilityDAO();
     private FacilityMaintenanceUI facilityUI = new FacilityMaintenanceUI();
 
-    public FacilityMaintenance(ListInterface<Facility> sharedList) {
+    public FacilityManagement(ListInterface<Facility> sharedList) {
         this.facilityList = sharedList;
     }
 
@@ -112,7 +112,7 @@ public class FacilityMaintenance {
         FacilityDAO dao = new FacilityDAO();
         ListInterface<Facility> sharedList = dao.retrieveFromFile();
 
-        FacilityMaintenance fm = new FacilityMaintenance(sharedList);
+        FacilityManagement fm = new FacilityManagement(sharedList);
 
         fm.runFacilityMaintenance();
     }

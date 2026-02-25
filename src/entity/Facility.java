@@ -3,18 +3,15 @@ package entity;
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
- * Entity class representing a Facility in the system.
- * * @author user  
- */
+
 public class Facility implements Serializable { 
     
     private String facilityId;
     private String name;
     private String type;      
+    private String location;
     private int capacity;
 
-    // Constructors
     public Facility() {
     }
 
@@ -25,7 +22,6 @@ public class Facility implements Serializable {
         this.capacity = capacity;
     }
 
-    // Getters and Setters
     public String getFacilityId() {
         return facilityId;
     }
@@ -40,6 +36,14 @@ public class Facility implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+    
+    public String getLocation(){
+        return location;
+    }
+    
+    public void setLocation(String location){
+        this.location = location;
     }
 
     public String getType() {
@@ -77,17 +81,14 @@ public class Facility implements Serializable {
             return false;
         }
         final Facility other = (Facility) obj;
-        // Two facilities are considered equal if they have the same ID
-        if (!Objects.equals(this.facilityId, other.facilityId)) {
+        if(!Objects.equals(this.facilityId, other.facilityId)) {
             return false;
         }
         return true;
     }
 
-    // 5. toString (For printing the object easily in your Boundary class)
     @Override
     public String toString() {
-        // Formats the output neatly in columns
         return String.format("%-10s %-20s %-15s %5d", facilityId, name, type, capacity);
     }
 }
