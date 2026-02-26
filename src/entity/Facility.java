@@ -15,10 +15,11 @@ public class Facility implements Serializable {
     public Facility() {
     }
 
-    public Facility(String facilityId, String name, String type, int capacity) {
+    public Facility(String facilityId, String name, String type, String location, int capacity) {
         this.facilityId = facilityId;
         this.name = name;
         this.type = type;
+        this.location = location;
         this.capacity = capacity;
     }
 

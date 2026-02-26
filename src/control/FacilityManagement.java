@@ -14,47 +14,65 @@ public class FacilityManagement {
     private ListInterface<Facility> facilityList;
     private FacilityDAO facilityDAO = new FacilityDAO();
     private FacilityMaintenanceUI facilityUI = new FacilityMaintenanceUI();
+    
+    public FacilityManagement(){
+    
+    }
 
     public FacilityManagement(ListInterface<Facility> sharedList) {
         this.facilityList = sharedList;
     }
 
-    public void runFacilityMaintenance() {
-        int choice = 0;
-        do {
-            choice = facilityUI.getMenuChoice();
-            switch (choice) {
-                case 1:
-                    addNewFacility();
-                    break;
-                case 2:
-                    removeFacility();
-                    break;
-                case 3:
-                    updateFacility();
-                    break;
-                case 4:
-                    displayFacilities();
-                    break;
-                case 0:
-                    System.out.println("Exiting system...");
-                    facilityDAO.saveToFile(facilityList);
-                    break;
-                default:
-                    System.out.println("Invalid choice.");
-            }
-        } while (choice != 0);
-    }
+//    public void runFacilityManagement() {
+//        int choice = 0;
+//        do {
+//            choice = facilityUI.getMenuChoice();
+//            switch (choice) {
+//                case 1:
+//                    addNewFacility();
+//                    break;
+//                case 2:
+//                    removeFacility();
+//                    break;
+//                case 3:
+//                    updateFacility();
+//                    break;
+//                case 4:
+//                    displayFacilities();
+//                    break;
+//                case 0:
+//                    System.out.println("Exiting system...");
+//                    facilityDAO.saveToFile(facilityList);
+//                    break;
+//                default:
+//                    System.out.println("Invalid choice.");
+//            }
+//        } while (choice != 0);
+//    }
+    public String addNewFacility(String id, String name, String type, String location, int capacity){
+        
+        String message; 
+        
+        if (!facilityDAO.isFacilityExists(id)) 
+           return ("Error: A facility with ID '" + id + "' already exists.");
 
-    private void addNewFacility() {
-        Facility newFacility = facilityUI.inputFacilityDetails();
-        if (facilityList.contains(newFacility)) {
-            System.out.println("Error: A facility with ID " + newFacility.getFacilityId() + " already exists.");
-        } else {
-            facilityList.add(newFacility);
-            System.out.println("Facility added successfully.");
-        }
+        entity.Facility newFacility = new entity.Facility(id, name, type, location, capacity);
+
+        message = facilityDAO.addFacility(newFacility);
+              
+        return message;
     }
+    
+    //delete this
+//    private void addNewFacility() {
+//        Facility newFacility = facilityUI.inputFacilityDetails();
+//        if (facilityList.contains(newFacility)) {
+//            System.out.println("Error: A facility with ID " + newFacility.getFacilityId() + " already exists.");
+//        } else {
+//            facilityList.add(newFacility);
+//            System.out.println("Facility added successfully.");
+//        }
+//    }
 
     private void removeFacility() {
         String id = facilityUI.inputFacilityId();
@@ -108,12 +126,4 @@ public class FacilityManagement {
         facilityUI.listAllFacilities(outputStr);
     }
     
-    public static void main(String[] args) {
-        FacilityDAO dao = new FacilityDAO();
-        ListInterface<Facility> sharedList = dao.retrieveFromFile();
-
-        FacilityManagement fm = new FacilityManagement(sharedList);
-
-        fm.runFacilityMaintenance();
-    }
 }

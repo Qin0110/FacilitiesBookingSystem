@@ -1,48 +1,87 @@
 package dao;
 
-import adt.ArrayList;
-import adt.ListInterface;
 import entity.Facility;
-import java.io.*;
+import UtilitiesClass.DatabaseConnection;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- * Handles file operations for Facility data.
- * @author User
- */
 public class FacilityDAO {
-    
-    private String fileName = "facilities.dat"; 
 
-    public void saveToFile(ListInterface<Facility> facilityList) {
-        File file = new File(fileName);
+    public String addFacility(Facility facility) {
+        String sql = "INSERT INTO Facility (facilityId, name, type, location, capacity) VALUES (?, ?, ?, ?, ?)";
+        
         try {
-            ObjectOutputStream ooStream = new ObjectOutputStream(new FileOutputStream(file));
-            ooStream.writeObject(facilityList);
-            ooStream.close();
-        } catch (FileNotFoundException ex) {
-            System.out.println("\nFile not found");
-        } catch (IOException ex) {
-            System.out.println("\nCannot save to file");
+            Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement query = conn.prepareStatement(sql);            
+            query.setString(1, facility.getFacilityId());
+            query.setString(2, facility.getName());
+            query.setString(3, facility.getType());
+            query.setString(4, facility.getLocation());
+            query.setInt(5, facility.getCapacity());
+            
+            query.executeUpdate();
+            
+            return "Facility Successfully Added";
+        }
+        catch (SQLException e) {
+            return ("Error adding facility: " + e.getMessage());
         }
     }
 
-    public ListInterface<Facility> retrieveFromFile() {
-        File file = new File(fileName);
-        ListInterface<Facility> facilityList = new ArrayList<>(); // Default to empty list
+    public List<Facility> getAllFacilities() {
+        List<Facility> facilityList = new ArrayList<>();
+        String sql = "SELECT * FROM Facility";
         
-        if (file.exists()) {
-            try {
-                ObjectInputStream oiStream = new ObjectInputStream(new FileInputStream(file));
-                facilityList = (ArrayList<Facility>) oiStream.readObject();
-                oiStream.close();
-            } catch (FileNotFoundException ex) {
-                System.out.println("\nNo such file.");
-            } catch (IOException ex) {
-                System.out.println("\nCannot read from file.");
-            } catch (ClassNotFoundException ex) {
-                System.out.println("\nClass not found.");
+        try{
+            Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement query = conn.prepareStatement(sql);
+            ResultSet rs = query.executeQuery();
+             
+            while (rs.next()) {
+                String id = rs.getString("facilityId");
+                String name = rs.getString("name");
+                String type = rs.getString("type");
+                String location = rs.getString("location");
+                int capacity = rs.getInt("capacity");
+                
+                Facility facility = new Facility(id, name, type, location, capacity);
+                facilityList.add(facility);
             }
+        }catch (SQLException e) {
+            System.out.println("Error retrieving facilities: " + e.getMessage());
         }
+        
         return facilityList;
+    }
+    
+    public boolean isFacilityExists(String facilityId) {
+        String sql = "SELECT COUNT(*) FROM Facility WHERE facilityId = ?";
+
+        try{ 
+            Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement query = conn.prepareStatement(sql);
+
+            query.setString(1, facilityId);
+
+            ResultSet rs = query.executeQuery();
+            
+            if (rs.next()) {
+                int count = rs.getInt(1); 
+                
+                return count == 0; 
+            }
+                        
+            return true;
+           
+
+        } catch (SQLException e) {
+            System.out.println("Error checking if facility exists: " + e.getMessage());
+            return false; 
+        }
+
     }
 }

@@ -4,6 +4,7 @@ import UtilitiesClass.Input;
 import control.BookingManagement;
 import control.StudentManagement;
 import control.ScheduleManagement;
+import control.FacilityManagement;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,12 +12,20 @@ public class MainMenu {
 
     private Map<Integer, Runnable> menuRouter;
     
+    private FacilityManagement facilityManager;
+    private StudentManagement studentManager;
+    private BookingManagement bookingManager;
+    
     private StudentUI studentUI;
     private AdminUI adminUI;
 
-    public MainMenu(StudentManagement studentControl, BookingManagement bookingControl) {
-        this.studentUI = new StudentUI(bookingControl);
-        this.adminUI = new AdminUI(studentControl, bookingControl);
+    public MainMenu(StudentManagement studentManager, BookingManagement bookingManager, FacilityManagement facilityManager) {
+        this.studentUI = new StudentUI(bookingManager);
+        this.adminUI = new AdminUI(studentManager, bookingManager, facilityManager);
+        
+        this.studentManager = studentManager;
+        this.bookingManager = bookingManager;
+        this.facilityManager = facilityManager;
         
         menuRouter = new HashMap<>();
         menuRouter.put(1, this::launchStudentMenu);
@@ -39,6 +48,7 @@ public class MainMenu {
             if (choice == 0) {
                 running = false;
                 System.out.println("Ending System... ");
+                
             } else {
                 Runnable action = menuRouter.get(choice);
                 if (action != null) {
@@ -55,6 +65,8 @@ public class MainMenu {
     }
 
     private void launchAdminMenu() {
-        adminUI.start();   
+        AdminUI adminUI = new AdminUI(studentManager, bookingManager, facilityManager);  
+        adminUI.setLocationRelativeTo(null);
+        adminUI.setVisible(true);
     }
 }

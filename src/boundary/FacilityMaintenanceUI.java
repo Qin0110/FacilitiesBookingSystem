@@ -20,18 +20,18 @@ public class FacilityMaintenanceUI {
         return choice;
     }
 
-    public Facility inputFacilityDetails() {
-        System.out.print("Enter Facility ID: ");
-        String id = scanner.nextLine();
-        System.out.print("Enter Facility Name: ");
-        String name = scanner.nextLine();
-        System.out.print("Enter Facility Type (e.g. Badminton Court, Gym Room, Discussion Room, Individual Study Room): ");
-        String type = scanner.nextLine();
-        System.out.print("Enter Capacity: ");
-        int capacity = scanner.nextInt();
-        scanner.nextLine(); 
-        return new Facility(id, name, type, capacity);
-    }
+//    public Facility inputFacilityDetails() {
+//        System.out.print("Enter Facility ID: ");
+//        String id = scanner.nextLine();
+//        System.out.print("Enter Facility Name: ");
+//        String name = scanner.nextLine();
+//        System.out.print("Enter Facility Type (e.g. Badminton Court, Gym Room, Discussion Room, Individual Study Room): ");
+//        String type = scanner.nextLine();
+//        System.out.print("Enter Capacity: ");
+//        int capacity = scanner.nextInt();
+//        scanner.nextLine(); 
+//        return new Facility(id, name, type, capacity);
+//    }
 
     public String inputFacilityId() {
         System.out.print("Enter Facility ID: ");

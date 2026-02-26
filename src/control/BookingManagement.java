@@ -28,6 +28,9 @@ public class BookingManagement {
 
     private StudentManagement studentManager;
     private ScheduleManagement scheduleManager;
+    
+    public BookingManagement(){
+    }
 
     public BookingManagement(StudentManagement studentManager, ScheduleManagement scheduleManager) {
         this.bookingList = new ArrayList<>();
