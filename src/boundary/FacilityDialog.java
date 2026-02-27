@@ -6,14 +6,33 @@ package boundary;
 
 import control.FacilityManagement;
 
-public class AddFacilityDialog extends javax.swing.JDialog {
+public class FacilityDialog extends javax.swing.JDialog {
     
     private FacilityManagement facilityManager;
+    private boolean isUpdateMode = false;
   
-    public AddFacilityDialog(java.awt.Frame parent, boolean modal, control.FacilityManagement facilityManager) {
+    public FacilityDialog(java.awt.Frame parent, boolean modal, control.FacilityManagement facilityManager) {
         super(parent, modal);
         initComponents();
         this.facilityManager = facilityManager;
+    }
+    
+    public FacilityDialog(java.awt.Frame parent, boolean modal, control.FacilityManagement manager, entity.Facility facilityToEdit) {
+        super(parent, modal);
+        initComponents();
+        this.facilityManager = manager;
+        this.isUpdateMode = true;
+        
+        idTF.setText(facilityToEdit.getFacilityId());
+        nameTF.setText(facilityToEdit.getName());
+        typeCB.setSelectedItem(facilityToEdit.getType());
+        locationCB.setSelectedItem(facilityToEdit.getLocation());
+        capacityCB.setSelectedItem(String.valueOf(facilityToEdit.getCapacity()));
+         
+        idTF.setEnabled(false); 
+        
+        saveBT.setText("Update Facility");
+        this.setTitle("Update Facility Details");
     }
 
     /**
@@ -170,13 +189,20 @@ public class AddFacilityDialog extends javax.swing.JDialog {
             int capacity = Integer.parseInt(capacityStr);
             String message = facilityManager.addNewFacility(id, name, type, location, capacity);
 
-            if (message.equals("Facility Successfully Added")) {
+            
+            if (isUpdateMode) {
+                message = facilityManager.updateFacility(id, name, type, location, capacity);
+            } else {
+                message = facilityManager.addNewFacility(id, name, type, location, capacity);
+            }
+            
+            if (message.equals("Facility Successfully Added") || message.equals("Facility Successfully Updated")) {
                 javax.swing.JOptionPane.showMessageDialog(this, message);
                 this.dispose(); 
             } else {
-                javax.swing.JOptionPane.showMessageDialog(this, 
-                    message, "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                javax.swing.JOptionPane.showMessageDialog(this, message, "Database Error", javax.swing.JOptionPane.ERROR_MESSAGE);
             }
+            
         } catch (NumberFormatException e) {
             javax.swing.JOptionPane.showMessageDialog(this, 
                 "System Error: Capacity is not a valid number.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);

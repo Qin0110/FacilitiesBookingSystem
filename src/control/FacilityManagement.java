@@ -2,7 +2,6 @@ package control;
 
 import adt.ArrayList;
 import adt.ListInterface;
-import boundary.FacilityMaintenanceUI;
 import dao.FacilityDAO;
 import entity.Facility;
 
@@ -13,7 +12,6 @@ public class FacilityManagement {
 
     private ListInterface<Facility> facilityList;
     private FacilityDAO facilityDAO = new FacilityDAO();
-    private FacilityMaintenanceUI facilityUI = new FacilityMaintenanceUI();
     
     public FacilityManagement(){
     
@@ -23,32 +21,6 @@ public class FacilityManagement {
         this.facilityList = sharedList;
     }
 
-//    public void runFacilityManagement() {
-//        int choice = 0;
-//        do {
-//            choice = facilityUI.getMenuChoice();
-//            switch (choice) {
-//                case 1:
-//                    addNewFacility();
-//                    break;
-//                case 2:
-//                    removeFacility();
-//                    break;
-//                case 3:
-//                    updateFacility();
-//                    break;
-//                case 4:
-//                    displayFacilities();
-//                    break;
-//                case 0:
-//                    System.out.println("Exiting system...");
-//                    facilityDAO.saveToFile(facilityList);
-//                    break;
-//                default:
-//                    System.out.println("Invalid choice.");
-//            }
-//        } while (choice != 0);
-//    }
     public String addNewFacility(String id, String name, String type, String location, int capacity){
         
         String message; 
@@ -63,67 +35,25 @@ public class FacilityManagement {
         return message;
     }
     
-    //delete this
-//    private void addNewFacility() {
-//        Facility newFacility = facilityUI.inputFacilityDetails();
-//        if (facilityList.contains(newFacility)) {
-//            System.out.println("Error: A facility with ID " + newFacility.getFacilityId() + " already exists.");
-//        } else {
-//            facilityList.add(newFacility);
-//            System.out.println("Facility added successfully.");
-//        }
-//    }
-
-    private void removeFacility() {
-        String id = facilityUI.inputFacilityId();
-        boolean found = false;
-
-        for (int i = 0; i < facilityList.size(); i++) {
-            Facility f = facilityList.get(i);
-            if (f.getFacilityId().equals(id)) {
-                facilityList.remove(i);
-                System.out.println("Facility removed.");
-                found = true;
-                break; 
-            }
-        }
-
-        if (!found) {
-            System.out.println("Facility not found.");
-        }
+    public ArrayList<entity.Facility> getAllFacilities() {
+        return facilityDAO.getAllFacilities();
     }
 
-    private void updateFacility() {
-        String id = facilityUI.inputFacilityId();
-        boolean found = false;
-
-        for (int i = 0; i < facilityList.size(); i++) {
-            Facility f = facilityList.get(i);
-            if (f.getFacilityId().equals(id)) {
-                String newName = facilityUI.inputName();
-                String newType = facilityUI.inputType();
-                int newCapacity = facilityUI.inputCapacity();
-
-                f.setName(newName);
-                f.setType(newType);
-                f.setCapacity(newCapacity);
-
-                System.out.println("Facility updated.");
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            System.out.println("Facility not found.");
-        }
+   
+    public boolean removeFacility(String facilityId) {
+        return facilityDAO.deleteFacility(facilityId);
     }
-
-    private void displayFacilities() {
-        String outputStr = "";
-        for (int i = 0; i < facilityList.size(); i++) {
-            outputStr += facilityList.get(i).toString() + "\n";
-        }
-        facilityUI.listAllFacilities(outputStr);
+    
+        public String updateFacility(String id, String name, String type, String location, int capacity){
+        entity.Facility updatedFacility = new entity.Facility(id, name, type, location, capacity);
+        return facilityDAO.updateFacility(updatedFacility);
     }
+    
+        
+    public ArrayList<Facility> searchFacility(String id){
+        return facilityDAO.getFacility(id);
+    }
+    
+    
     
 }
