@@ -2,20 +2,23 @@ package boundary;
 
 import UtilitiesClass.Input;
 import control.BookingManagement;
+import control.ScheduleManagement;
 import java.util.HashMap;
 import java.util.Map;
 
 public class StudentUI {
 
     private BookingManagement bookingManager;
+    private ScheduleManagement scheduleManager;
     private Map<Integer, Runnable> actions;
 
-    public StudentUI(BookingManagement bookingControl) {
+    public StudentUI(BookingManagement bookingControl, ScheduleManagement scheduleManager) {
         this.bookingManager = bookingControl;
+        this.scheduleManager = scheduleManager;
         
         actions = new HashMap<>();
         actions.put(1, this::uiBrowseFacilities);
-        actions.put(2, this::uiMakeBooking);
+        actions.put(2   , this::uiMakeBooking);
         actions.put(3, this::uiViewHistory);
         actions.put(4, this::uiCancelBooking);
     }
@@ -56,18 +59,7 @@ public class StudentUI {
     }
 
     private void uiMakeBooking() {
-        System.out.println("\n--- Make a New Booking ---");
-        String studentId = Input.getString("Enter Student ID: ");
-        String scheduleId = Input.getString("Enter Schedule ID to book: ");
-        
-        String result = bookingManager.createBooking(studentId, scheduleId);
-        
-        if (result.equals("SUCCESS")) 
-            System.out.println("Success! Booking Confirmed!");
-        else if (result.equals("WAITLISTED")) 
-            System.out.println("Full! Added to Waitlist.");
-        else 
-            System.out.println("Error! " + result);
+        new boundary.BookingUI(bookingManager, scheduleManager).setVisible(true);
     }
 
     private void uiViewHistory() {
@@ -77,7 +69,7 @@ public class StudentUI {
 
     private void uiCancelBooking() {
         System.out.println("\n--- Cancel Booking ---");
-        String facilityId = Input.getString("Enter Facility ID: ");
+        String facilityId = Input.getString("Enter Booking ID: ");
         String studentId = Input.getString("Enter Student ID: ");
         String scheduleId = Input.getString("Enter Schedule ID: ");
         

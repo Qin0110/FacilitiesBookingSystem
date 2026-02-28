@@ -11,9 +11,10 @@ import java.time.LocalDateTime;
 public class ScheduleManagement {
 
     private ListInterface<Schedule> scheduleList;
+    private dao.ScheduleDAO scheduleDAO = new dao.ScheduleDAO();
 
     public ScheduleManagement() {
-        this.scheduleList = new ArrayList<>();
+        this.scheduleList = scheduleDAO.getAllSchedules();
        
     }
 

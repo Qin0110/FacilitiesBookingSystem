@@ -125,7 +125,53 @@ public class DatabaseConnection {
                 
                 System.out.println("Successfully Create Database!");
                 
-               query.executeUpdate(insertFacilitiesSQL);
+                query.executeUpdate(insertFacilitiesSQL);
+                
+
+                // STUDENTS
+
+                StringBuilder students = new StringBuilder();
+                students.append("INSERT INTO Student (studentId, name, programme) VALUES \n");
+                for (int i = 1; i <= 19; i++) {
+                    students.append(String.format("('23WMR%05d', 'Dummy Student %d', 'Data Science'), \n", i, i));
+                }
+                students.append("('23WMR00020', 'Ali bin Abu', 'Software Engineering')"); 
+                
+                query.executeUpdate(students.toString());
+
+                
+                // ADMINS
+
+                StringBuilder admins = new StringBuilder();
+                admins.append("INSERT INTO Admin (adminId, name, position) VALUES \n");
+                for (int i = 1; i <= 4; i++) {
+                    admins.append(String.format("('A%03d', 'Admin Staff %d', 'Facility Assistant'), \n", i, i));
+                }
+                admins.append("('A005', 'Mr. Tan', 'Facility Manager')"); 
+                
+                query.executeUpdate(admins.toString());
+
+                
+                // SCHEDULE
+                
+                
+                StringBuilder schedules = new StringBuilder();
+                schedules.append("INSERT INTO Schedule (scheduleId, facilityId, startingTime, endingTime, availability) VALUES \n");
+                
+
+                for (int i = 1; i <= 10; i++) {
+                    schedules.append(String.format("('SCH-G%03d', 'GYM-%02d', '2026-03-05 10:00:00', '2026-03-05 12:00:00', 'Available'), \n", i, i));
+                }
+                
+                for (int i = 1; i <= 8; i++) {
+                    schedules.append(String.format("('SCH-B%03d', 'BADM-%02d', '2026-03-06 14:00:00', '2026-03-06 16:00:00', 'Available'), \n", i, i));
+                }
+                schedules.append("('SCH-B009', 'BADM-09', '2026-03-06 14:00:00', '2026-03-06 16:00:00', 'Available')"); 
+                
+                query.executeUpdate(schedules.toString());
+                
+                System.out.println("Successfully generated Dummy Students, Admins, and Schedules!");
+                
                 
             }catch (SQLException ex){
                 System.out.println("Fail to Create Database.");

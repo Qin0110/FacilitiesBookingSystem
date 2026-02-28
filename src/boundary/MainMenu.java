@@ -15,12 +15,13 @@ public class MainMenu {
     private FacilityManagement facilityManager;
     private StudentManagement studentManager;
     private BookingManagement bookingManager;
+    private ScheduleManagement scheduleManager;
     
     private StudentUI studentUI;
     private AdminUI adminUI;
 
-    public MainMenu(StudentManagement studentManager, BookingManagement bookingManager, FacilityManagement facilityManager) {
-        this.studentUI = new StudentUI(bookingManager);
+    public MainMenu(StudentManagement studentManager, BookingManagement bookingManager, FacilityManagement facilityManager, ScheduleManagement scheduleManager) {
+        this.studentUI = new StudentUI(bookingManager, scheduleManager);
         this.adminUI = new AdminUI(studentManager, bookingManager, facilityManager);
         
         this.studentManager = studentManager;

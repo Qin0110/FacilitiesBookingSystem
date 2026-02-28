@@ -12,7 +12,8 @@ import entity.Schedule;
 
 
 public class BookingManagement {
-
+    
+    // Can remove if no need dis anymore
     private class WaitlistRecord {
         String scheduleId;
         ListInterface<Student> waitingStudents;
@@ -29,11 +30,13 @@ public class BookingManagement {
     private StudentManagement studentManager;
     private ScheduleManagement scheduleManager;
     
+    private dao.BookingDAO bookingDAO = new dao.BookingDAO();
+    
     public BookingManagement(){
     }
 
     public BookingManagement(StudentManagement studentManager, ScheduleManagement scheduleManager) {
-        this.bookingList = new ArrayList<>();
+        this.bookingList = bookingDAO.getAllBookings();
         this.masterWaitlist = new ArrayList<>();
         this.studentManager = studentManager;
         this.scheduleManager = scheduleManager;
@@ -49,15 +52,17 @@ public class BookingManagement {
             return "INVALID_SCHEDULE";
 
         if (schedule.getAvailability().equalsIgnoreCase("Available")) {
-            Booking newBooking = new Booking(schedule.getFacilityId(), studentId, scheduleId, schedule.getStartingTime(), schedule.getEndingTime());
+            String generateBookingId = bookingDAO.getLatestBookingId();
+            Booking newBooking = new Booking(generateBookingId, studentId, scheduleId, schedule.getStartingTime(), schedule.getEndingTime());
             newBooking.setStatus("Confirmed");
             bookingList.add(newBooking);
+            bookingDAO.addBooking(newBooking);
             scheduleManager.updateScheduleStatus(scheduleId, "Booked");
             
             return "SUCCESS";
         } else {
-            addToWaitlist(scheduleId, student);
-            return "WAITLISTED";
+            //deleted waitilist
+            return "FULL";
         }
     }
 
@@ -66,48 +71,15 @@ public class BookingManagement {
         
         if (targetBooking != null && targetBooking.getStatus().equals("Confirmed")) {
             targetBooking.setStatus("Cancelled");
+            bookingDAO.updateBookingStatus(targetBooking.getBookingId(), "Cancelled");
             
-            WaitlistRecord record = getWaitlistRecord(scheduleId);
+            scheduleManager.updateScheduleStatus(scheduleId, "Available");
             
-            if (record != null && !record.waitingStudents.isEmpty()) {
-                
-                Student nextInLine = record.waitingStudents.get(0);
-                record.waitingStudents.remove(0); 
-                
-                Booking automatedBooking = new Booking(facilityId, nextInLine.getStudentId(), scheduleId, targetBooking.getArrivalTime(), targetBooking.getLeavingTime());
-                automatedBooking.setStatus("Confirmed");
-                bookingList.add(automatedBooking);
-                
-            } else {
-                scheduleManager.updateScheduleStatus(scheduleId, "Available");
-            }
             return true;
         }
         return false; 
     }
 
-    private void addToWaitlist(String scheduleId, Student student) {
-        WaitlistRecord record = getWaitlistRecord(scheduleId);
-        
-        if (record == null) {
-            record = new WaitlistRecord(scheduleId);
-            masterWaitlist.add(record);
-        }
-        
-        record.waitingStudents.add(student);
-    }
-
-    private WaitlistRecord getWaitlistRecord(String scheduleId) {
-        for (int i = 0; i < masterWaitlist.size(); i++) {
-            WaitlistRecord record = masterWaitlist.get(i);
-            if (record.scheduleId.equals(scheduleId)) {
-                return record;
-            }
-        }
-        return null;
-    }
-
- 
     public Booking getBooking(String facilityId, String studentId, String scheduleId) {
         for (int i = 0; i < bookingList.size(); i++) {
             Booking b = bookingList.get(i);
@@ -116,5 +88,20 @@ public class BookingManagement {
             }
         }
         return null;
+    }
+    
+    // for admin kott
+    public boolean removeBooking(String bookingId) {
+        boolean success = bookingDAO.deleteBooking(bookingId);
+        
+        if (success) {
+            for (int i = 0; i < bookingList.size(); i++) {
+                if (bookingList.get(i).getBookingId().equals(bookingId)) {
+                    bookingList.remove(i);
+                    break;
+                }
+            }
+        }
+        return success;
     }
 }

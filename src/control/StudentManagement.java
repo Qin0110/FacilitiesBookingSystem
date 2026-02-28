@@ -8,9 +8,10 @@ import adt.ListInterface;
 public class StudentManagement {
 
     private ListInterface<Student> studentList;
+    private dao.StudentDAO studentDAO = new dao.StudentDAO();
 
     public StudentManagement() {
-        this.studentList = new ArrayList<>();
+        this.studentList = studentDAO.getAllStudents();
     }
 
     public boolean addStudent(Student newStudent) {
