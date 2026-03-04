@@ -66,8 +66,8 @@ public class BookingManagement {
         }
     }
 
-    public boolean cancelBooking(String facilityId, String studentId, String scheduleId) {
-        Booking targetBooking = getBooking(facilityId, studentId, scheduleId);
+    public boolean cancelBooking(String bookingId, String studentId, String scheduleId) {
+        Booking targetBooking = getBooking(bookingId, studentId, scheduleId);
         
         if (targetBooking != null && targetBooking.getStatus().equals("Confirmed")) {
             targetBooking.setStatus("Cancelled");
@@ -80,10 +80,10 @@ public class BookingManagement {
         return false; 
     }
 
-    public Booking getBooking(String facilityId, String studentId, String scheduleId) {
+    public Booking getBooking(String bookingId, String studentId, String scheduleId) {
         for (int i = 0; i < bookingList.size(); i++) {
             Booking b = bookingList.get(i);
-            if (b.getBookingId().equals(facilityId) && b.getStudentId().equals(studentId) && b.getScheduleId().equals(scheduleId)) {
+            if (b.getBookingId().equals(bookingId) && b.getStudentId().equals(studentId) && b.getScheduleId().equals(scheduleId)) {
                 return b;
             }
         }
