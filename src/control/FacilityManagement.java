@@ -23,9 +23,19 @@ public class FacilityManagement {
     public String addNewFacility(String id, String name, String type, String location, int capacity){
         
         String message; 
-        
-        if (!facilityDAO.isFacilityExists(id)) 
+        if(id.isBlank() || id.isEmpty())
+            return ("Error: Facility ID cannot be Empty");
+        else if(id.length()< 0 || id.length()> 15)
+            return ("Error: Facility ID length must in between 1 - 15 ");
+        else if (!facilityDAO.isFacilityExists(id)) 
            return ("Error: A facility with ID '" + id + "' already exists.");
+       
+        if(name.isBlank() ||name.isEmpty() || name.trim().equals(""))
+            return ("Error: Facility Name cannot be empty");
+        else if(name.length() < 0 || name.length() > 150)
+            return ("Error: Facility Name length must in between 1 - 150");
+        
+            
 
         entity.Facility newFacility = new entity.Facility(id, name, type, location, capacity);
 

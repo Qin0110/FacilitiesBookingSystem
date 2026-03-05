@@ -77,7 +77,7 @@ public class DatabaseConnection {
                 query.executeUpdate("USE " + DATABASE);
                 
                 query.executeUpdate("CREATE TABLE IF NOT EXISTS Facility (" +
-                    "facilityId VARCHAR(45) PRIMARY KEY, " +
+                    "facilityId VARCHAR(15) PRIMARY KEY, " +
                     "name VARCHAR(150) NOT NULL, " +
                     "type VARCHAR(100), " +
                     "location VARCHAR(300), " +
@@ -95,7 +95,7 @@ public class DatabaseConnection {
                 
                 query.executeUpdate("CREATE TABLE Schedule (" +
                     "scheduleId VARCHAR(45) PRIMARY KEY, " +
-                    "facilityId VARCHAR(45), " +
+                    "facilityId VARCHAR(15), " +
                     "startingTime DATETIME, " +
                     "endingTime DATETIME, " +
                     "availability VARCHAR(20) DEFAULT 'Available', " +
@@ -115,7 +115,7 @@ public class DatabaseConnection {
                 
                 query.executeUpdate("CREATE TABLE IF NOT EXISTS Maintenance(" +
                     "maintenanceId INT PRIMARY KEY AUTO_INCREMENT, " +
-                    "facilityId VARCHAR(45), " +
+                    "facilityId VARCHAR(15), " +
                     "approveBy VARCHAR(45), " +
                     "startingTime DATETIME, " +
                     "endingTime DATETIME, " +
