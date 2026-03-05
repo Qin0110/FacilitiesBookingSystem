@@ -90,6 +90,7 @@ public class BookingManagement {
         return null;
     }
     
+    
     // for admin kott
     public boolean removeBooking(String bookingId) {
         boolean success = bookingDAO.deleteBooking(bookingId);
@@ -103,5 +104,9 @@ public class BookingManagement {
             }
         }
         return success;
+    }
+    
+    public adt.ListInterface<entity.Booking> getAllBookings() {
+        return this.bookingList;
     }
 }

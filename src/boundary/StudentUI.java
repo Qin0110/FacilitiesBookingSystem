@@ -68,15 +68,6 @@ public class StudentUI {
     }
 
     private void uiCancelBooking() {
-        System.out.println("\n--- Cancel Booking ---");
-        String facilityId = Input.getString("Enter Booking ID: ");
-        String studentId = Input.getString("Enter Student ID: ");
-        String scheduleId = Input.getString("Enter Schedule ID: ");
-        
-        boolean success = bookingManager.cancelBooking(facilityId, studentId, scheduleId);
-        if (success) 
-            System.out.println("Success! Booking Cancelled.");
-        else 
-            System.out.println("Error! Booking not found.");
+        new boundary.CancelBookingUI(bookingManager, scheduleManager).setVisible(true);
     }
 }

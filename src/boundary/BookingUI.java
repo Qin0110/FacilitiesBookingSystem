@@ -5,10 +5,7 @@
 package boundary;
 
 import control.BookingManagement;
-import javax.swing.JOptionPane; //for popup msgs
 import control.ScheduleManagement;
-import entity.Schedule;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -110,6 +107,7 @@ public class BookingUI extends javax.swing.JFrame {
         capacityCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", " " }));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(800, 500));
 
         ScheduleTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -122,6 +120,7 @@ public class BookingUI extends javax.swing.JFrame {
                 "Schedule ID", "Facility ID", "Starting Time", "Ending Time", "Availability"
             }
         ));
+        ScheduleTable.setMinimumSize(new java.awt.Dimension(300, 300));
         ScheduleTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 ScheduleTableMouseClicked(evt);
@@ -134,6 +133,8 @@ public class BookingUI extends javax.swing.JFrame {
         }
 
         getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
+
+        jPanel1.setMinimumSize(new java.awt.Dimension(100, 200));
 
         idText1.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
         idText1.setText("Student ID:");
@@ -175,7 +176,7 @@ public class BookingUI extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(ScheduleIdTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(222, Short.MAX_VALUE))
+                .addContainerGap(223, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.WEST);
@@ -240,7 +241,7 @@ public class BookingUI extends javax.swing.JFrame {
         String scheduleId = ScheduleIdTextField.getText().trim();
 
         if (studentId.isEmpty() || scheduleId.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please fill in all fields!", "Error", JOptionPane.ERROR_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(this, "Please fill in all fields!", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -248,17 +249,17 @@ public class BookingUI extends javax.swing.JFrame {
 
         // Pop ups
         if (result.equals("SUCCESS")) {
-            JOptionPane.showMessageDialog(this, "Booking Successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(this, "Booking Successful!", "Success", javax.swing.JOptionPane.INFORMATION_MESSAGE);
             StudentIdTxtField.setText(""); // Clear the text boxes
             ScheduleIdTextField.setText("");
             
             loadTableData();
         } 
         else if (result.equals("FULL")) {
-            JOptionPane.showMessageDialog(this, "This facility is already booked! Please choose an Available schedule.", "Facility Full", JOptionPane.WARNING_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(this, "This facility is already booked! Please choose an Available schedule.", "Facility Full", javax.swing.JOptionPane.WARNING_MESSAGE);
         } 
         else {
-            JOptionPane.showMessageDialog(this, "Error: " + result, "Failed", JOptionPane.ERROR_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(this, "Error: " + result, "Failed", javax.swing.JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_BookButtonActionPerformed
 
