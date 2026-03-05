@@ -58,7 +58,7 @@ public class BookingManagement {
             bookingList.add(newBooking);
             bookingDAO.addBooking(newBooking);
             scheduleManager.updateScheduleStatus(scheduleId, "Booked");
-            
+              
             return "SUCCESS";
         } else {
             //deleted waitilist

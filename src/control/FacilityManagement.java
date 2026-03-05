@@ -14,7 +14,6 @@ public class FacilityManagement {
     private FacilityDAO facilityDAO = new FacilityDAO();
     
     public FacilityManagement(){
-    
     }
 
     public FacilityManagement(ListInterface<Facility> sharedList) {
