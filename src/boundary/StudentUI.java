@@ -63,11 +63,10 @@ public class StudentUI {
     }
 
     private void uiViewHistory() {
-        System.out.println("\n--- My Booking History ---");
-        String studentId = Input.getString("Enter your Student ID to view history: ");
+        new boundary.BookingHistoryAndCancel(bookingManager, scheduleManager).setVisible(true);
     }
 
     private void uiCancelBooking() {
-        new boundary.CancelBookingUI(bookingManager, scheduleManager).setVisible(true);
+        new boundary.BookingHistoryAndCancel(bookingManager, scheduleManager).setVisible(true);
     }
 }

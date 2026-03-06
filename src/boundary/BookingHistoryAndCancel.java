@@ -9,7 +9,7 @@ import control.BookingManagement;
  *
  * @author user
  */
-public class CancelBookingUI extends javax.swing.JFrame {
+public class BookingHistoryAndCancel extends javax.swing.JFrame {
 
     /**
      * Creates new form CancelBookingUI
@@ -18,7 +18,7 @@ public class CancelBookingUI extends javax.swing.JFrame {
     private BookingManagement bookingManager;
     private control.ScheduleManagement scheduleManager;
     
-    public CancelBookingUI(BookingManagement bookingManager, control.ScheduleManagement scheduleManager) {
+    public BookingHistoryAndCancel(BookingManagement bookingManager, control.ScheduleManagement scheduleManager) {
         initComponents();
         this.bookingManager = bookingManager;
         this.scheduleManager = scheduleManager;
@@ -82,7 +82,7 @@ public class CancelBookingUI extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Cancel Booking");
+        jLabel1.setText("Booking History And Booking Cancelation");
         getContentPane().add(jLabel1, java.awt.BorderLayout.NORTH);
 
         jPanel1.setMinimumSize(new java.awt.Dimension(200, 200));
