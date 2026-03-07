@@ -7,22 +7,25 @@ package boundary;
 import control.BookingManagement;
 import control.StudentManagement; 
 import control.FacilityManagement;
+import control.ScheduleManagement;
 
 public class AdminUI extends javax.swing.JFrame {
 
     private StudentManagement studentManager;
     private BookingManagement bookingManager;
     private FacilityManagement facilityManager;
+    private ScheduleManagement scheduleManager;
     
     
     public AdminUI() {
         initComponents();
     }
     
-    public AdminUI(StudentManagement studentControl, BookingManagement bookingControl, FacilityManagement facilityControl) {
+    public AdminUI(StudentManagement studentControl, BookingManagement bookingControl, FacilityManagement facilityControl, ScheduleManagement scheduleControl) {
         this.studentManager = studentControl;
         this.bookingManager = bookingControl;
         this.facilityManager = facilityControl;
+        this.scheduleManager = scheduleControl;
         initComponents();
     }
     
@@ -256,7 +259,8 @@ public class AdminUI extends javax.swing.JFrame {
     }//GEN-LAST:event_maintenanceManagementBTActionPerformed
 
     private void BookingBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BookingBTActionPerformed
-        // TODO add your handling code here:
+        AdminBookingUI adminBookingUI = new AdminBookingUI(this.bookingManager, this.scheduleManager, this.facilityManager);
+        showPanel(adminBookingUI);
     }//GEN-LAST:event_BookingBTActionPerformed
 
     private void reportBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportBTActionPerformed

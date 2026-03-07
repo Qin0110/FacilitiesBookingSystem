@@ -56,8 +56,18 @@ public class BookingDAO {
                 String scheduleId = rs.getString("scheduleId");
                 String adminId = rs.getString("adminId");
                 
-                java.time.LocalDateTime arrival = rs.getTimestamp("arrivalTime").toLocalDateTime();
-                java.time.LocalDateTime leaving = rs.getTimestamp("leavingTime").toLocalDateTime();
+                java.sql.Timestamp arrivalTs = rs.getTimestamp("arrivalTime");
+                java.sql.Timestamp leavingTs = rs.getTimestamp("leavingTime");
+
+                java.time.LocalDateTime arrival = null;
+                if (arrivalTs != null) {
+                    arrival = arrivalTs.toLocalDateTime();
+                }
+
+                java.time.LocalDateTime leaving = null;
+                if (leavingTs != null) {
+                    leaving = leavingTs.toLocalDateTime();
+                }
                 
                 String status = rs.getString("status");
 

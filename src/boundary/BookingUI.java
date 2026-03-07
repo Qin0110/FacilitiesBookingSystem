@@ -304,7 +304,7 @@ public class BookingUI extends javax.swing.JFrame {
                             "You cannot use your own ID!", 
                             "Duplicate ID", 
                             javax.swing.JOptionPane.ERROR_MESSAGE);
-                        return; // Abort booking
+                        return; 
                     }
                     
                     // Validation for other member

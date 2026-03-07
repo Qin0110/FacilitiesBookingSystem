@@ -199,7 +199,24 @@ public class DatabaseConnection {
                 
                 query.executeUpdate(schedules.toString());
                                 
+                // BOOKING
+                StringBuilder bookings = new StringBuilder();
+                bookings.append("INSERT INTO Booking (bookingId, studentId, scheduleId, adminId, arrivalTime, leavingTime, status) VALUES \n");
                 
+                bookings.append("('B100', '23WMR00001', 'SCH-G001', 'A001', '2026-03-05 09:55:00', '2026-03-05 11:45:00', 'Completed'), \n");
+                
+                bookings.append("('B101', '23WMR00020', 'SCH-B003', 'A002', NULL, NULL, 'Confirmed'), \n");
+                
+                bookings.append("('B102', '23WMR00005', 'SCH-CC002', NULL, NULL, NULL, 'Pending'), \n");
+                
+                bookings.append("('B103', '23WMR00012', 'SCH-LA001', NULL, NULL, NULL, 'Cancelled'), \n");
+                
+                bookings.append("('B104', '23WMR00008', 'SCH-LB004', NULL, NULL, NULL, 'Confirmed')"); 
+                
+                query.executeUpdate(bookings.toString());
+                
+                //scehdule upd
+                query.executeUpdate("UPDATE Schedule SET availability = 'Booked' WHERE scheduleId IN ('SCH-G001', 'SCH-B003', 'SCH-LB004')");
 
                 
                 

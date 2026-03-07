@@ -90,6 +90,12 @@ public class BookingHistoryAndCancel extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel2.setText("Enter Student ID: ");
 
+        StudentIdTxtField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                StudentIdTxtFieldActionPerformed(evt);
+            }
+        });
+
         SearchBooking.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/searchBT.png"))); // NOI18N
         SearchBooking.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -117,9 +123,9 @@ public class BookingHistoryAndCancel extends javax.swing.JFrame {
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(StudentIdTxtField, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(SearchBooking, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(135, Short.MAX_VALUE))
+                .addContainerGap(141, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.LINE_START);
@@ -227,6 +233,10 @@ public class BookingHistoryAndCancel extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_CancelBookingButtonActionPerformed
+
+    private void StudentIdTxtFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StudentIdTxtFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_StudentIdTxtFieldActionPerformed
 
     /**
      * @param args the command line arguments

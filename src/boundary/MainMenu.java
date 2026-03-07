@@ -22,11 +22,12 @@ public class MainMenu {
 
     public MainMenu(StudentManagement studentManager, BookingManagement bookingManager, FacilityManagement facilityManager, ScheduleManagement scheduleManager) {
         this.studentUI = new StudentUI(bookingManager, scheduleManager, facilityManager);
-        this.adminUI = new AdminUI(studentManager, bookingManager, facilityManager);
+        this.adminUI = new AdminUI(studentManager, bookingManager, facilityManager, scheduleManager);
         
         this.studentManager = studentManager;
         this.bookingManager = bookingManager;
         this.facilityManager = facilityManager;
+        this.scheduleManager = scheduleManager;
         
         menuRouter = new HashMap<>();
         menuRouter.put(1, this::launchStudentMenu);
@@ -66,7 +67,7 @@ public class MainMenu {
     }
 
     private void launchAdminMenu() {
-        AdminUI adminUI = new AdminUI(studentManager, bookingManager, facilityManager);  
+        AdminUI adminUI = new AdminUI(studentManager, bookingManager, facilityManager, scheduleManager);  
         adminUI.setLocationRelativeTo(null);
         adminUI.setVisible(true);
     }
