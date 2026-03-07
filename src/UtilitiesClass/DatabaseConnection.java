@@ -88,13 +88,13 @@ public class DatabaseConnection {
                 facilities.append("INSERT INTO Facility (facilityId, name, type, location, minCapacity, maxCapacity) VALUES \n");
                 
                 for (int i = 1; i <= 20; i++) {
-                    facilities.append(String.format("('GYM-%02d', 'Gymnasium %d', 'Sports', 'Sports Complex', 1, 1), \n", i, i));
-                    facilities.append(String.format("('POOL-%02d', 'Swimming Pool %d', 'Sports', 'Sports Complex', 1, 1), \n", i, i));        
+                    facilities.append(String.format("('GYM-%02d', 'Gymnasium %d', 'Sports', 'Club House', 1, 1), \n", i, i));
+                    facilities.append(String.format("('POOL-%02d', 'Swimming Pool %d', 'Sports', 'Club House', 1, 1), \n", i, i));        
                     facilities.append(String.format("('Q-%02d', 'Individual Study Room Q%d', 'Library Study Room', 'Library Level 3', 1, 1), \n", i, i));        
                 }
 
                 for (int i = 1; i <= 10; i++) {
-                    facilities.append(String.format("('SP-FOYER-%d', 'S.P. Foyer %d', 'Event Space', 'Sports Pavilion', 1, 50), \n", i, i));
+                    facilities.append(String.format("('SP-FOYER-%d', 'S.P. Foyer %d', 'Event Space', 'Club House', 1, 50), \n", i, i));
                     facilities.append(String.format("('BADM-%02d', 'Badminton Court %d', 'Sports', 'Sports Complex', 1, 8), \n", i, i));
 
                 }  
