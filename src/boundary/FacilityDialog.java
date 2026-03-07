@@ -10,17 +10,28 @@ public class FacilityDialog extends javax.swing.JDialog {
     
     private FacilityManagement facilityManager;
     private boolean isUpdateMode = false;
+    private final int[] ALLOWED_CAPACITIES = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 25, 50};
   
     public FacilityDialog(java.awt.Frame parent, boolean modal, control.FacilityManagement facilityManager) {
         super(parent, modal);
         initComponents();
         this.facilityManager = facilityManager;
+        updateMaxCapacity();
+        saveBT.setText("Save");
+        this.setTitle("Add Facility");
+        this.setSize(467, 450);
+
+        backBT.setVisible(false);
+        editBT.setVisible(false);
+        cancelBT.setVisible(true);
+        saveBT.setVisible(true);
     }
     
     public FacilityDialog(java.awt.Frame parent, boolean modal, control.FacilityManagement manager, entity.Facility facilityToEdit) {
         super(parent, modal);
         initComponents();
         this.facilityManager = manager;
+
         this.isUpdateMode = true;
         
         idTF.setText(facilityToEdit.getFacilityId());
@@ -29,21 +40,46 @@ public class FacilityDialog extends javax.swing.JDialog {
         locationCB.setSelectedItem(facilityToEdit.getLocation());
         minCapacityCB.setSelectedItem(String.valueOf(facilityToEdit.getMinCapacity()));
         maxCapacityCB.setSelectedItem(String.valueOf(facilityToEdit.getMaxCapacity()));
-
+        updateMaxCapacity();
          
         idTF.setEnabled(false); 
         
-        saveBT.setText("Update Facility");
+        saveBT.setText("Update");
         this.setTitle("Update Facility Details");
+        this.setSize(467, 450);
+        backBT.setVisible(true);
+        editBT.setVisible(true);
+        cancelBT.setVisible(false);
+        saveBT.setVisible(false);
     }
 
     
     private void updateMaxCapacity(){
+        int currentMax = -1;
         if(minCapacityCB.getSelectedItem() == null)
             return;
         
         int minValue = Integer.parseInt(minCapacityCB.getSelectedItem().toString());
         
+<<<<<<< Updated upstream
+=======
+        if(maxCapacityCB.getSelectedItem() != null)
+            currentMax = Integer.parseInt(maxCapacityCB.getSelectedItem().toString());
+        
+        maxCapacityCB.removeAllItems();
+        
+        for (int i = 0; i < ALLOWED_CAPACITIES.length; i++) {
+            int capacityToCheck = ALLOWED_CAPACITIES[i];
+        
+            if (capacityToCheck >= minValue) {
+                maxCapacityCB.addItem(String.valueOf(capacityToCheck));
+            }
+        }
+
+        if (currentMax >= minValue) {
+            maxCapacityCB.setSelectedItem(String.valueOf(currentMax));
+        }
+>>>>>>> Stashed changes
     }
 
     @SuppressWarnings("unchecked")
@@ -64,6 +100,8 @@ public class FacilityDialog extends javax.swing.JDialog {
         locationCB = new javax.swing.JComboBox<>();
         maxCapacityCB = new javax.swing.JComboBox<>();
         maxCapacityText1 = new javax.swing.JLabel();
+        editBT = new javax.swing.JButton();
+        backBT = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -79,9 +117,14 @@ public class FacilityDialog extends javax.swing.JDialog {
         locationText.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
         locationText.setText("Location");
 
-        typeCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sports", "Recreation", "Event Space", " " }));
+        typeCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sports", "Recreation", "Event Space" }));
 
-        minCapacityCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "25", "50", " " }));
+        minCapacityCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "25", "50" }));
+        minCapacityCB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                minCapacityCBActionPerformed(evt);
+            }
+        });
 
         cancelBT.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/cancelBT.png"))); // NOI18N
         cancelBT.setText("Cancel");
@@ -119,6 +162,22 @@ public class FacilityDialog extends javax.swing.JDialog {
         maxCapacityText1.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
         maxCapacityText1.setText("Max Capacity");
 
+        editBT.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/editBT.png"))); // NOI18N
+        editBT.setText("Edit");
+        editBT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editBTActionPerformed(evt);
+            }
+        });
+
+        backBT.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/backBT.png"))); // NOI18N
+        backBT.setText("Back");
+        backBT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backBTActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -126,41 +185,49 @@ public class FacilityDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(cancelBT, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(160, 160, 160)
-                        .addComponent(saveBT, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(39, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(idText, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(locationText, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(typeText, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(nameText, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(minCapacityText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(idTF, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(locationCB, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(typeCB, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(nameTF, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(minCapacityCB, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(10, 10, 10))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(maxCapacityText1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(maxCapacityCB, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(maxCapacityText1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(maxCapacityCB, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(backBT, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(editBT, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
+                                .addComponent(cancelBT, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(saveBT, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(18, 18, 18))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(idText, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(locationText, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(typeText, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(nameText, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(locationCB, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(typeCB, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(nameTF, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(idTF, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(minCapacityText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addComponent(minCapacityCB, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(21, 21, 21))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(23, 23, 23)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(idText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(idText, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(idTF, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
+                .addGap(17, 17, 17)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(nameText, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(nameTF, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -182,8 +249,10 @@ public class FacilityDialog extends javax.swing.JDialog {
                     .addComponent(maxCapacityCB, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cancelBT, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(saveBT, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(saveBT, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(editBT, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(backBT, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cancelBT, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(20, 20, 20))
         );
 
@@ -191,7 +260,14 @@ public class FacilityDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cancelBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBTActionPerformed
-        this.dispose();
+        if(!isUpdateMode)
+            this.dispose();
+        else{
+            backBT.setVisible(true);
+            editBT.setVisible(true);
+            cancelBT.setVisible(false);
+            saveBT.setVisible(false);
+        }
     }//GEN-LAST:event_cancelBTActionPerformed
 
     private void saveBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBTActionPerformed
@@ -242,9 +318,26 @@ public class FacilityDialog extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_maxCapacityCBActionPerformed
 
+    private void minCapacityCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_minCapacityCBActionPerformed
+        updateMaxCapacity();
+    }//GEN-LAST:event_minCapacityCBActionPerformed
+
+    private void editBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBTActionPerformed
+        backBT.setVisible(false);
+        editBT.setVisible(false);
+        cancelBT.setVisible(true);
+        saveBT.setVisible(true);
+    }//GEN-LAST:event_editBTActionPerformed
+
+    private void backBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBTActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_backBTActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton backBT;
     private javax.swing.JButton cancelBT;
+    private javax.swing.JButton editBT;
     private javax.swing.JTextField idTF;
     private javax.swing.JLabel idText;
     private javax.swing.JComboBox<String> locationCB;
