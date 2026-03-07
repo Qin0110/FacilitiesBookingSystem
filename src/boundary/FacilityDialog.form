@@ -26,37 +26,49 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <Component id="cancelBT" min="-2" pref="109" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="160" max="-2" attributes="0"/>
-                      <Component id="saveBT" min="-2" pref="109" max="-2" attributes="0"/>
-                      <EmptySpace pref="39" max="32767" attributes="0"/>
-                  </Group>
-                  <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="idText" alignment="0" min="-2" pref="76" max="-2" attributes="0"/>
-                          <Component id="locationText" alignment="0" min="-2" pref="76" max="-2" attributes="0"/>
-                          <Component id="typeText" alignment="0" min="-2" pref="76" max="-2" attributes="0"/>
-                          <Component id="nameText" alignment="0" min="-2" pref="76" max="-2" attributes="0"/>
-                          <Component id="minCapacityText" max="32767" attributes="0"/>
-                      </Group>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="idTF" alignment="0" min="-2" pref="290" max="-2" attributes="0"/>
-                              <Component id="locationCB" alignment="0" min="-2" pref="290" max="-2" attributes="0"/>
-                              <Component id="typeCB" alignment="0" max="32767" attributes="0"/>
-                              <Component id="nameTF" alignment="0" min="-2" pref="290" max="-2" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="0">
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Component id="maxCapacityText1" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="maxCapacityCB" min="-2" pref="290" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="minCapacityCB" alignment="0" min="-2" pref="290" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Component id="backBT" min="-2" pref="95" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="editBT" min="-2" pref="95" max="-2" attributes="0"/>
+                              <EmptySpace pref="11" max="32767" attributes="0"/>
+                              <Component id="cancelBT" min="-2" pref="115" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="saveBT" min="-2" pref="115" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                   </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <Component id="maxCapacityText1" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="maxCapacityCB" min="-2" pref="290" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="0">
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Component id="idText" alignment="0" min="-2" pref="76" max="-2" attributes="0"/>
+                                  <Component id="locationText" alignment="0" min="-2" pref="76" max="-2" attributes="0"/>
+                                  <Component id="typeText" alignment="0" min="-2" pref="76" max="-2" attributes="0"/>
+                                  <Component id="nameText" alignment="0" min="-2" pref="76" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="locationCB" alignment="1" min="-2" pref="290" max="-2" attributes="0"/>
+                                  <Component id="typeCB" alignment="1" min="-2" pref="290" max="-2" attributes="0"/>
+                                  <Component id="nameTF" alignment="1" min="-2" pref="290" max="-2" attributes="0"/>
+                                  <Component id="idTF" alignment="1" min="-2" pref="290" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <Component id="minCapacityText" max="32767" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="minCapacityCB" min="-2" pref="290" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -66,11 +78,11 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="idText" max="32767" attributes="0"/>
-                  <Component id="idTF" pref="28" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="idText" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
+                  <Component id="idTF" alignment="3" pref="28" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="nameText" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
                   <Component id="nameTF" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
@@ -97,8 +109,10 @@
               </Group>
               <EmptySpace pref="35" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="cancelBT" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
                   <Component id="saveBT" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
+                  <Component id="editBT" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
+                  <Component id="backBT" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
+                  <Component id="cancelBT" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
           </Group>
@@ -145,11 +159,10 @@
     <Component class="javax.swing.JComboBox" name="typeCB">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="4">
+          <StringArray count="3">
             <StringItem index="0" value="Sports"/>
             <StringItem index="1" value="Recreation"/>
             <StringItem index="2" value="Event Space"/>
-            <StringItem index="3" value=" "/>
           </StringArray>
         </Property>
       </Properties>
@@ -160,7 +173,7 @@
     <Component class="javax.swing.JComboBox" name="minCapacityCB">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="18">
+          <StringArray count="17">
             <StringItem index="0" value="1"/>
             <StringItem index="1" value="2"/>
             <StringItem index="2" value="3"/>
@@ -178,10 +191,12 @@
             <StringItem index="14" value="15"/>
             <StringItem index="15" value="25"/>
             <StringItem index="16" value="50"/>
-            <StringItem index="17" value=" "/>
           </StringArray>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="minCapacityCBActionPerformed"/>
+      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>
@@ -272,6 +287,28 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Max Capacity"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="editBT">
+      <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/Img/editBT.png"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Edit"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editBTActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="backBT">
+      <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/Img/backBT.png"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Back"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="backBTActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

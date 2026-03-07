@@ -124,31 +124,48 @@ public class FacilityDAO {
     }
     
     public ArrayList<Facility> getFacility(String id) {
-        ArrayList<entity.Facility> facilityList = new ArrayList<>();
+        return getFacility(id, null);
+    }
+
+    public ArrayList<Facility> getFacility(String id, String type) {
+
+        ArrayList<Facility> facilityList = new ArrayList<>();
         String sql = "SELECT * FROM Facility WHERE facilityId LIKE ?";
-        
-        try{
-            Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement query = conn.prepareStatement(sql);
-            query.setString(1, "%" + id + "%");
-            ResultSet rs = query.executeQuery();
-            
-            while (rs.next()) {
-                String retrievedId = rs.getString("facilityId");
-                String name = rs.getString("name");
-                String type = rs.getString("type");
-                String location = rs.getString("location");
-                int minCapacity = rs.getInt("minCapacity");
-                int maxCapacity = rs.getInt("maxCapacity");
-                
-                entity.Facility facility = new entity.Facility(retrievedId, name, type, location, minCapacity, maxCapacity);
-                facilityList.add(facility);
-            }
-             
-        }catch (SQLException e) {
-            System.out.println("Error retrieving facilities: " + e.getMessage());
+
+        if (type != null && !type.equals("ALL")) {
+            sql += " AND type = ?";
         }
         
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement query = conn.prepareStatement(sql);
+
+            query.setString(1, "%" + id + "%");
+
+            if (type != null && !type.equals("ALL")) {
+                query.setString(2, type);
+            }
+
+            ResultSet rs = query.executeQuery();
+
+            while (rs.next()) {
+
+                Facility facility = new Facility(
+                    rs.getString("facilityId"),
+                    rs.getString("name"),
+                    rs.getString("type"),
+                    rs.getString("location"),
+                    rs.getInt("minCapacity"),
+                    rs.getInt("maxCapacity")
+                );
+
+                facilityList.add(facility);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error retrieving facilities: " + e.getMessage());
+        }
+
         return facilityList;
     }
 }

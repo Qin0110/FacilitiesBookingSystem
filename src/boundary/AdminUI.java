@@ -66,7 +66,7 @@ public class AdminUI extends javax.swing.JFrame {
     
     private void showPanel(javax.swing.JPanel newPanel) {
         mainContentPanel.removeAll(); // clear the current screen
-        mainContentPanel.add(newPanel, java.awt.BorderLayout.CENTER); // add the new panel
+        mainContentPanel.add(newPanel, java.awt.BorderLayout.NORTH); // add the new panel
         mainContentPanel.revalidate(); // recalculate the layout
         mainContentPanel.repaint(); // redraw the screen to show the new panel
     }

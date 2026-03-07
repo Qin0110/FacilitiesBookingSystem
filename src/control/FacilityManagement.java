@@ -62,6 +62,10 @@ public class FacilityManagement {
         return facilityDAO.getFacility(id);
     }
     
+    public ArrayList<Facility> searchFacility(String id, String type){
+        return facilityDAO.getFacility(id, type);
+    }
+    
     
     
 }
