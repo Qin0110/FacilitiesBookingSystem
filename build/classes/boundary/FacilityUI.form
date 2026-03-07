@@ -25,7 +25,7 @@
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane1" pref="523" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="568" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
@@ -99,12 +99,13 @@
         <Component class="javax.swing.JTable" name="jTable1">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="5" rowCount="4">
+              <Table columnCount="6" rowCount="4">
                 <Column editable="true" title="Facility ID" type="java.lang.Object"/>
                 <Column editable="true" title="Name" type="java.lang.Object"/>
                 <Column editable="true" title="Type" type="java.lang.Object"/>
                 <Column editable="true" title="Location" type="java.lang.Object"/>
-                <Column editable="true" title="Capacity" type="java.lang.Object"/>
+                <Column editable="true" title="Min Capacity" type="java.lang.Object"/>
+                <Column editable="true" title="Max Capacity" type="java.lang.Object"/>
               </Table>
             </Property>
           </Properties>
@@ -113,6 +114,7 @@
     </Container>
     <Component class="javax.swing.JTextField" name="facilitySearchTF">
       <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="facilitySearchTFActionPerformed"/>
         <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="facilitySearchTFKeyPressed"/>
         <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="facilitySearchTFKeyReleased"/>
         <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="facilitySearchTFKeyTyped"/>

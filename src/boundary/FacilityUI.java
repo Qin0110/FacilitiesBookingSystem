@@ -102,17 +102,22 @@ public class FacilityUI extends javax.swing.JPanel {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Facility ID", "Name", "Type", "Location", "Capacity"
+                "Facility ID", "Name", "Type", "Location", "Min Capacity", "Max Capacity"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
 
+        facilitySearchTF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                facilitySearchTFActionPerformed(evt);
+            }
+        });
         facilitySearchTF.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 facilitySearchTFKeyPressed(evt);
@@ -140,7 +145,7 @@ public class FacilityUI extends javax.swing.JPanel {
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 523, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 568, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
@@ -264,6 +269,10 @@ public class FacilityUI extends javax.swing.JPanel {
 
         loadTableData(id);
     }//GEN-LAST:event_facilitySearchTFKeyReleased
+
+    private void facilitySearchTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_facilitySearchTFActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_facilitySearchTFActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

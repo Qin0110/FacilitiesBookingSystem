@@ -12,7 +12,7 @@ public class DatabaseConnection {
     private static final String DATABASE = "tarumt_facility_booking_db";
     private static final String PASSWORD = "123456"; 
 
-    public static Connection getConnection() throws SQLException {
+    public static Connection getConnection()  {
         Connection connection = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -188,15 +188,18 @@ public class DatabaseConnection {
                 
                 
             }catch (SQLException ex){
-                
+
+                try {
                     Connection cleanConnection = DriverManager.getConnection(URL, USER, PASSWORD);
                     Statement cleanQuery = cleanConnection.createStatement();
-                    
-                    cleanQuery.executeUpdate("DROP DATABASE IF EXISTS " + DATABASE); 
-                    System.out.println("Error: "+ ex);
-                    System.exit(0);
-          
-       
+
+                    cleanQuery.executeUpdate("DROP DATABASE " + DATABASE);
+
+                } catch (SQLException e2) {
+                    e2.printStackTrace();
+                }
+                System.out.println("Error: " + ex);
+                System.exit(0);
             }
             
         }
