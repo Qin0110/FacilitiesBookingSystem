@@ -61,8 +61,7 @@ public class FacilityDialog extends javax.swing.JDialog {
         
         int minValue = Integer.parseInt(minCapacityCB.getSelectedItem().toString());
         
-<<<<<<< Updated upstream
-=======
+
         if(maxCapacityCB.getSelectedItem() != null)
             currentMax = Integer.parseInt(maxCapacityCB.getSelectedItem().toString());
         
@@ -79,7 +78,6 @@ public class FacilityDialog extends javax.swing.JDialog {
         if (currentMax >= minValue) {
             maxCapacityCB.setSelectedItem(String.valueOf(currentMax));
         }
->>>>>>> Stashed changes
     }
 
     @SuppressWarnings("unchecked")
