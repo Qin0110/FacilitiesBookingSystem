@@ -68,7 +68,6 @@ public class MainMenu {
     private void launchAdminMenu() {
         AdminUI adminUI = new AdminUI(studentManager, bookingManager, facilityManager);  
         adminUI.setLocationRelativeTo(null);
-        adminUI.setAlwaysOnTop(true);
         adminUI.setVisible(true);
     }
 }

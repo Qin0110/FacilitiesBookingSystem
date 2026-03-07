@@ -12,13 +12,12 @@ public class DatabaseConnection {
     private static final String DATABASE = "tarumt_facility_booking_db";
     private static final String PASSWORD = "123456"; 
 
-    public static Connection getConnection() {
+    public static Connection getConnection() throws SQLException {
         Connection connection = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             
             connection = DriverManager.getConnection(URL + DATABASE, USER, PASSWORD);
-            System.out.println("Database Connection Successful!");
             
         } catch (ClassNotFoundException e) {
             System.out.println("Error! MySQL JDBC Driver not found. Did you add the .jar file to NetBeans Libraries?");
@@ -29,51 +28,8 @@ public class DatabaseConnection {
                 
                 connection = DriverManager.getConnection(URL, USER, PASSWORD);
                 Statement query = connection.createStatement();
-                
-                StringBuilder facilities = new StringBuilder();
-                
-                facilities.append("INSERT INTO Facility (facilityId, name, type, location, capacity) VALUES \n");
-                
-                for (int i = 1; i <= 20; i++) {
-                    facilities.append(String.format("('GYM-%02d', 'Gymnasium %d', 'Sports', 'Sports Complex', 50), \n", i, i));
-                }
 
-                for (int i = 1; i <= 10; i++) {
-                    facilities.append(String.format("('SP-FOYER-%d', 'S.P. Foyer %d', 'Event Space', 'Sports Pavilion', 100), \n", i, i));
-                }
-
-                for (int i = 1; i <= 20; i++) {
-                    facilities.append(String.format("('POOL-%02d', 'Swimming Pool %d', 'Sports', 'Sports Complex', 100), \n", i, i));
-                }
-
-                for (int i = 1; i <= 9; i++) {
-                    facilities.append(String.format("('BADM-%02d', 'Badminton Court %d', 'Sports', 'Sports Complex', 4), \n", i, i));
-                }
-
-                for (int i = 1; i <= 2; i++) {
-                    facilities.append(String.format("('TENNIS-%02d', 'Tennis Court %d', 'Sports', 'Sports Complex', 4), \n", i, i));
-                }
-
-                for (int i = 1; i <= 4; i++) {
-                    facilities.append(String.format("('PICKLE-%02d', 'Pickleball Court %d', 'Sports', 'Sports Complex', 4), \n", i, i));
-                }
-
-                for (int i = 1; i <= 4; i++) {
-                    facilities.append(String.format("('ARENA-PB%d', 'Arena Pickleball Court %d', 'Sports', 'TAR UMT Arena', 4), \n", i, i));
-                }
-
-                for (int i = 1; i <= 2; i++) {
-                    facilities.append(String.format("('SQUASH-%02d', 'Squash Court %d', 'Sports', 'Sports Complex', 4), \n", i, i));
-                } 
-                
-                facilities.append("('KARAOKE-01', 'Guest/Karaoke Room', 'Recreation', 'Student Centre', 10), \n");
-                facilities.append("('SNOOKER-01', 'Snooker Table 1', 'Recreation', 'Clubhouse', 4), \n");
-                facilities.append("('ARENA-FUT', 'Futsal Court', 'Sports', 'TAR UMT Arena', 14), \n");
-                facilities.append("('ARENA-HND', 'Handball Court', 'Sports', 'TAR UMT Arena', 14)");
-                
-                String insertFacilitiesSQL = facilities.toString();
-
-                query.executeUpdate("CREATE DATABASE IF NOT EXISTS " + DATABASE);
+                query.executeUpdate("CREATE DATABASE " + DATABASE);
                 query.executeUpdate("USE " + DATABASE);
                 
                 query.executeUpdate("CREATE TABLE IF NOT EXISTS Facility (" +
@@ -81,7 +37,8 @@ public class DatabaseConnection {
                     "name VARCHAR(150) NOT NULL, " +
                     "type VARCHAR(100), " +
                     "location VARCHAR(300), " +
-                    "capacity INT)");
+                    "minCapacity INT, "+
+                    "maxCapacity INT)");
                 
                 query.executeUpdate("CREATE TABLE Student (" +
                     "studentId VARCHAR(45) PRIMARY KEY, " +
@@ -123,10 +80,66 @@ public class DatabaseConnection {
                     "FOREIGN KEY (facilityId) REFERENCES Facility(facilityId), " +
                     "FOREIGN KEY (approveBy) REFERENCES Admin(adminId))");
                 
-                System.out.println("Successfully Create Database!");
+                
+                //Facility
+                
+                StringBuilder facilities = new StringBuilder();
+                
+                facilities.append("INSERT INTO Facility (facilityId, name, type, location, minCapacity, maxCapacity) VALUES \n");
+                
+                for (int i = 1; i <= 20; i++) {
+                    facilities.append(String.format("('GYM-%02d', 'Gymnasium %d', 'Sports', 'Sports Complex', 1, 1), \n", i, i));
+                    facilities.append(String.format("('POOL-%02d', 'Swimming Pool %d', 'Sports', 'Sports Complex', 1, 1), \n", i, i));        
+                    facilities.append(String.format("('Q-%02d', 'Individual Study Room Q%d', 'Library Study Room', 'Library Level 3', 1, 1), \n", i, i));        
+                }
+
+                for (int i = 1; i <= 10; i++) {
+                    facilities.append(String.format("('SP-FOYER-%d', 'S.P. Foyer %d', 'Event Space', 'Sports Pavilion', 1, 50), \n", i, i));
+                    facilities.append(String.format("('BADM-%02d', 'Badminton Court %d', 'Sports', 'Sports Complex', 1, 8), \n", i, i));
+
+                }  
+        
+                for (int i = 1; i <= 2; i++) {
+                    facilities.append(String.format("('TENNIS-%02d', 'Tennis Court %d', 'Sports', 'Sports Complex', 1, 8), \n", i, i));
+                    facilities.append(String.format("('SQUASH-%02d', 'Squash Court %d', 'Sports', 'Sports Complex', 1, 6), \n", i, i));
+             
+
+                }
+
+                for (int i = 1; i <= 4; i++) {
+                    facilities.append(String.format("('PICKLE-%02d', 'Pickleball Court %d', 'Sports', 'Sports Complex', 1, 8), \n", i, i));
+                    facilities.append(String.format("('PICKLE-ARENA-%02d', 'Arena Pickleball Court %d', 'Sports', 'TAR UMT Arena', 1, 8), \n", i, i));
+                    facilities.append(String.format("('CC-%02d', 'Discussion Room (1PC)', 'Cyber Centre Discussion Room', 'Cyber Centre', 2,4), \n", i));
+                    facilities.append(String.format("('CC-%02d', 'Discussion Room (2PC)', 'Cyber Centre Discussion Room', 'Cyber Centre', 5,8), \n", i+4));
+                    facilities.append(String.format("('CC-%02d', 'Discussion Room with Projector (2PC)', 'Cyber Centre Discussion Room', 'Cyber Centre', 5,8), \n", i+8));
+
+                }
+                
+                for (int i = 1; i <= 10; i++){
+                    facilities.append(String.format("('A-%02d', 'Discussion Room', 'Library Study Room', 'Library Level 1', 2, 4), \n", i));
+                    facilities.append(String.format("('B-%02d', 'Discussion Room with PC', 'Library Study Room', 'Library Level 2', 2, 4), \n", i));
+                }
+                
+                for (int i = 11; i<= 15; i++){
+                    facilities.append(String.format("('A-%02d', 'Discussion Room', 'Library Study Room', 'Library Level 1', 5, 6), \n", i));
+                    facilities.append(String.format("('B-%02d', 'Discussion Room with PC', 'Library Study Room', 'Library Level 2', 5,6), \n", i));
+                    facilities.append(String.format("('A-%02d', 'Discussion Room', 'Library Study Room', 'Library Level 1', 6, 8), \n", i+5));
+                    facilities.append(String.format("('B-%02d', 'Discussion Room with PC', 'Library Study Room', 'Library Level 2', 6,8), \n", i+5));
+                }
+                
+                
+                facilities.append("('KARAOKE-01', 'Guest/Karaoke Room', 'Recreation', 'Student Centre', 1, 10), \n");
+                facilities.append("('SNOOKER-01', 'Snooker Table 1', 'Recreation', 'Clubhouse', 1, 6), \n");
+                facilities.append("('ARENA-FUT', 'Futsal Court', 'Sports', 'TAR UMT Arena', 1, 16), \n");
+                facilities.append("('ARENA-HND', 'Handball Court', 'Sports', 'TAR UMT Arena', 1, 16)");
+                
+  
+                
+                    
+                
+                String insertFacilitiesSQL = facilities.toString();
                 
                 query.executeUpdate(insertFacilitiesSQL);
-                
 
                 // STUDENTS
 
@@ -169,13 +182,21 @@ public class DatabaseConnection {
                 schedules.append("('SCH-B009', 'BADM-09', '2026-03-06 14:00:00', '2026-03-06 16:00:00', 'Available')"); 
                 
                 query.executeUpdate(schedules.toString());
+                                
                 
-                System.out.println("Successfully generated Dummy Students, Admins, and Schedules!");
+
                 
                 
             }catch (SQLException ex){
-                System.out.println("Fail to Create Database.");
-                System.out.println("Error! " + ex.getMessage());
+                
+                    Connection cleanConnection = DriverManager.getConnection(URL, USER, PASSWORD);
+                    Statement cleanQuery = cleanConnection.createStatement();
+                    
+                    cleanQuery.executeUpdate("DROP DATABASE IF EXISTS " + DATABASE); 
+                    System.out.println("Error: "+ ex);
+                    System.exit(0);
+          
+       
             }
             
         }

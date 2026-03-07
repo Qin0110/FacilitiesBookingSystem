@@ -26,47 +26,51 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
-                      <Group type="102" attributes="0">
-                          <Component id="cancelBT" min="-2" pref="109" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
-                          <Component id="saveBT" min="-2" pref="109" max="-2" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="cancelBT" min="-2" pref="109" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="160" max="-2" attributes="0"/>
+                      <Component id="saveBT" min="-2" pref="109" max="-2" attributes="0"/>
+                      <EmptySpace pref="39" max="32767" attributes="0"/>
+                  </Group>
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="idText" alignment="0" min="-2" pref="76" max="-2" attributes="0"/>
+                                  <Component id="locationText" alignment="0" min="-2" pref="76" max="-2" attributes="0"/>
+                                  <Component id="typeText" alignment="0" min="-2" pref="76" max="-2" attributes="0"/>
+                                  <Component id="nameText" alignment="0" min="-2" pref="76" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="32767" attributes="0"/>
+                          </Group>
+                          <Component id="minCapacityText" max="32767" attributes="0"/>
                       </Group>
-                      <Group type="102" attributes="0">
-                          <Component id="idText" min="-2" pref="76" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="idTF" min="-2" pref="290" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="idTF" alignment="0" min="-2" pref="290" max="-2" attributes="0"/>
+                              <Component id="locationCB" alignment="0" min="-2" pref="290" max="-2" attributes="0"/>
+                              <Component id="typeCB" alignment="0" max="32767" attributes="0"/>
+                              <Component id="nameTF" alignment="0" min="-2" pref="290" max="-2" attributes="0"/>
+                          </Group>
+                          <Component id="minCapacityCB" alignment="0" min="-2" pref="290" max="-2" attributes="0"/>
                       </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="locationText" min="-2" pref="76" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="locationCB" min="-2" pref="290" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="typeText" min="-2" pref="76" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="typeCB" max="32767" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="nameText" min="-2" pref="76" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="nameTF" min="-2" pref="290" max="-2" attributes="0"/>
-                      </Group>
+                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="capacityText" min="-2" pref="76" max="-2" attributes="0"/>
+                      <Component id="maxCapacityText1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="capacityCB" min="-2" pref="290" max="-2" attributes="0"/>
+                      <Component id="maxCapacityCB" min="-2" pref="290" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace pref="16" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Component id="idText" max="32767" attributes="0"/>
                   <Component id="idTF" pref="28" max="32767" attributes="0"/>
@@ -88,10 +92,15 @@
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="capacityText" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
-                  <Component id="capacityCB" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
+                  <Component id="minCapacityText" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
+                  <Component id="minCapacityCB" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="40" max="32767" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="maxCapacityText1" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
+                  <Component id="maxCapacityCB" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace pref="35" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="cancelBT" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
                   <Component id="saveBT" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
@@ -153,7 +162,7 @@
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>
     </Component>
-    <Component class="javax.swing.JComboBox" name="capacityCB">
+    <Component class="javax.swing.JComboBox" name="minCapacityCB">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="13">
@@ -199,12 +208,12 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveBTActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JLabel" name="capacityText">
+    <Component class="javax.swing.JLabel" name="minCapacityText">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Arial Black" size="14" style="0"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Capacity"/>
+        <Property name="text" type="java.lang.String" value="Min Capacity"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JComboBox" name="locationCB">
@@ -223,6 +232,41 @@
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="maxCapacityCB">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="13">
+            <StringItem index="0" value="1"/>
+            <StringItem index="1" value="2"/>
+            <StringItem index="2" value="3"/>
+            <StringItem index="3" value="4"/>
+            <StringItem index="4" value="5"/>
+            <StringItem index="5" value="6"/>
+            <StringItem index="6" value="7"/>
+            <StringItem index="7" value="8"/>
+            <StringItem index="8" value="9"/>
+            <StringItem index="9" value="10"/>
+            <StringItem index="10" value="11"/>
+            <StringItem index="11" value="12"/>
+            <StringItem index="12" value=" "/>
+          </StringArray>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="maxCapacityCBActionPerformed"/>
+      </Events>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JLabel" name="maxCapacityText1">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Arial Black" size="14" style="0"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Max Capacity"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

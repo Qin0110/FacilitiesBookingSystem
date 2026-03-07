@@ -27,7 +27,9 @@ public class FacilityDialog extends javax.swing.JDialog {
         nameTF.setText(facilityToEdit.getName());
         typeCB.setSelectedItem(facilityToEdit.getType());
         locationCB.setSelectedItem(facilityToEdit.getLocation());
-        capacityCB.setSelectedItem(String.valueOf(facilityToEdit.getCapacity()));
+        minCapacityCB.setSelectedItem(String.valueOf(facilityToEdit.getMinCapacity()));
+        maxCapacityCB.setSelectedItem(String.valueOf(facilityToEdit.getMaxCapacity()));
+
          
         idTF.setEnabled(false); 
         
@@ -47,11 +49,13 @@ public class FacilityDialog extends javax.swing.JDialog {
         idTF = new javax.swing.JTextField();
         nameTF = new javax.swing.JTextField();
         typeCB = new javax.swing.JComboBox<>();
-        capacityCB = new javax.swing.JComboBox<>();
+        minCapacityCB = new javax.swing.JComboBox<>();
         cancelBT = new javax.swing.JButton();
         saveBT = new javax.swing.JButton();
-        capacityText = new javax.swing.JLabel();
+        minCapacityText = new javax.swing.JLabel();
         locationCB = new javax.swing.JComboBox<>();
+        maxCapacityCB = new javax.swing.JComboBox<>();
+        maxCapacityText1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -69,7 +73,7 @@ public class FacilityDialog extends javax.swing.JDialog {
 
         typeCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sports", "Recreation", "Event Space", " " }));
 
-        capacityCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", " " }));
+        minCapacityCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", " " }));
 
         cancelBT.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/cancelBT.png"))); // NOI18N
         cancelBT.setText("Cancel");
@@ -87,8 +91,8 @@ public class FacilityDialog extends javax.swing.JDialog {
             }
         });
 
-        capacityText.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
-        capacityText.setText("Capacity");
+        minCapacityText.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        minCapacityText.setText("Min Capacity");
 
         locationCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sport Complex", "TAR UMT Arena", "Club House" }));
         locationCB.addActionListener(new java.awt.event.ActionListener() {
@@ -97,6 +101,16 @@ public class FacilityDialog extends javax.swing.JDialog {
             }
         });
 
+        maxCapacityCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", " " }));
+        maxCapacityCB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                maxCapacityCBActionPerformed(evt);
+            }
+        });
+
+        maxCapacityText1.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        maxCapacityText1.setText("Max Capacity");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -104,37 +118,40 @@ public class FacilityDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(cancelBT, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(saveBT, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(idText, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(idTF, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(locationText, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(locationCB, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(typeText, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(typeCB, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(nameText, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(nameTF, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(capacityText, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cancelBT, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(160, 160, 160)
+                        .addComponent(saveBT, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(39, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(idText, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(locationText, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(typeText, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(nameText, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(minCapacityText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(capacityCB, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(16, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(idTF, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(locationCB, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(typeCB, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(nameTF, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(minCapacityCB, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(10, 10, 10))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(maxCapacityText1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(maxCapacityCB, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(41, 41, 41)
+                .addGap(23, 23, 23)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(idText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(idTF, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE))
@@ -152,9 +169,13 @@ public class FacilityDialog extends javax.swing.JDialog {
                     .addComponent(locationCB, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(capacityText, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(capacityCB, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                    .addComponent(minCapacityText, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(minCapacityCB, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(maxCapacityText1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(maxCapacityCB, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelBT, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(saveBT, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -173,7 +194,10 @@ public class FacilityDialog extends javax.swing.JDialog {
         String name = nameTF.getText().trim();
         String type = typeCB.getSelectedItem().toString();
         String location = locationCB.getSelectedItem().toString();
-        String capacityStr = capacityCB.getSelectedItem().toString();
+        String minCapacityStr = minCapacityCB.getSelectedItem().toString();
+        String maxCapacityStr = maxCapacityCB.getSelectedItem().toString();
+
+        String message;
                 
         if (id.isEmpty() || name.isEmpty() || location.isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(this, 
@@ -182,14 +206,14 @@ public class FacilityDialog extends javax.swing.JDialog {
         }
         
         try {
-            int capacity = Integer.parseInt(capacityStr);
-            String message = facilityManager.addNewFacility(id, name, type, location, capacity);
+            int minCapacity = Integer.parseInt(minCapacityStr);      
+            int maxCapacity = Integer.parseInt(maxCapacityStr);            
 
             
             if (isUpdateMode) {
-                message = facilityManager.updateFacility(id, name, type, location, capacity);
+                message = facilityManager.updateFacility(id, name, type, location, minCapacity, maxCapacity);
             } else {
-                message = facilityManager.addNewFacility(id, name, type, location, capacity);
+                message = facilityManager.addNewFacility(id, name, type, location, minCapacity, maxCapacity);
             }
             
             if (message.equals("Facility Successfully Added") || message.equals("Facility Successfully Updated")) {
@@ -209,15 +233,21 @@ public class FacilityDialog extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_locationCBActionPerformed
 
+    private void maxCapacityCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_maxCapacityCBActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_maxCapacityCBActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelBT;
-    private javax.swing.JComboBox<String> capacityCB;
-    private javax.swing.JLabel capacityText;
     private javax.swing.JTextField idTF;
     private javax.swing.JLabel idText;
     private javax.swing.JComboBox<String> locationCB;
     private javax.swing.JLabel locationText;
+    private javax.swing.JComboBox<String> maxCapacityCB;
+    private javax.swing.JLabel maxCapacityText1;
+    private javax.swing.JComboBox<String> minCapacityCB;
+    private javax.swing.JLabel minCapacityText;
     private javax.swing.JTextField nameTF;
     private javax.swing.JLabel nameText;
     private javax.swing.JButton saveBT;

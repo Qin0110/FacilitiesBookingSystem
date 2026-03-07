@@ -37,7 +37,8 @@ public class FacilityUI extends javax.swing.JPanel {
                 f.getName(),
                 f.getType(),
                 f.getLocation(),
-                f.getCapacity()
+                f.getMinCapacity(),
+                f.getMaxCapacity()
             });
         }
     }
@@ -57,7 +58,8 @@ public class FacilityUI extends javax.swing.JPanel {
                 f.getName(),
                 f.getType(),
                 f.getLocation(),
-                f.getCapacity()
+                f.getMinCapacity(),
+                f.getMaxCapacity()
             });
         }
         
@@ -172,10 +174,12 @@ public class FacilityUI extends javax.swing.JPanel {
         FacilityDialog dialog = new FacilityDialog(null, true, this.facilityManager);
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
+        loadTableData();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         int selectedRow = jTable1.getSelectedRow();
+        String message;
 
         if (selectedRow == -1) {
             javax.swing.JOptionPane.showMessageDialog(this, 
@@ -196,15 +200,15 @@ public class FacilityUI extends javax.swing.JPanel {
 
         if (confirm == javax.swing.JOptionPane.YES_OPTION) {
 
-            boolean success = facilityManager.removeFacility(facilityId);
+            message = facilityManager.removeFacility(facilityId);
 
-            if (success) {
-                javax.swing.JOptionPane.showMessageDialog(this, "Facility removed successfully.");
+            if (message.equals("Facility Successfully Removed")) {
+                javax.swing.JOptionPane.showMessageDialog(this, message);
 
                 loadTableData(); 
             } else {
                 javax.swing.JOptionPane.showMessageDialog(this, 
-                    "Failed to remove facility. Ensure it is not currently tied to any active bookings.", 
+                    message, 
                     "Database Error", 
                     javax.swing.JOptionPane.ERROR_MESSAGE);
             }
@@ -214,7 +218,7 @@ public class FacilityUI extends javax.swing.JPanel {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         int selectedRow = jTable1.getSelectedRow();
         String id, name, type, location;
-        int capacity;
+        int minCapacity, maxCapacity;
 
         if (selectedRow == -1) {
             javax.swing.JOptionPane.showMessageDialog(this, 
@@ -227,9 +231,10 @@ public class FacilityUI extends javax.swing.JPanel {
         name = jTable1.getValueAt(selectedRow, 1).toString();
         type = jTable1.getValueAt(selectedRow, 2).toString();
         location = jTable1.getValueAt(selectedRow, 3).toString();
-        capacity = Integer.parseInt(jTable1.getValueAt(selectedRow, 4).toString());
+        minCapacity = Integer.parseInt(jTable1.getValueAt(selectedRow, 4).toString());
+        maxCapacity = Integer.parseInt(jTable1.getValueAt(selectedRow, 5).toString());
         
-        entity.Facility selectedFacility = new entity.Facility(id, name, type, location, capacity);
+        entity.Facility selectedFacility = new entity.Facility(id, name, type, location, minCapacity, maxCapacity);
         
         FacilityDialog dialog = new FacilityDialog(null, true, this.facilityManager, selectedFacility);
         dialog.setLocationRelativeTo(this);

@@ -11,7 +11,7 @@ import adt.ArrayList;
 public class FacilityDAO {
 
     public String addFacility(Facility facility) {
-        String sql = "INSERT INTO Facility (facilityId, name, type, location, capacity) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Facility (facilityId, name, type, location, minCapacity, maxCapacity) VALUES (?, ?, ?, ?, ?, ?)";
         
         try {
             Connection conn = DatabaseConnection.getConnection();
@@ -20,7 +20,8 @@ public class FacilityDAO {
             query.setString(2, facility.getName());
             query.setString(3, facility.getType());
             query.setString(4, facility.getLocation());
-            query.setInt(5, facility.getCapacity());
+            query.setInt(5, facility.getMinCapacity());
+            query.setInt(6, facility.getMaxCapacity());
             
             query.executeUpdate();
             
@@ -45,9 +46,11 @@ public class FacilityDAO {
                 String name = rs.getString("name");
                 String type = rs.getString("type");
                 String location = rs.getString("location");
-                int capacity = rs.getInt("capacity");
+                int minCapacity = rs.getInt("minCapacity");
+                int maxCapacity = rs.getInt("maxCapacity");
+
                 
-                Facility facility = new Facility(id, name, type, location, capacity);
+                Facility facility = new Facility(id, name, type, location, minCapacity, maxCapacity);
                 facilityList.add(facility);
             }
         }catch (SQLException e) {
@@ -62,7 +65,7 @@ public class FacilityDAO {
 
         try{ 
             Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement query = conn.prepareStatement(sql);
+            PreparedStatement query = conn.prepareStatement(sql);
 
             query.setString(1, facilityId);
 
@@ -71,20 +74,17 @@ public class FacilityDAO {
             if (rs.next()) {
                 int count = rs.getInt(1); 
                 
-                return count == 0; 
+                return count > 0; 
             }
-                        
-            return true;
-           
 
         } catch (SQLException e) {
             System.out.println("Error checking if facility exists: " + e.getMessage());
             return false; 
         }
-
+        return false;
     }
     
-    public boolean deleteFacility(String facilityId) {
+    public String deleteFacility(String facilityId) {
         String sql = "DELETE FROM Facility WHERE facilityId = ?";
 
         try{
@@ -95,16 +95,15 @@ public class FacilityDAO {
 
             query.executeUpdate();
 
-            return true; 
+            return "Facility Successfully Removed"; 
 
         } catch (java.sql.SQLException e) {
-            System.out.println("Error deleting facility: " + e.getMessage());
-            return false;
+            return ("Error deleting facility: " + e.getMessage());
         }
     }
     
     public String updateFacility(entity.Facility facility) {
-        String sql = "UPDATE Facility SET name = ?, type = ?, location = ?, capacity = ? WHERE facilityId = ?";
+        String sql = "UPDATE Facility SET name = ?, type = ?, location = ?, minCapacity = ?, maxCapacity = ? WHERE facilityId = ?";
 
         try (java.sql.Connection conn = UtilitiesClass.DatabaseConnection.getConnection();
              java.sql.PreparedStatement query = conn.prepareStatement(sql)) {
@@ -112,8 +111,9 @@ public class FacilityDAO {
             query.setString(1, facility.getName());
             query.setString(2, facility.getType());
             query.setString(3, facility.getLocation());
-            query.setInt(4, facility.getCapacity());
-            query.setString(5, facility.getFacilityId());
+            query.setInt(4, facility.getMinCapacity());
+            query.setInt(5, facility.getMaxCapacity());
+            query.setString(6, facility.getFacilityId());
 
             query.executeUpdate();
             return "Facility Successfully Updated";
@@ -138,9 +138,10 @@ public class FacilityDAO {
                 String name = rs.getString("name");
                 String type = rs.getString("type");
                 String location = rs.getString("location");
-                int capacity = rs.getInt("capacity");
+                int minCapacity = rs.getInt("minCapacity");
+                int maxCapacity = rs.getInt("maxCapacity");
                 
-                entity.Facility facility = new entity.Facility(retrievedId, name, type, location, capacity);
+                entity.Facility facility = new entity.Facility(retrievedId, name, type, location, minCapacity, maxCapacity);
                 facilityList.add(facility);
             }
              

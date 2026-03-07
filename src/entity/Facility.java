@@ -10,17 +10,19 @@ public class Facility implements Serializable {
     private String name;
     private String type;      
     private String location;
-    private int capacity;
+    private int minCapacity;
+    private int maxCapacity;
 
     public Facility() {
     }
 
-    public Facility(String facilityId, String name, String type, String location, int capacity) {
+    public Facility(String facilityId, String name, String type, String location, int minCapacity, int maxCapacity) {
         this.facilityId = facilityId;
         this.name = name;
         this.type = type;
         this.location = location;
-        this.capacity = capacity;
+        this.minCapacity = minCapacity;
+        this.maxCapacity = maxCapacity; 
     }
 
     public String getFacilityId() {
@@ -55,12 +57,20 @@ public class Facility implements Serializable {
         this.type = type;
     }
 
-    public int getCapacity() {
-        return capacity;
+    public int getMinCapacity() {
+        return minCapacity;
     }
 
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
+    public void setMinCapacity(int minCapacity) {
+        this.minCapacity = minCapacity;
+    }
+    
+    public int getMaxCapacity() {
+        return maxCapacity;
+    }
+
+    public void setMaxCapacity(int maxCapacity) {
+        this.maxCapacity = maxCapacity;
     }
 
     @Override
@@ -90,6 +100,6 @@ public class Facility implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("%-10s %-20s %-15s %5d", facilityId, name, type, capacity);
+        return String.format("%-10s %-20s %-15s %5d", facilityId, name, type, minCapacity, maxCapacity);
     }
 }
