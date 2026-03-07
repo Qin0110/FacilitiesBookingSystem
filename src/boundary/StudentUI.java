@@ -3,6 +3,7 @@ package boundary;
 import UtilitiesClass.Input;
 import control.BookingManagement;
 import control.ScheduleManagement;
+import control.FacilityManagement;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,11 +11,13 @@ public class StudentUI {
 
     private BookingManagement bookingManager;
     private ScheduleManagement scheduleManager;
+    private FacilityManagement facilityManager;
     private Map<Integer, Runnable> actions;
 
-    public StudentUI(BookingManagement bookingControl, ScheduleManagement scheduleManager) {
+    public StudentUI(BookingManagement bookingControl, ScheduleManagement scheduleManager, FacilityManagement facilityManager) {
         this.bookingManager = bookingControl;
         this.scheduleManager = scheduleManager;
+        this.facilityManager = facilityManager;
         
         actions = new HashMap<>();
         actions.put(1, this::uiBrowseFacilities);
@@ -59,7 +62,7 @@ public class StudentUI {
     }
 
     private void uiMakeBooking() {
-        new boundary.BookingUI(bookingManager, scheduleManager).setVisible(true);
+        new boundary.BookingUI(bookingManager, scheduleManager, facilityManager).setVisible(true);
     }
 
     private void uiViewHistory() {

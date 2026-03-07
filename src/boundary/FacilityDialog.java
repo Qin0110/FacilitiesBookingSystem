@@ -44,7 +44,6 @@ public class FacilityDialog extends javax.swing.JDialog {
         
         int minValue = Integer.parseInt(minCapacityCB.getSelectedItem().toString());
         
-        if 
     }
 
     @SuppressWarnings("unchecked")

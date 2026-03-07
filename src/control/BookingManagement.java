@@ -12,20 +12,7 @@ import entity.Schedule;
 
 
 public class BookingManagement {
-    
-    // Can remove if no need dis anymore
-    private class WaitlistRecord {
-        String scheduleId;
-        ListInterface<Student> waitingStudents;
-
-        WaitlistRecord(String scheduleId) {
-            this.scheduleId = scheduleId;
-            this.waitingStudents = new ArrayList<>(); 
-        }
-    }
-
     private ListInterface<Booking> bookingList;
-    private ListInterface<WaitlistRecord> masterWaitlist; 
 
     private StudentManagement studentManager;
     private ScheduleManagement scheduleManager;
@@ -37,7 +24,6 @@ public class BookingManagement {
 
     public BookingManagement(StudentManagement studentManager, ScheduleManagement scheduleManager) {
         this.bookingList = bookingDAO.getAllBookings();
-        this.masterWaitlist = new ArrayList<>();
         this.studentManager = studentManager;
         this.scheduleManager = scheduleManager;
     }
@@ -61,7 +47,6 @@ public class BookingManagement {
               
             return "SUCCESS";
         } else {
-            //deleted waitilist
             return "FULL";
         }
     }
@@ -106,7 +91,16 @@ public class BookingManagement {
         return success;
     }
     
-    public adt.ListInterface<entity.Booking> getAllBookings() {
+    public ListInterface<Booking> getAllBookings() {
         return this.bookingList;
+    }
+    
+    public boolean validateMember(String studentId, String studentName) {
+        Student s = studentManager.getStudentById(studentId);
+        
+        if (s != null && s.getName().equalsIgnoreCase(studentName.trim())) {
+            return true; 
+        }
+        return false; 
     }
 }

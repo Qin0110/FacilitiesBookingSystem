@@ -21,7 +21,7 @@ public class MainMenu {
     private AdminUI adminUI;
 
     public MainMenu(StudentManagement studentManager, BookingManagement bookingManager, FacilityManagement facilityManager, ScheduleManagement scheduleManager) {
-        this.studentUI = new StudentUI(bookingManager, scheduleManager);
+        this.studentUI = new StudentUI(bookingManager, scheduleManager, facilityManager);
         this.adminUI = new AdminUI(studentManager, bookingManager, facilityManager);
         
         this.studentManager = studentManager;

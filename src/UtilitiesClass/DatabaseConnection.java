@@ -179,7 +179,23 @@ public class DatabaseConnection {
                 for (int i = 1; i <= 8; i++) {
                     schedules.append(String.format("('SCH-B%03d', 'BADM-%02d', '2026-03-06 14:00:00', '2026-03-06 16:00:00', 'Available'), \n", i, i));
                 }
-                schedules.append("('SCH-B009', 'BADM-09', '2026-03-06 14:00:00', '2026-03-06 16:00:00', 'Available')"); 
+                
+                for (int i = 1; i <= 5; i++) {
+                    schedules.append(String.format("('SCH-CC%03d', 'CC-%02d', '2026-03-10 10:00:00', '2026-03-10 12:00:00', 'Available'), \n", i, i));
+                }
+                
+                for (int i = 1; i <= 5; i++) {
+                    schedules.append(String.format("('SCH-Q%03d', 'Q-%02d', '2026-03-10 10:00:00', '2026-03-10 12:00:00', 'Available'), \n", i, i));
+                }
+
+                for (int i = 1; i <= 5; i++) {
+                    schedules.append(String.format("('SCH-LA%03d', 'A-%02d', '2026-03-11 14:00:00', '2026-03-11 16:00:00', 'Available'), \n", i, i));
+                }
+
+                for (int i = 1; i <= 4; i++) {
+                    schedules.append(String.format("('SCH-LB%03d', 'B-%02d', '2026-03-12 09:00:00', '2026-03-12 11:00:00', 'Available'), \n", i, i));
+                }
+                schedules.append("('SCH-LB005', 'B-05', '2026-03-12 09:00:00', '2026-03-12 11:00:00', 'Available')");
                 
                 query.executeUpdate(schedules.toString());
                                 

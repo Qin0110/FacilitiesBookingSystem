@@ -6,6 +6,7 @@ package boundary;
 
 import control.BookingManagement;
 import control.ScheduleManagement;
+import control.FacilityManagement;
 
 /**
  *
@@ -15,11 +16,13 @@ public class BookingUI extends javax.swing.JFrame {
     
     private BookingManagement bookingManager;
     private ScheduleManagement scheduleManager;
+    private FacilityManagement facilityManager;
     
-    public BookingUI(BookingManagement bookingManager, ScheduleManagement scheduleManager) {
+    public BookingUI(BookingManagement bookingManager, ScheduleManagement scheduleManager, FacilityManagement facilityManager) {
         initComponents();
         this.bookingManager = bookingManager;
         this.scheduleManager = scheduleManager;
+        this.facilityManager = facilityManager;
         setLocationRelativeTo(null);
         
         loadTableData();
@@ -176,7 +179,7 @@ public class BookingUI extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(ScheduleIdTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(223, Short.MAX_VALUE))
+                .addContainerGap(225, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.WEST);
@@ -237,14 +240,112 @@ public class BookingUI extends javax.swing.JFrame {
     }//GEN-LAST:event_StudentIdTxtFieldActionPerformed
 
     private void BookButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BookButtonActionPerformed
-        String studentId = StudentIdTxtField.getText().trim();
-        String scheduleId = ScheduleIdTextField.getText().trim();
+        String studentId = StudentIdTxtField.getText().trim().toUpperCase();
+        String scheduleId = ScheduleIdTextField.getText().trim().toUpperCase();
 
         if (studentId.isEmpty() || scheduleId.isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(this, "Please fill in all fields!", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
             return;
         }
+        
+        int row = ScheduleTable.getSelectedRow();
+        if (row != -1) {
+            String facilityId = ScheduleTable.getValueAt(row, 1).toString(); 
+            
+            adt.ArrayList<entity.Facility> resultsList = facilityManager.searchFacility(facilityId);
+            
 
+            entity.Facility selectedFacility = null;
+            if (resultsList != null && resultsList.size() > 0) {
+                selectedFacility = resultsList.get(0); 
+            }
+            
+            if (selectedFacility != null &&
+                    !selectedFacility.getFacilityId().toUpperCase().startsWith("Q") &&
+                    (selectedFacility.getType().equalsIgnoreCase("Library Study Room")||
+                     selectedFacility.getType().equalsIgnoreCase("Cyber Centre Discussion Room"))){
+                String numberOfMemberStr = javax.swing.JOptionPane.showInputDialog(this, "How Many Group Member would you like to invite?\n Enter number (1-5)");
+                int memberNeeded = 0;
+                
+                if(numberOfMemberStr == null){
+                    return;
+                }
+                
+                try{
+                    memberNeeded = Integer.parseInt(numberOfMemberStr.trim());
+                    if(memberNeeded < 1 || memberNeeded >5){
+                        javax.swing.JOptionPane.showMessageDialog(this,"invalid amount! Please enter a number between 1 and 5!",
+                                "Invalid Number",
+                                javax.swing.JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+                }catch(NumberFormatException e){
+                    javax.swing.JOptionPane.showMessageDialog(this, "Invalid Input, Please input an integer",
+                            "Input Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+               
+                adt.ListInterface<String> enteredIds = new adt.ArrayList<>();
+                
+                // Validation for repeating id 
+                String mainBookerId = studentId.trim().toUpperCase(); 
+
+                for (int i = 1; i <= memberNeeded; i++) {
+                    
+                    String memberId = javax.swing.JOptionPane.showInputDialog(this, "Discussion Room Requires Group!\nEnter Member " + i + " Student ID:");
+                    if (memberId == null || memberId.trim().isEmpty()) return; 
+                    
+                    memberId = memberId.trim().toUpperCase();
+                    
+                    // Validation for mainbookert
+                    if (memberId.equals(mainBookerId)) {
+                        javax.swing.JOptionPane.showMessageDialog(this, 
+                            "You cannot use your own ID!", 
+                            "Duplicate ID", 
+                            javax.swing.JOptionPane.ERROR_MESSAGE);
+                        return; // Abort booking
+                    }
+                    
+                    // Validation for other member
+                    boolean isDuplicate = false;
+                    for (int j = 0; j < enteredIds.size(); j++) {
+                        if (enteredIds.get(j).equals(memberId)) {
+                            isDuplicate = true;
+                            break;
+                        }
+                    }
+                    
+                    if (isDuplicate) {
+                        javax.swing.JOptionPane.showMessageDialog(this, 
+                            "You already entered this ID! Each member must be a different student.", 
+                            "Duplicate ID", 
+                            javax.swing.JOptionPane.ERROR_MESSAGE);
+                        return; 
+                    }
+                    
+                    String memberName = javax.swing.JOptionPane.showInputDialog(this, "Enter member " + i + " Full Name:");
+                    if (memberName == null || memberName.trim().isEmpty()) return; 
+                    
+                    boolean isValid = bookingManager.validateMember(memberId, memberName);
+                    
+                    if (!isValid) {
+                        javax.swing.JOptionPane.showMessageDialog(this, 
+                            "Validation Failed!\nThe ID or Name for Member " + i + " is incorrect.", 
+                            "Security Check Failed", 
+                            javax.swing.JOptionPane.ERROR_MESSAGE);
+                        return; 
+                    }
+                    
+                    // save id for checkingvalidation purposes
+                    enteredIds.add(memberId);
+                }
+                
+                javax.swing.JOptionPane.showMessageDialog(this, "Group Verified! Proceeding with booking...", "Verified", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+
+            }
+        }
+        
         String result = bookingManager.createBooking(studentId, scheduleId);
 
         // Pop ups
@@ -276,17 +377,6 @@ public class BookingUI extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                control.StudentManagement sm = new control.StudentManagement();
-                control.ScheduleManagement schedM = new control.ScheduleManagement();
-                control.BookingManagement bm = new control.BookingManagement(sm, schedM);
- 
-                new BookingUI(bm, schedM).setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BookButton;
