@@ -9,6 +9,7 @@ import control.FacilityManagement;
 public class FacilityDialog extends javax.swing.JDialog {
     
     private FacilityManagement facilityManager;
+    private entity.Facility originalFacility;
     private boolean isUpdateMode = false;
     private final int[] ALLOWED_CAPACITIES = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 25, 50};
   
@@ -31,7 +32,7 @@ public class FacilityDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.facilityManager = manager;
-
+        this.originalFacility = facilityToEdit;
         this.isUpdateMode = true;
         
         idTF.setText(facilityToEdit.getFacilityId());
@@ -51,6 +52,12 @@ public class FacilityDialog extends javax.swing.JDialog {
         editBT.setVisible(true);
         cancelBT.setVisible(false);
         saveBT.setVisible(false);
+        idTF.setEditable(false);
+        nameTF.setEditable(false);
+        typeCB.setEnabled(false);
+        locationCB.setEnabled(false);
+        minCapacityCB.setEnabled(false);
+        maxCapacityCB.setEnabled(false);    
     }
 
     
@@ -261,10 +268,24 @@ public class FacilityDialog extends javax.swing.JDialog {
         if(!isUpdateMode)
             this.dispose();
         else{
+            idTF.setText(originalFacility.getFacilityId());
+            nameTF.setText(originalFacility.getName());
+            typeCB.setSelectedItem(originalFacility.getType());
+            locationCB.setSelectedItem(originalFacility.getLocation());
+            minCapacityCB.setSelectedItem(String.valueOf(originalFacility.getMinCapacity()));
+            maxCapacityCB.setSelectedItem(String.valueOf(originalFacility.getMaxCapacity()));
+            
             backBT.setVisible(true);
             editBT.setVisible(true);
             cancelBT.setVisible(false);
             saveBT.setVisible(false);
+            
+            idTF.setEditable(false);
+            nameTF.setEditable(false);
+            typeCB.setEnabled(false);
+            locationCB.setEnabled(false);
+            minCapacityCB.setEnabled(false);
+            maxCapacityCB.setEnabled(false);    
         }
     }//GEN-LAST:event_cancelBTActionPerformed
 
@@ -325,6 +346,13 @@ public class FacilityDialog extends javax.swing.JDialog {
         editBT.setVisible(false);
         cancelBT.setVisible(true);
         saveBT.setVisible(true);
+        
+        idTF.setEditable(true);
+        nameTF.setEditable(true);
+        typeCB.setEnabled(true);
+        locationCB.setEnabled(true);
+        minCapacityCB.setEnabled(true);
+        maxCapacityCB.setEnabled(true);    
     }//GEN-LAST:event_editBTActionPerformed
 
     private void backBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBTActionPerformed
