@@ -4,7 +4,6 @@
  */
 package boundary;
 
-import adt.ArrayList;
 import control.FacilityManagement;
 
 public class FacilityUI extends javax.swing.JPanel {
@@ -26,7 +25,7 @@ public class FacilityUI extends javax.swing.JPanel {
         javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
         model.setRowCount(0);
 
-        adt.ArrayList<entity.Facility> facilities = facilityManager.getAllFacilities();
+        adt.ListInterface<entity.Facility> facilities = facilityManager.getAllFacilities();
         String currentOption = null;
         
         Object selected = typeCB.getSelectedItem();
@@ -77,24 +76,16 @@ public class FacilityUI extends javax.swing.JPanel {
     }
     
     private void loadTableData(String id) {
-        adt.ArrayList<entity.Facility> searchResults;
         javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
-        model.setRowCount(0);
+        model.setRowCount(0); 
         
         Object selected = typeCB.getSelectedItem();
         String type = (selected != null) ? selected.toString() : "ALL";
 
-
-        if (type.equals("ALL")) {
-                searchResults = facilityManager.searchFacility(id);
-        } else {
-            searchResults = facilityManager.searchFacility(id, type);
-        }
+        adt.ListInterface<entity.Facility> searchResults = facilityManager.searchFacility(id, type);
 
         for (int i = 0; i < searchResults.size(); i++) {
-
             entity.Facility f = searchResults.get(i);
-
             model.addRow(new Object[]{
                 f.getFacilityId(),
                 f.getName(),
@@ -104,7 +95,6 @@ public class FacilityUI extends javax.swing.JPanel {
                 f.getMaxCapacity()
             });
         }
-        
     }
 
 
@@ -319,11 +309,6 @@ public class FacilityUI extends javax.swing.JPanel {
 
     private void facilitySearchTFKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_facilitySearchTFKeyReleased
         String id = facilitySearchTF.getText().trim();
-
-        if (id.isEmpty()) {
-            loadTableData();
-            return;
-        }
 
         loadTableData(id);
     }//GEN-LAST:event_facilitySearchTFKeyReleased

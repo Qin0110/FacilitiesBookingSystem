@@ -252,8 +252,7 @@ public class BookingUI extends javax.swing.JFrame {
         if (row != -1) {
             String facilityId = ScheduleTable.getValueAt(row, 1).toString(); 
             
-            adt.ArrayList<entity.Facility> resultsList = facilityManager.searchFacility(facilityId);
-            
+            adt.ListInterface<entity.Facility> resultsList = facilityManager.searchFacility(facilityId);            
 
             entity.Facility selectedFacility = null;
             if (resultsList != null && resultsList.size() > 0) {

@@ -10,12 +10,12 @@ import adt.ArrayList;
 
 public class FacilityDAO {
 
-    public String addFacility(Facility facility) {
+    public boolean addFacility(Facility facility) {
         String sql = "INSERT INTO Facility (facilityId, name, type, location, minCapacity, maxCapacity) VALUES (?, ?, ?, ?, ?, ?)";
         
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement query = conn.prepareStatement(sql);            
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement query = conn.prepareStatement(sql)) {
+             
             query.setString(1, facility.getFacilityId());
             query.setString(2, facility.getName());
             query.setString(3, facility.getType());
@@ -23,37 +23,34 @@ public class FacilityDAO {
             query.setInt(5, facility.getMinCapacity());
             query.setInt(6, facility.getMaxCapacity());
             
-            query.executeUpdate();
+            return query.executeUpdate() > 0;
             
-            return "Facility Successfully Added";
-        }
-        catch (SQLException e) {
-            return ("Error adding facility: " + e.getMessage());
+        } catch (SQLException e) {
+            System.out.println("Error adding facility to DB: " + e.getMessage());
+            return false;
         }
     }
 
     public ArrayList<Facility> getAllFacilities() {
-        ArrayList<entity.Facility> facilityList = new ArrayList<>();
+        ArrayList<Facility> facilityList = new ArrayList<>();
         String sql = "SELECT * FROM Facility";
 
-        try{
-            Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement query = conn.prepareStatement(sql);
-            ResultSet rs = query.executeQuery();
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement query = conn.prepareStatement(sql);
+             ResultSet rs = query.executeQuery()) {
              
             while (rs.next()) {
-                String id = rs.getString("facilityId");
-                String name = rs.getString("name");
-                String type = rs.getString("type");
-                String location = rs.getString("location");
-                int minCapacity = rs.getInt("minCapacity");
-                int maxCapacity = rs.getInt("maxCapacity");
-
-                
-                Facility facility = new Facility(id, name, type, location, minCapacity, maxCapacity);
+                Facility facility = new Facility(
+                    rs.getString("facilityId"),
+                    rs.getString("name"),
+                    rs.getString("type"),
+                    rs.getString("location"),
+                    rs.getInt("minCapacity"),
+                    rs.getInt("maxCapacity")
+                );
                 facilityList.add(facility);
             }
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             System.out.println("Error retrieving facilities: " + e.getMessage());
         }
         
@@ -63,50 +60,42 @@ public class FacilityDAO {
     public boolean isFacilityExists(String facilityId) {
         String sql = "SELECT COUNT(*) FROM Facility WHERE facilityId = ?";
 
-        try{ 
-            Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement query = conn.prepareStatement(sql);
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement query = conn.prepareStatement(sql)) {
 
             query.setString(1, facilityId);
 
-            ResultSet rs = query.executeQuery();
-            
-            if (rs.next()) {
-                int count = rs.getInt(1); 
-                
-                return count > 0; 
+            try (ResultSet rs = query.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0; 
+                }
             }
-
         } catch (SQLException e) {
             System.out.println("Error checking if facility exists: " + e.getMessage());
-            return false; 
         }
         return false;
     }
     
-    public String deleteFacility(String facilityId) {
+    public boolean deleteFacility(String facilityId) {
         String sql = "DELETE FROM Facility WHERE facilityId = ?";
 
-        try{
-            java.sql.Connection conn = UtilitiesClass.DatabaseConnection.getConnection();
-            java.sql.PreparedStatement query = conn.prepareStatement(sql);
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement query = conn.prepareStatement(sql)) {
 
             query.setString(1, facilityId);
+            return query.executeUpdate() > 0;
 
-            query.executeUpdate();
-
-            return "Facility Successfully Removed"; 
-
-        } catch (java.sql.SQLException e) {
-            return ("Error deleting facility: " + e.getMessage());
+        } catch (SQLException e) {
+            System.out.println("Error deleting facility: " + e.getMessage());
+            return false;
         }
     }
     
-    public String updateFacility(entity.Facility facility) {
+    public boolean updateFacility(Facility facility) {
         String sql = "UPDATE Facility SET name = ?, type = ?, location = ?, minCapacity = ?, maxCapacity = ? WHERE facilityId = ?";
 
-        try (java.sql.Connection conn = UtilitiesClass.DatabaseConnection.getConnection();
-             java.sql.PreparedStatement query = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement query = conn.prepareStatement(sql)) {
 
             query.setString(1, facility.getName());
             query.setString(2, facility.getType());
@@ -115,57 +104,11 @@ public class FacilityDAO {
             query.setInt(5, facility.getMaxCapacity());
             query.setString(6, facility.getFacilityId());
 
-            query.executeUpdate();
-            return "Facility Successfully Updated";
-
-        } catch (java.sql.SQLException e) {
-            return "Error updating facility: " + e.getMessage();
-        }
-    }
-    
-    public ArrayList<Facility> getFacility(String id) {
-        return getFacility(id, null);
-    }
-
-    public ArrayList<Facility> getFacility(String id, String type) {
-
-        ArrayList<Facility> facilityList = new ArrayList<>();
-        String sql = "SELECT * FROM Facility WHERE facilityId LIKE ?";
-
-        if (type != null && !type.equals("ALL")) {
-            sql += " AND type = ?";
-        }
-        
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement query = conn.prepareStatement(sql);
-
-            query.setString(1, "%" + id + "%");
-
-            if (type != null && !type.equals("ALL")) {
-                query.setString(2, type);
-            }
-
-            ResultSet rs = query.executeQuery();
-
-            while (rs.next()) {
-
-                Facility facility = new Facility(
-                    rs.getString("facilityId"),
-                    rs.getString("name"),
-                    rs.getString("type"),
-                    rs.getString("location"),
-                    rs.getInt("minCapacity"),
-                    rs.getInt("maxCapacity")
-                );
-
-                facilityList.add(facility);
-            }
+            return query.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            System.out.println("Error retrieving facilities: " + e.getMessage());
+            System.out.println("Error updating facility: " + e.getMessage());
+            return false;
         }
-
-        return facilityList;
     }
 }
