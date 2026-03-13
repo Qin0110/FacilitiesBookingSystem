@@ -1,5 +1,5 @@
 
-import boundary.MainMenu;
+import boundary.MainMenu2;
 import control.AdminManagement;
 import control.StudentManagement;
 import control.ScheduleManagement;
@@ -20,9 +20,9 @@ public class TARUMTBookingSystem {
         FacilityManagement facilityManager = new FacilityManagement();
         BookingManagement bookingManager = new BookingManagement(studentManager, scheduleManager);
         
-        MainMenu mainMenu = new MainMenu(adminManager, studentManager, bookingManager, facilityManager, scheduleManager);
-        
-        mainMenu.start();
+        MainMenu2 mainMenu = new MainMenu2(adminManager, studentManager, bookingManager, facilityManager, scheduleManager);
+        mainMenu.setVisible(true);
+    
         
     }
 }
