@@ -2,6 +2,7 @@ package boundary;
 
 import UtilitiesClass.Input;
 import control.BookingManagement;
+import control.AdminManagement;
 import control.StudentManagement;
 import control.ScheduleManagement;
 import control.FacilityManagement;
@@ -14,17 +15,19 @@ public class MainMenu {
     
     private FacilityManagement facilityManager;
     private StudentManagement studentManager;
+    private AdminManagement adminManager;
     private BookingManagement bookingManager;
     private ScheduleManagement scheduleManager;
     
     private StudentUI studentUI;
     private AdminUI adminUI;
 
-    public MainMenu(StudentManagement studentManager, BookingManagement bookingManager, FacilityManagement facilityManager, ScheduleManagement scheduleManager) {
+    public MainMenu(AdminManagement adminManager, StudentManagement studentManager, BookingManagement bookingManager, FacilityManagement facilityManager, ScheduleManagement scheduleManager) {
         this.studentUI = new StudentUI(bookingManager, scheduleManager, facilityManager);
-        this.adminUI = new AdminUI(studentManager, bookingManager, facilityManager, scheduleManager);
+        this.adminUI = new AdminUI(adminManager, studentManager, bookingManager, facilityManager, scheduleManager);
         
         this.studentManager = studentManager;
+        this.adminManager = adminManager;
         this.bookingManager = bookingManager;
         this.facilityManager = facilityManager;
         this.scheduleManager = scheduleManager;
@@ -67,7 +70,7 @@ public class MainMenu {
     }
 
     private void launchAdminMenu() {
-        AdminUI adminUI = new AdminUI(studentManager, bookingManager, facilityManager, scheduleManager);  
+        AdminUI adminUI = new AdminUI(adminManager, studentManager, bookingManager, facilityManager, scheduleManager);  
         adminUI.setLocationRelativeTo(null);
         adminUI.setVisible(true);
     }

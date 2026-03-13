@@ -8,10 +8,13 @@ import control.BookingManagement;
 import control.StudentManagement; 
 import control.FacilityManagement;
 import control.ScheduleManagement;
+import control.AdminManagement;
+
 
 public class AdminUI extends javax.swing.JFrame {
 
     private StudentManagement studentManager;
+    private AdminManagement adminManager;
     private BookingManagement bookingManager;
     private FacilityManagement facilityManager;
     private ScheduleManagement scheduleManager;
@@ -21,8 +24,9 @@ public class AdminUI extends javax.swing.JFrame {
         initComponents();
     }
     
-    public AdminUI(StudentManagement studentControl, BookingManagement bookingControl, FacilityManagement facilityControl, ScheduleManagement scheduleControl) {
+    public AdminUI(AdminManagement adminControl, StudentManagement studentControl, BookingManagement bookingControl, FacilityManagement facilityControl, ScheduleManagement scheduleControl) {
         this.studentManager = studentControl;
+        this.adminManager = adminControl;
         this.bookingManager = bookingControl;
         this.facilityManager = facilityControl;
         this.scheduleManager = scheduleControl;
@@ -80,12 +84,13 @@ public class AdminUI extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         facilityManagmenetBT = new javax.swing.JButton();
-        userManagementBT = new javax.swing.JButton();
+        studentManagementBT = new javax.swing.JButton();
         scheduleManagementBT = new javax.swing.JButton();
         maintenanceManagementBT = new javax.swing.JButton();
         BookingBT = new javax.swing.JButton();
         reportBT = new javax.swing.JButton();
         logoutBT = new javax.swing.JButton();
+        adminManagementBT = new javax.swing.JButton();
         mainContentPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -97,10 +102,10 @@ public class AdminUI extends javax.swing.JFrame {
             }
         });
 
-        userManagementBT.setText("User Management (Student & Staff)");
-        userManagementBT.addActionListener(new java.awt.event.ActionListener() {
+        studentManagementBT.setText("Student Management");
+        studentManagementBT.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                userManagementBTActionPerformed(evt);
+                studentManagementBTActionPerformed(evt);
             }
         });
 
@@ -139,6 +144,13 @@ public class AdminUI extends javax.swing.JFrame {
             }
         });
 
+        adminManagementBT.setText("Admin Management");
+        adminManagementBT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                adminManagementBTActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -153,20 +165,25 @@ public class AdminUI extends javax.swing.JFrame {
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(facilityManagmenetBT, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(userManagementBT, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(studentManagementBT, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(scheduleManagementBT, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(maintenanceManagementBT, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(BookingBT, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(398, 398, 398))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(logoutBT, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(adminManagementBT, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(79, 79, 79)
-                .addComponent(userManagementBT, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(25, 25, 25)
+                .addComponent(adminManagementBT, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(studentManagementBT, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(facilityManagmenetBT, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -197,12 +214,12 @@ public class AdminUI extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addGap(46, 46, 46)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(mainContentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(mainContentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 666, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -213,9 +230,10 @@ public class AdminUI extends javax.swing.JFrame {
         showPanel(facilityUI);
     }//GEN-LAST:event_facilityManagmenetBTActionPerformed
 
-    private void userManagementBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userManagementBTActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_userManagementBTActionPerformed
+    private void studentManagementBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_studentManagementBTActionPerformed
+        StudentInAdminModeUI studentUI = new StudentInAdminModeUI(this.studentManager);
+        showPanel(studentUI);
+    }//GEN-LAST:event_studentManagementBTActionPerformed
 
     private void scheduleManagementBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_scheduleManagementBTActionPerformed
         // TODO add your handling code here:
@@ -238,10 +256,16 @@ public class AdminUI extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_logoutBTActionPerformed
 
+    private void adminManagementBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminManagementBTActionPerformed
+        AdminInAdminModeUI adminUI = new AdminInAdminModeUI(this.adminManager);
+        showPanel(adminUI);
+    }//GEN-LAST:event_adminManagementBTActionPerformed
+
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BookingBT;
+    private javax.swing.JButton adminManagementBT;
     private javax.swing.JButton facilityManagmenetBT;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JButton logoutBT;
@@ -249,6 +273,6 @@ public class AdminUI extends javax.swing.JFrame {
     private javax.swing.JButton maintenanceManagementBT;
     private javax.swing.JButton reportBT;
     private javax.swing.JButton scheduleManagementBT;
-    private javax.swing.JButton userManagementBT;
+    private javax.swing.JButton studentManagementBT;
     // End of variables declaration//GEN-END:variables
 }

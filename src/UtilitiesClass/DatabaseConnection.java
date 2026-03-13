@@ -43,12 +43,18 @@ public class DatabaseConnection {
                 query.executeUpdate("CREATE TABLE Student (" +
                     "studentId VARCHAR(45) PRIMARY KEY, " +
                     "name VARCHAR(50) NOT NULL, " +
-                    "programme VARCHAR(50))");
+                    "programme VARCHAR(50), " + 
+                    "email VARCHAR(100)," + 
+                    "phoneNumber VARCHAR(20) )" );
+
                 
                 query.executeUpdate("CREATE TABLE  Admin (" +
                     "adminId VARCHAR(45) PRIMARY KEY, " +
                     "name VARCHAR(100) NOT NULL, " +
-                    "position VARCHAR(100))");
+                    "position VARCHAR(100), "+
+                    "email VARCHAR(100), " + 
+                    "phoneNumber VARCHAR(20) )" );
+
                 
                 query.executeUpdate("CREATE TABLE Schedule (" +
                     "scheduleId VARCHAR(45) PRIMARY KEY, " +
@@ -144,11 +150,11 @@ public class DatabaseConnection {
                 // STUDENTS
 
                 StringBuilder students = new StringBuilder();
-                students.append("INSERT INTO Student (studentId, name, programme) VALUES \n");
+                students.append("INSERT INTO Student (studentId, name, programme, email, phoneNumber) VALUES \n");
                 for (int i = 1; i <= 19; i++) {
-                    students.append(String.format("('23WMR%05d', 'Dummy Student %d', 'Data Science'), \n", i, i));
+                    students.append(String.format("('23WMR%05d', 'Dummy Student %d', 'Data Science', 'dummy00%d@student.tarc.edu.my', '019-7787788'), \n", i, i, i));
                 }
-                students.append("('23WMR00020', 'Ali bin Abu', 'Software Engineering')"); 
+                students.append("('23WMR00020', 'Ali bin Abu', 'Software Engineering','ali020@student.tarc.edu.my','017-6315390')"); 
                 
                 query.executeUpdate(students.toString());
 
@@ -156,13 +162,15 @@ public class DatabaseConnection {
                 // ADMINS
 
                 StringBuilder admins = new StringBuilder();
-                admins.append("INSERT INTO Admin (adminId, name, position) VALUES \n");
+                admins.append("INSERT INTO Admin (adminId, name, position, email, phoneNumber) VALUES \n");
                 for (int i = 1; i <= 4; i++) {
-                    admins.append(String.format("('A%03d', 'Admin Staff %d', 'Facility Assistant'), \n", i, i));
+                    admins.append(String.format("('A%03d', 'Admin Staff %d', 'Facility Assistant', 'admin%d@gmail.com', '013-6636633'), \n", i, i, i));
                 }
-                admins.append("('A005', 'Mr. Tan', 'Facility Manager')"); 
+                admins.append("('A005', 'Mr. Tan', 'Facility Manager', 'tan099@gmaii.com', '017-3573716')"); 
                 
                 query.executeUpdate(admins.toString());
+
+
 
                 
                 // SCHEDULE
