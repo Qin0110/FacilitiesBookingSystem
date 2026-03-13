@@ -13,7 +13,7 @@ public class FacilityDialog extends javax.swing.JDialog {
     private boolean isUpdateMode = false;
     private final int[] ALLOWED_CAPACITIES = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 25, 50};
   
-    public FacilityDialog(java.awt.Frame parent, boolean modal, control.FacilityManagement facilityManager) {
+     public FacilityDialog(java.awt.Frame parent, boolean modal, FacilityManagement facilityManager) {
         super(parent, modal);
         initComponents();
         this.facilityManager = facilityManager;
@@ -21,20 +21,20 @@ public class FacilityDialog extends javax.swing.JDialog {
         saveBT.setText("Save");
         this.setTitle("Add Facility");
         this.setSize(467, 450);
-
         backBT.setVisible(false);
         editBT.setVisible(false);
         cancelBT.setVisible(true);
         saveBT.setVisible(true);
     }
-    
-    public FacilityDialog(java.awt.Frame parent, boolean modal, control.FacilityManagement manager, entity.Facility facilityToEdit) {
+     
+    public FacilityDialog(java.awt.Frame parent, boolean modal,
+                          FacilityManagement manager, entity.Facility facilityToEdit) {
         super(parent, modal);
         initComponents();
-        this.facilityManager = manager;
-        this.originalFacility = facilityToEdit;
-        this.isUpdateMode = true;
-        
+        this.facilityManager   = manager;
+        this.originalFacility  = facilityToEdit;
+        this.isUpdateMode      = true;
+ 
         idTF.setText(facilityToEdit.getFacilityId());
         nameTF.setText(facilityToEdit.getName());
         typeCB.setSelectedItem(facilityToEdit.getType());
@@ -42,9 +42,8 @@ public class FacilityDialog extends javax.swing.JDialog {
         minCapacityCB.setSelectedItem(String.valueOf(facilityToEdit.getMinCapacity()));
         maxCapacityCB.setSelectedItem(String.valueOf(facilityToEdit.getMaxCapacity()));
         updateMaxCapacity();
-         
-        idTF.setEnabled(false); 
-        
+ 
+        idTF.setEnabled(false);
         saveBT.setText("Update");
         this.setTitle("Update Facility Details");
         this.setSize(467, 450);
@@ -57,31 +56,28 @@ public class FacilityDialog extends javax.swing.JDialog {
         typeCB.setEnabled(false);
         locationCB.setEnabled(false);
         minCapacityCB.setEnabled(false);
-        maxCapacityCB.setEnabled(false);    
+        maxCapacityCB.setEnabled(false);
     }
 
     
-    private void updateMaxCapacity(){
+     private void updateMaxCapacity() {
         int currentMax = -1;
-        if(minCapacityCB.getSelectedItem() == null)
-            return;
-        
+        if (minCapacityCB.getSelectedItem() == null) return;
+ 
         int minValue = Integer.parseInt(minCapacityCB.getSelectedItem().toString());
-        
-
-        if(maxCapacityCB.getSelectedItem() != null)
-            currentMax = Integer.parseInt(maxCapacityCB.getSelectedItem().toString());
-        
+ 
+        if (maxCapacityCB.getSelectedItem() != null)
+            currentMax = Integer.parseInt(maxCapacityCB.getSelectedItem().toString().trim().isEmpty()
+                    ? "-1" : maxCapacityCB.getSelectedItem().toString());
+ 
         maxCapacityCB.removeAllItems();
-        
+ 
         for (int i = 0; i < ALLOWED_CAPACITIES.length; i++) {
-            int capacityToCheck = ALLOWED_CAPACITIES[i];
-        
-            if (capacityToCheck >= minValue) {
-                maxCapacityCB.addItem(String.valueOf(capacityToCheck));
+            if (ALLOWED_CAPACITIES[i] >= minValue) {
+                maxCapacityCB.addItem(String.valueOf(ALLOWED_CAPACITIES[i]));
             }
         }
-
+ 
         if (currentMax >= minValue) {
             maxCapacityCB.setSelectedItem(String.valueOf(currentMax));
         }
@@ -290,41 +286,40 @@ public class FacilityDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_cancelBTActionPerformed
 
     private void saveBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBTActionPerformed
-        String id = idTF.getText().trim();
-        String name = nameTF.getText().trim();
-        String type = typeCB.getSelectedItem().toString();
-        String location = locationCB.getSelectedItem().toString();
-        String minCapacityStr = minCapacityCB.getSelectedItem().toString();
-        String maxCapacityStr = maxCapacityCB.getSelectedItem().toString();
-
-        String message;
-                
+        String id           = idTF.getText().trim();
+        String name         = nameTF.getText().trim();
+        String type         = typeCB.getSelectedItem().toString();
+        String location     = locationCB.getSelectedItem().toString();
+        String minCapStr    = minCapacityCB.getSelectedItem().toString();
+        String maxCapStr    = maxCapacityCB.getSelectedItem().toString();
+ 
         if (id.isEmpty() || name.isEmpty() || location.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(this, 
-                "Please fill in all text fields!", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
-            return; 
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Please fill in all fields!", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
         }
-        
+ 
         try {
-            int minCapacity = Integer.parseInt(minCapacityStr);      
-            int maxCapacity = Integer.parseInt(maxCapacityStr);            
-
-            
+            int minCapacity = Integer.parseInt(minCapStr);
+            int maxCapacity = Integer.parseInt(maxCapStr);
+ 
+            String message;
             if (isUpdateMode) {
                 message = facilityManager.updateFacility(id, name, type, location, minCapacity, maxCapacity);
             } else {
                 message = facilityManager.addNewFacility(id, name, type, location, minCapacity, maxCapacity);
             }
-            
+ 
             if (message.equals("Facility Successfully Added") || message.equals("Facility Successfully Updated")) {
                 javax.swing.JOptionPane.showMessageDialog(this, message);
-                this.dispose(); 
+                this.dispose();
             } else {
-                javax.swing.JOptionPane.showMessageDialog(this, message, "Database Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                javax.swing.JOptionPane.showMessageDialog(this, message,
+                    "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
             }
-            
+ 
         } catch (NumberFormatException e) {
-            javax.swing.JOptionPane.showMessageDialog(this, 
+            javax.swing.JOptionPane.showMessageDialog(this,
                 "System Error: Capacity is not a valid number.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_saveBTActionPerformed

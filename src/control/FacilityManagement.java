@@ -1,95 +1,94 @@
 package control;
 
+ 
+import dao.FacilityCollection;
 import adt.ListInterface;
-import dao.FacilityDAO;
+import adt.SingleLinkedList;
 import entity.Facility;
-
+ 
 public class FacilityManagement {
-
-    private ListInterface<Facility> facilityList;
-    private FacilityDAO facilityDAO = new FacilityDAO();
-    
+ 
+    private FacilityCollection facilityCollection;
+ 
     public FacilityManagement() {
-        this.facilityList = facilityDAO.getAllFacilities();
+        this.facilityCollection = new FacilityCollection();
     }
-
-    public FacilityManagement(ListInterface<Facility> sharedList) {
-        this.facilityList = sharedList;
+ 
+    public FacilityManagement(FacilityCollection sharedCollection) {
+        this.facilityCollection = sharedCollection;
     }
-
+ 
     public String addNewFacility(String id, String name, String type, String location, int minCapacity, int maxCapacity) {
-        if(id == null || id.isBlank()) 
-            return "Error: Facility ID cannot be Empty";
-        if(id.length() > 15) return 
-                "Error: Facility ID length must be between 1 - 15";
-        if(facilityDAO.isFacilityExists(id)) 
+
+        if (id == null || id.isBlank())
+            return "Error: Facility ID cannot be empty";
+        if (id.length() > 15)
+            return "Error: Facility ID length must be between 1 - 15";
+        if (facilityCollection.isFacilityExists(id))
             return "Error: A facility with ID '" + id + "' already exists.";
-        
-        if(name == null || name.isBlank()) 
+        if (name == null || name.isBlank())
             return "Error: Facility Name cannot be empty";
-        if(name.length() > 150) 
+        if (name.length() > 150)
             return "Error: Facility Name length must be between 1 - 150";
-
+        if (minCapacity > maxCapacity)
+            return "Error: Min Capacity cannot be greater than Max Capacity";
+ 
         Facility newFacility = new Facility(id, name, type, location, minCapacity, maxCapacity);
-
-        if (facilityDAO.addFacility(newFacility)) {
-            facilityList.add(newFacility);
+ 
+        if (facilityCollection.add(newFacility)) {
             return "Facility Successfully Added";
         } else {
-            return "Error: Could not save to Database.";
+            return "Error: Could not add facility.";
         }
     }
-    
+ 
     public ListInterface<Facility> getAllFacilities() {
-        return this.facilityList;
+        return facilityCollection.getAllFacilities();
     }
-   
+ 
     public String removeFacility(String facilityId) {
-        if (facilityDAO.deleteFacility(facilityId)) {
-            for (int i = 0; i < facilityList.size(); i++) {
-                if (facilityList.get(i).getFacilityId().equals(facilityId)) {
-                    
-                    break;
-                }
-            }
-            this.facilityList = facilityDAO.getAllFacilities(); 
+        if (facilityCollection.remove(facilityId)) {
             return "Facility Successfully Removed";
         }
-        return "Error: Could not delete from Database.";
+        return "Error: Facility not found.";
     }
-    
+ 
     public String updateFacility(String id, String name, String type, String location, int minCapacity, int maxCapacity) {
+        if (name == null || name.isBlank())
+            return "Error: Facility Name cannot be empty";
+        if (name.length() > 150)
+            return "Error: Facility Name length must be between 1 - 150";
+        if (minCapacity > maxCapacity)
+            return "Error: Min Capacity cannot be greater than Max Capacity";
+ 
         Facility updatedFacility = new Facility(id, name, type, location, minCapacity, maxCapacity);
-        
-        if (facilityDAO.updateFacility(updatedFacility)) {
-            this.facilityList = facilityDAO.getAllFacilities();
+ 
+        if (facilityCollection.set(updatedFacility)) {
             return "Facility Successfully Updated";
         }
-        return "Error: Could not update Database.";
+        return "Error: Facility not found.";
     }
-    
-    
-    public adt.ListInterface<entity.Facility> searchFacility(String id, String type) {
-        
-        adt.ListInterface<entity.Facility> searchResults = new adt.ArrayList<>();
-        
-        for (int i = 0; i < facilityList.size(); i++) {
-            entity.Facility f = facilityList.get(i);
-            
-            boolean matchesId = f.getFacilityId().toLowerCase().contains(id.toLowerCase());
+ 
+    public ListInterface<Facility> searchFacility(String id, String type) {
+        ListInterface<Facility> searchResults = new SingleLinkedList<>();
+        ListInterface<Facility> allFacilities = facilityCollection.getAllFacilities();
+ 
+        for (int i = 0; i < allFacilities.size(); i++) {
+            Facility f = allFacilities.get(i);
+ 
+            boolean matchesId   = f.getFacilityId().toLowerCase().contains(id.toLowerCase())
+                                || f.getName().toLowerCase().contains(id.toLowerCase());
             boolean matchesType = (type == null || type.equals("ALL") || f.getType().equals(type));
-            
+ 
             if (matchesId && matchesType) {
-                searchResults.add(f); 
+                searchResults.add(f);
             }
         }
-        
         return searchResults;
     }
-    
-    public adt.ListInterface<entity.Facility> searchFacility(String id) {
-        
-        return searchFacility(id, "ALL"); 
-        
+ 
+    public ListInterface<Facility> searchFacility(String id) {
+        return searchFacility(id, "ALL");
     }
 }
+ 

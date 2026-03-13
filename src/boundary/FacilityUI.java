@@ -10,39 +10,36 @@ public class FacilityUI extends javax.swing.JPanel {
     
     private FacilityManagement facilityManager;
     
-    public FacilityUI() {
-        boolean searchFacilityID = false;
+     public FacilityUI() {
         initComponents();
     }
-    
-    public FacilityUI(FacilityManagement facilityManager){
+ 
+    public FacilityUI(FacilityManagement facilityManager) {
         initComponents();
         this.facilityManager = facilityManager;
         loadTableData();
     }
     
     private void loadTableData() {
-        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
+        javax.swing.table.DefaultTableModel model =
+                (javax.swing.table.DefaultTableModel) jTable1.getModel();
         model.setRowCount(0);
-
+ 
         adt.ListInterface<entity.Facility> facilities = facilityManager.getAllFacilities();
+ 
         String currentOption = null;
-        
         Object selected = typeCB.getSelectedItem();
-            if (selected != null) {
-                String selStr = selected.toString().trim();
-                if (!selStr.isEmpty()) {
-                    currentOption = selStr;
-                }
-            }
-        
+        if (selected != null) {
+            String selStr = selected.toString().trim();
+            if (!selStr.isEmpty()) currentOption = selStr;
+        }
+ 
         typeCB.removeAllItems();
         typeCB.addItem("ALL");
-     
+ 
         for (int i = 0; i < facilities.size(); i++) {
-
             entity.Facility f = facilities.get(i);
-
+ 
             model.addRow(new Object[]{
                 f.getFacilityId(),
                 f.getName(),
@@ -51,39 +48,32 @@ public class FacilityUI extends javax.swing.JPanel {
                 f.getMinCapacity(),
                 f.getMaxCapacity()
             });
-            
-             String type = f.getType();
+ 
+            String type = f.getType();
             boolean exists = false;
-
-     
             for (int j = 0; j < typeCB.getItemCount(); j++) {
-                
                 if (typeCB.getItemAt(j).equals(type)) {
                     exists = true;
                     break;
                 }
             }
-
-            if (!exists) {
-                typeCB.addItem(type);
-            }
+            if (!exists) typeCB.addItem(type);
         }
-        
-        if(currentOption == null)
-            typeCB.setSelectedItem("ALL");
-        else 
-            typeCB.setSelectedItem(currentOption);
+ 
+        if (currentOption == null) typeCB.setSelectedItem("ALL");
+        else                       typeCB.setSelectedItem(currentOption);
     }
-    
+ 
     private void loadTableData(String id) {
-        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
-        model.setRowCount(0); 
-        
+        javax.swing.table.DefaultTableModel model =
+                (javax.swing.table.DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0);
+ 
         Object selected = typeCB.getSelectedItem();
         String type = (selected != null) ? selected.toString() : "ALL";
-
+ 
         adt.ListInterface<entity.Facility> searchResults = facilityManager.searchFacility(id, type);
-
+ 
         for (int i = 0; i < searchResults.size(); i++) {
             entity.Facility f = searchResults.get(i);
             model.addRow(new Object[]{
@@ -232,67 +222,54 @@ public class FacilityUI extends javax.swing.JPanel {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         int selectedRow = jTable1.getSelectedRow();
-        String message;
-
+ 
         if (selectedRow == -1) {
-            javax.swing.JOptionPane.showMessageDialog(this, 
-                "Please select a facility from the table first", 
-                "No Selection", 
-                javax.swing.JOptionPane.WARNING_MESSAGE);
-            return; 
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Please select a facility from the table first",
+                "No Selection", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
         }
-
-        String facilityId = jTable1.getValueAt(selectedRow, 0).toString();
+ 
+        String facilityId   = jTable1.getValueAt(selectedRow, 0).toString();
         String facilityName = jTable1.getValueAt(selectedRow, 1).toString();
-
-        int confirm = javax.swing.JOptionPane.showConfirmDialog(this, 
-            "Are you sure you want to remove " + facilityName + " (" + facilityId + ")?", 
-            "Confirm Deletion", 
-            javax.swing.JOptionPane.YES_NO_OPTION, 
-            javax.swing.JOptionPane.WARNING_MESSAGE);
-
+ 
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(this,
+            "Are you sure you want to remove " + facilityName + " (" + facilityId + ")?", "Confirm Deletion", javax.swing.JOptionPane.YES_NO_OPTION, javax.swing.JOptionPane.WARNING_MESSAGE);
+ 
         if (confirm == javax.swing.JOptionPane.YES_OPTION) {
-
-            message = facilityManager.removeFacility(facilityId);
-
+            String message = facilityManager.removeFacility(facilityId);
+ 
             if (message.equals("Facility Successfully Removed")) {
                 javax.swing.JOptionPane.showMessageDialog(this, message);
-
-                loadTableData(); 
+                loadTableData();
             } else {
-                javax.swing.JOptionPane.showMessageDialog(this, 
-                    message, 
-                    "Database Error", 
-                    javax.swing.JOptionPane.ERROR_MESSAGE);
+                javax.swing.JOptionPane.showMessageDialog(this, message, "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        int selectedRow = jTable1.getSelectedRow();
-        String id, name, type, location;
-        int minCapacity, maxCapacity;
-
+          int selectedRow = jTable1.getSelectedRow();
+ 
         if (selectedRow == -1) {
-            javax.swing.JOptionPane.showMessageDialog(this, 
-                "Please select a facility from the table first", 
-                "No Selection", 
-                javax.swing.JOptionPane.WARNING_MESSAGE);
-            return; 
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Please select a facility from the table first",
+                "No Selection", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
         }
-        id = jTable1.getValueAt(selectedRow, 0).toString();
-        name = jTable1.getValueAt(selectedRow, 1).toString();
-        type = jTable1.getValueAt(selectedRow, 2).toString();
-        location = jTable1.getValueAt(selectedRow, 3).toString();
-        minCapacity = Integer.parseInt(jTable1.getValueAt(selectedRow, 4).toString());
-        maxCapacity = Integer.parseInt(jTable1.getValueAt(selectedRow, 5).toString());
-        
+ 
+        String id       = jTable1.getValueAt(selectedRow, 0).toString();
+        String name     = jTable1.getValueAt(selectedRow, 1).toString();
+        String type     = jTable1.getValueAt(selectedRow, 2).toString();
+        String location = jTable1.getValueAt(selectedRow, 3).toString();
+        int minCapacity = Integer.parseInt(jTable1.getValueAt(selectedRow, 4).toString());
+        int maxCapacity = Integer.parseInt(jTable1.getValueAt(selectedRow, 5).toString());
+ 
         entity.Facility selectedFacility = new entity.Facility(id, name, type, location, minCapacity, maxCapacity);
-        
+ 
         FacilityDialog dialog = new FacilityDialog(null, true, this.facilityManager, selectedFacility);
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
-        
         loadTableData();
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -301,9 +278,9 @@ public class FacilityUI extends javax.swing.JPanel {
     }//GEN-LAST:event_facilitySearchTFKeyPressed
 
     private void facilitySearchTFKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_facilitySearchTFKeyTyped
-        if(facilitySearchTF.getText().trim().length() >= 15 && evt.getKeyCode() != java.awt.event.KeyEvent.VK_BACK_SPACE){
+        if (facilitySearchTF.getText().trim().length() >= 15
+                && evt.getKeyCode() != java.awt.event.KeyEvent.VK_BACK_SPACE) {
             evt.consume();
-            return;
         }
     }//GEN-LAST:event_facilitySearchTFKeyTyped
 

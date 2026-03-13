@@ -1,13 +1,10 @@
 package adt;
 
-// <T> meaning: <> generic data type, inside <> is a parameter holder, T = Type.
-// Generic data type can represent any Primitive Data Type: String, int...
-
 import java.io.Serializable;
 
 public class ArrayList<T> implements ListInterface<T>, Serializable {
     private T[] array;
-    private int numberOfEntries; // Current Array Value contains.
+    private int numberOfEntries; 
     private static final int DEFAULT_CAPACITY = 5;
     
     public ArrayList(){
@@ -77,8 +74,9 @@ public class ArrayList<T> implements ListInterface<T>, Serializable {
         return array[index];
     }
     
-    public void set (int index, T element){
+    public boolean set (int index, T element){
         array[index] = element;
+        return true;
     }
     
     public boolean isEmpty(){

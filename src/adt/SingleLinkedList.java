@@ -1,11 +1,12 @@
 
 package adt;
+import java.io.Serializable;
 
-public class SingleLinkedList<T> implements ListInterface<T> {
+public class SingleLinkedList<T> implements ListInterface<T>, Serializable{
     private Node firstNode;
     private int numberOfEntries;  	
     
-    private class Node {
+    private class Node implements java.io.Serializable {
         private T data;
         private Node next;
 
