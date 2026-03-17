@@ -13,6 +13,12 @@ public class BookingCollection implements Serializable {
 
     public BookingCollection() {
         bookingList = DATFile.loadFromFile(FILE_NAME);
+        /*if (bookingList.isEmpty()) {
+            bookingList.add(new Booking("B101", "23WMR00001", "SCH-B003", null, null));
+            bookingList.add(new Booking("B102", "23WMR00002", "SCH-G001", null, null));
+            
+            saveData(); 
+        }*/
     }
     
     private void saveData() {
@@ -33,6 +39,16 @@ public class BookingCollection implements Serializable {
 
     public ListInterface<Booking> getAllBookings() {
         return bookingList;
+    }
+    
+    public Booking getBookingById(String bookingId) {
+        for (int i = 0; i < bookingList.size(); i++) {
+            Booking b = bookingList.get(i);
+            if (b.getBookingId().equalsIgnoreCase(bookingId)) {
+                return b;
+            }
+        }
+        return null;
     }
     
     //specific for the cancel

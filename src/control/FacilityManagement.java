@@ -86,6 +86,10 @@ public class FacilityManagement {
         }
         return searchResults;
     }
+    
+    public Facility getFacilityById(String facilityId) {
+        return facilityCollection.getFacilityById(facilityId);
+    }
  
     public ListInterface<Facility> searchFacility(String id) {
         return searchFacility(id, "ALL");

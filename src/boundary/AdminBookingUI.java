@@ -53,7 +53,7 @@ public class AdminBookingUI extends javax.swing.JPanel {
                 }
                 
                 model.addRow(new Object[]{
-                    b.getBookingId(),
+                        b.getBookingId(),
                     b.getStudentId(),
                     b.getScheduleId(),
                     facilityName,   
@@ -194,23 +194,23 @@ public class AdminBookingUI extends javax.swing.JPanel {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(690, Short.MAX_VALUE)
+                .addContainerGap(437, Short.MAX_VALUE)
                 .addComponent(BackButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(CancelBookingButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(DeleteBookingButton)
-                .addGap(15, 15, 15))
+                .addGap(268, 268, 268))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(49, Short.MAX_VALUE)
+                .addContainerGap(44, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(CancelBookingButton)
                     .addComponent(DeleteBookingButton)
                     .addComponent(BackButton))
-                .addGap(24, 24, 24))
+                .addGap(29, 29, 29))
         );
 
         add(jPanel2, java.awt.BorderLayout.PAGE_END);

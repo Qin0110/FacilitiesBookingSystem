@@ -248,16 +248,11 @@ public class BookingUI extends javax.swing.JFrame {
             return;
         }
         
-        int row = ScheduleTable.getSelectedRow();
-        if (row != -1) {
-            String facilityId = ScheduleTable.getValueAt(row, 1).toString(); 
+        entity.Schedule selectedSchedule = scheduleManager.getScheduleById(scheduleId);
+        if (selectedSchedule != null) {
+            String facilityId = selectedSchedule.getFacilityId();
             
-            adt.ListInterface<entity.Facility> resultsList = facilityManager.searchFacility(facilityId);            
-
-            entity.Facility selectedFacility = null;
-            if (resultsList != null && resultsList.size() > 0) {
-                selectedFacility = resultsList.get(0); 
-            }
+            entity.Facility selectedFacility = facilityManager.getFacilityById(facilityId);
             
             if (selectedFacility != null &&
                     !selectedFacility.getFacilityId().toUpperCase().startsWith("Q") &&

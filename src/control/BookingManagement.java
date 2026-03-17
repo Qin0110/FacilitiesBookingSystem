@@ -68,6 +68,10 @@ public class BookingManagement {
         return bookingCollection.getBooking(bookingId, studentId, scheduleId);
     }
     
+    public Booking getBookingById(String bookingId){
+        return bookingCollection.getBookingById(bookingId);
+    }
+    
     
     // for admin kott
     public boolean removeBooking(String bookingId) {
@@ -78,6 +82,7 @@ public class BookingManagement {
         return bookingCollection.getAllBookings();
     }
     
+    //maybe could put in student
     public boolean validateMember(String studentId, String studentName) {
         Student s = studentManager.getStudentById(studentId);
         
@@ -85,5 +90,31 @@ public class BookingManagement {
             return true; 
         }
         return false; 
+    }
+    
+    
+    public boolean checkInStudent(String bookingId) {
+        Booking b = bookingCollection.getBookingById(bookingId); 
+        
+        if (b != null && b.getStatus().equals("Confirmed")) {
+            b.setArrivalTime(java.time.LocalDateTime.now());
+            b.setStatus("In Progress");
+            bookingCollection.updateBookingStatus(bookingId, "In Progress"); // Saves to .dat
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean checkOutStudent(String bookingId) {
+        Booking b = bookingCollection.getBookingById(bookingId); 
+        
+        if (b != null && b.getStatus().equals("In Progress")) {
+            b.setLeavingTime(java.time.LocalDateTime.now());
+            b.setStatus("Completed");
+            
+            bookingCollection.updateBookingStatus(bookingId, "Completed"); 
+            return true;
+        }
+        return false;
     }
 }
