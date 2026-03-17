@@ -138,4 +138,24 @@ public class SingleLinkedList<T> implements ListInterface<T>, Serializable{
         return curNode;
     }
     
+    @Override
+    public String toString(){
+        if (this.firstNode == null) {
+            return "[]";
+        }
+        else {
+            StringBuilder sb = new StringBuilder();
+            Node currentNode = this.firstNode;
+            sb.append("[");
+            while (currentNode != null){
+                sb.append(currentNode.data);
+                if (currentNode.next != null){
+                    sb.append(", ");
+                }
+                currentNode = currentNode.next;
+            }
+            sb.append("]");
+            return sb.toString();
+        }
+    }
 }
