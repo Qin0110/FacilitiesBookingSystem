@@ -51,7 +51,11 @@ public class StudentInAdminModeUI extends javax.swing.JPanel {
         javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
         model.setRowCount(0);
         
-        adt.ListInterface<entity.Student> searchResults = studentManager.searchStudent(id);
+        
+        Object selected = typeCB.getSelectedItem();
+        String programme = (selected != null) ? selected.toString() : "ALL";
+        
+        adt.ListInterface<entity.Student> searchResults = studentManager.searchStudentForTable(id,programme);
         
         for (int i = 0 ; i < searchResults.size() ; i++ ){
             entity.Student s = searchResults.get(i);

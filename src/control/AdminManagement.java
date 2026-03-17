@@ -1,29 +1,20 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package control;
-import adt.ArrayList;
+import adt.ArrayList; //not used here
+import adt.SingleLinkedList;
 import adt.ListInterface;
-import dao.AdminDAO;
 import entity.Admin;
 
-/**
- *
- * @author Lenovo
- */
+import dao.AdminCollection;
+
+
 public class AdminManagement {
     
     private ListInterface<Admin> adminList;
-    private AdminDAO adminDAO = new AdminDAO();
-
+    AdminCollection adminCollection = new AdminCollection();
     public AdminManagement() {
-        this.adminList = new ArrayList<>();
+        
     }
 
-    public AdminManagement(ListInterface<Admin> sharedList) {
-        this.adminList = sharedList;
-    }
 
     // ===============================
     // Add New Admin
@@ -32,24 +23,25 @@ public class AdminManagement {
 
         try {
             Admin newAdmin = new Admin(id, name, position, email, phoneNumber);
-            return adminDAO.addAdmin(newAdmin);
+            adminCollection.add(newAdmin);
         } catch (IllegalArgumentException e) {
-            return "INVALID_INPUT: " + e.getMessage();
+            return "ERROR: " + e.getMessage();
         }
+        return "TRUE";
     }
 
     // ===============================
     // Get All Admins
     // ===============================
-    public ArrayList<Admin> getAllAdmins() {
-        return adminDAO.getAllAdmin();
+    public ListInterface<Admin> getAllAdmins() {
+        return adminCollection.getAllAdmin();
     }
 
     // ===============================
     // Remove Admin
     // ===============================
     public boolean removeAdmin(String adminId) {
-        return adminDAO.deleteAdmin(adminId);
+        return adminCollection.remove(adminId);
     }
 
     // ===============================
@@ -60,25 +52,45 @@ public class AdminManagement {
         Admin updatedAdmin;
         try {
             updatedAdmin = new Admin(id, name, programme, email, phone);
+            adminCollection.set(updatedAdmin);
         } catch (IllegalArgumentException e) {
-            return "INVALID_INPUT: " + e.getMessage();
+            return "ERROR: " + e.getMessage();
         }
 
-        return adminDAO.updateAdmin(updatedAdmin);
+        return "TRUE";
     }
 
     // ===============================
     // Search Admin By ID
     // ===============================
-    public ArrayList<Admin> searchAdmin(String id) {
-        return adminDAO.getAdmin(id);
+//    public ListInterface<Admin> searchAdmin(String id) {
+//        return adminCollection.getAdminById(id);
+//    }
+    
+        
+    public ListInterface<Admin> searchAdminForTable(String id,String position) {
+        ListInterface<Admin> searchResults = new SingleLinkedList<>();
+        ListInterface<Admin> allAdmin = adminCollection.getAllAdmin();
+ 
+        for (int i = 0; i < allAdmin.size(); i++) {
+            Admin admin = allAdmin.get(i);
+ 
+            boolean matchesId   = admin.getAdminId().toLowerCase().contains(id.toLowerCase())
+                                || admin.getName().toLowerCase().contains(id.toLowerCase());
+            boolean matchesType = (position == null || position.equals("ALL") || admin.getPosition().equals(position));
+ 
+            if (matchesId && matchesType) {
+                searchResults.add(admin);
+            }
+        }
+        return searchResults;
     }
     
     public Admin getAdminById(String adminId) {
         for (int i = 0; i < adminList.size(); i++) {
-            Admin s = adminList.get(i);
-            if (s.getAdminId().equals(adminId)) {
-                return s; 
+            Admin admin = adminList.get(i);
+            if (admin.getAdminId().equals(adminId)) {
+                return admin; 
             }
         }
         return null; 

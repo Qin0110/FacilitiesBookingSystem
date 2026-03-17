@@ -48,7 +48,10 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
         javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
         model.setRowCount(0);
         
-        adt.ListInterface<entity.Admin> searchResults = adminManager.searchAdmin(id);
+        Object selected = typeCB.getSelectedItem();
+        String position = (selected != null) ? selected.toString() : "ALL";
+        
+        adt.ListInterface<entity.Admin> searchResults = adminManager.searchAdminForTable(id,position);
         
         for (int i = 0 ; i < searchResults.size() ; i++ ){
             entity.Admin s = searchResults.get(i);
@@ -152,7 +155,7 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
         jLabel1.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
         jLabel1.setText("ADMIN");
 
-        typeCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Facility Manager ", "Facility Assistant" }));
+        typeCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Facility Manager", "Facility Assistant" }));
         typeCB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 typeCBActionPerformed(evt);
@@ -299,7 +302,6 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
 
     private void typeCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeCBActionPerformed
         String id = adminSearchTF.getText().trim();
-
         loadTableData(id);
     }//GEN-LAST:event_typeCBActionPerformed
 

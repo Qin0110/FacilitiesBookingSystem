@@ -1,53 +1,47 @@
 package control;
-
-import adt.ArrayList;
+import adt.ArrayList; //not used here
+import adt.SingleLinkedList;
 import adt.ListInterface;
-import dao.StudentDAO;
 import entity.Student;
 
-/**
- * Controls the logic for managing students.
- */
+import dao.StudentCollection;
+
+
 public class StudentManagement {
-
+    
     private ListInterface<Student> studentList;
-    private StudentDAO studentDAO = new StudentDAO();
-
-    public StudentManagement() {    
-        //temporary change
-        //this.studentList = new ArrayList<>();
-        this.studentList = studentDAO.getAllStudents();
+    StudentCollection studentCollection = new StudentCollection();
+    public StudentManagement() {
+        
     }
 
-    public StudentManagement(ListInterface<Student> sharedList) {
-        this.studentList = sharedList;
-    }
 
     // ===============================
     // Add New Student
     // ===============================
-    public String addNewStudent(String id, String name, String programme, String email, String phone) {
+    public String addNewStudent(String id, String name, String programme, String email, String phoneNumber) {
 
         try {
-            Student newStudent = new Student(id, name, programme, email, phone);
-            return studentDAO.addStudent(newStudent);
+            Student newStudent = new Student(id, name, programme, email, phoneNumber);
+            studentCollection.add(newStudent);
         } catch (IllegalArgumentException e) {
-            return "INVALID_INPUT: " + e.getMessage();
+            return "ERROR: " + e.getMessage();
         }
+        return "TRUE";
     }
 
     // ===============================
     // Get All Students
     // ===============================
-    public ArrayList<Student> getAllStudents() {
-        return studentDAO.getAllStudents();
+    public ListInterface<Student> getAllStudents() {
+        return studentCollection.getAllStudent();
     }
 
     // ===============================
     // Remove Student
     // ===============================
     public boolean removeStudent(String studentId) {
-        return studentDAO.deleteStudent(studentId);
+        return studentCollection.remove(studentId);
     }
 
     // ===============================
@@ -58,27 +52,48 @@ public class StudentManagement {
         Student updatedStudent;
         try {
             updatedStudent = new Student(id, name, programme, email, phone);
+            studentCollection.set(updatedStudent);
         } catch (IllegalArgumentException e) {
-            return "INVALID_INPUT: " + e.getMessage();
+            return "ERROR: " + e.getMessage();
         }
 
-        return studentDAO.updateStudent(updatedStudent);
+        return "TRUE";
     }
 
     // ===============================
     // Search Student By ID
     // ===============================
-    public ArrayList<Student> searchStudent(String id) {
-        return studentDAO.getStudent(id);
+//    public ListInterface<Student> searchStudent(String id) {
+//        return studentCollection.getStudentById(id);
+//    }
+    
+        
+    public ListInterface<Student> searchStudentForTable(String id,String programme) {
+        ListInterface<Student> searchResults = new SingleLinkedList<>();
+        ListInterface<Student> allStudent = studentCollection.getAllStudent();
+ 
+        for (int i = 0; i < allStudent.size(); i++) {
+            Student student = allStudent.get(i);
+ 
+            boolean matchesId   = student.getStudentId().toLowerCase().contains(id.toLowerCase())
+                                || student.getName().toLowerCase().contains(id.toLowerCase());
+            boolean matchesType = (programme == null || programme.equals("ALL") || student.getProgramme().equals(programme));
+ 
+            if (matchesId && matchesType) {
+                searchResults.add(student);
+            }
+        }
+        return searchResults;
     }
     
     public Student getStudentById(String studentId) {
         for (int i = 0; i < studentList.size(); i++) {
-            Student s = studentList.get(i);
-            if (s.getStudentId().equals(studentId)) {
-                return s; 
+            Student student = studentList.get(i);
+            if (student.getStudentId().equals(studentId)) {
+                return student; 
             }
         }
         return null; 
     }
+    
 }
