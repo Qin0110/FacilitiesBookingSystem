@@ -142,7 +142,13 @@ public class MainMenu2 extends javax.swing.JFrame {
     }//GEN-LAST:event_adminBTActionPerformed
 
     private void studentBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_studentBTActionPerformed
-        studentUI.start();
+        //TEMPORARY FIX only..
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                studentUI.start(); 
+            }
+        }).start();
     }//GEN-LAST:event_studentBTActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
