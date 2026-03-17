@@ -19,6 +19,8 @@ public class TARUMTBookingSystem {
         ScheduleManagement scheduleManager = new ScheduleManagement();
         FacilityManagement facilityManager = new FacilityManagement();
         BookingManagement bookingManager = new BookingManagement(studentManager, scheduleManager);
+        System.out.println("The list type is: " + bookingManager.getAllBookings().getClass().getName());
+        System.out.println(bookingManager.getAllBookings());
         
         MainMenu2 mainMenu = new MainMenu2(adminManager, studentManager, bookingManager, facilityManager, scheduleManager);
         mainMenu.setVisible(true);

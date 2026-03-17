@@ -13,8 +13,10 @@ public class StudentManagement {
     private ListInterface<Student> studentList;
     private StudentDAO studentDAO = new StudentDAO();
 
-    public StudentManagement() {
-        this.studentList = new ArrayList<>();
+    public StudentManagement() {    
+        //temporary change
+        //this.studentList = new ArrayList<>();
+        this.studentList = studentDAO.getAllStudents();
     }
 
     public StudentManagement(ListInterface<Student> sharedList) {

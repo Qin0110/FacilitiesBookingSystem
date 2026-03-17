@@ -91,13 +91,17 @@ public class Booking implements Serializable {
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        
+        String arrivalStr = (arrivalTime != null) ? arrivalTime.format(formatter) : "Not Arrived";
+        String leavingStr = (leavingTime != null) ? leavingTime.format(formatter) : "Not Left";
+
         return String.format("Booking ID: %s | Student: %s | Schedule: %s | Arrival: %s | Leaving: %s | Status: %s | Approved By: %s", 
                 bookingId, 
                 studentId, 
                 scheduleId,
-                arrivalTime.format(formatter), 
-                leavingTime.format(formatter), 
+                arrivalStr, 
+                leavingStr, 
                 status, 
-                approvedBy);
+                approvedBy == null ? "N/A" : approvedBy);
     }
 }

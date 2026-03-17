@@ -4,26 +4,25 @@
  */
 package control;
 
-import adt.ArrayList;
 import adt.ListInterface;
+import dao.BookingCollection;
 import entity.Booking;
 import entity.Student;
 import entity.Schedule;
 
 
 public class BookingManagement {
-    private ListInterface<Booking> bookingList;
-
+    private BookingCollection bookingCollection;
     private StudentManagement studentManager;
     private ScheduleManagement scheduleManager;
     
-    private dao.BookingDAO bookingDAO = new dao.BookingDAO();
     
     public BookingManagement(){
+        this.bookingCollection = new BookingCollection(); 
     }
 
     public BookingManagement(StudentManagement studentManager, ScheduleManagement scheduleManager) {
-        this.bookingList = bookingDAO.getAllBookings();
+        this.bookingCollection = new BookingCollection();
         this.studentManager = studentManager;
         this.scheduleManager = scheduleManager;
     }
@@ -38,11 +37,12 @@ public class BookingManagement {
             return "INVALID_SCHEDULE";
 
         if (schedule.getAvailability().equalsIgnoreCase("Available")) {
-            String generateBookingId = bookingDAO.getLatestBookingId();
+            String generateBookingId = bookingCollection.getLatestBookingId();
             Booking newBooking = new Booking(generateBookingId, studentId, scheduleId, schedule.getStartingTime(), schedule.getEndingTime());
             newBooking.setStatus("Confirmed");
-            bookingList.add(newBooking);
-            bookingDAO.addBooking(newBooking);
+
+            
+            bookingCollection.add(newBooking);
             scheduleManager.updateScheduleStatus(scheduleId, "Booked");
               
             return "SUCCESS";
@@ -55,8 +55,7 @@ public class BookingManagement {
         Booking targetBooking = getBooking(bookingId, studentId, scheduleId);
         
         if (targetBooking != null && targetBooking.getStatus().equals("Confirmed")) {
-            targetBooking.setStatus("Cancelled");
-            bookingDAO.updateBookingStatus(targetBooking.getBookingId(), "Cancelled");
+            bookingCollection.updateBookingStatus(bookingId, "Cancelled");
             
             scheduleManager.updateScheduleStatus(scheduleId, "Available");
             
@@ -66,33 +65,17 @@ public class BookingManagement {
     }
 
     public Booking getBooking(String bookingId, String studentId, String scheduleId) {
-        for (int i = 0; i < bookingList.size(); i++) {
-            Booking b = bookingList.get(i);
-            if (b.getBookingId().equals(bookingId) && b.getStudentId().equals(studentId) && b.getScheduleId().equals(scheduleId)) {
-                return b;
-            }
-        }
-        return null;
+        return bookingCollection.getBooking(bookingId, studentId, scheduleId);
     }
     
     
     // for admin kott
     public boolean removeBooking(String bookingId) {
-        boolean success = bookingDAO.deleteBooking(bookingId);
-        
-        if (success) {
-            for (int i = 0; i < bookingList.size(); i++) {
-                if (bookingList.get(i).getBookingId().equals(bookingId)) {
-                    bookingList.remove(i);
-                    break;
-                }
-            }
-        }
-        return success;
+        return bookingCollection.remove(bookingId);
     }
     
     public ListInterface<Booking> getAllBookings() {
-        return this.bookingList;
+        return bookingCollection.getAllBookings();
     }
     
     public boolean validateMember(String studentId, String studentName) {
