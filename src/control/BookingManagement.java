@@ -96,7 +96,7 @@ public class BookingManagement {
     public boolean checkInStudent(String bookingId) {
         Booking b = bookingCollection.getBookingById(bookingId); 
         
-        if (b != null && b.getStatus().equals("Confirmed")) {
+        if (b != null && b.getStatus().equals("Pending")) {
             b.setArrivalTime(java.time.LocalDateTime.now());
             b.setStatus("In Progress");
             bookingCollection.updateBookingStatus(bookingId, "In Progress"); // Saves to .dat

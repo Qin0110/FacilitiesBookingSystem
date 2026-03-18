@@ -44,6 +44,7 @@ public class AdminBookingUI extends javax.swing.JPanel {
                 String schedId = b.getScheduleId();
                 entity.Schedule s = scheduleManager.getScheduleById(schedId);
                 String facilityName = "Unknown";
+                java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
                 
                 if (s != null) {
                     adt.ListInterface<entity.Facility> resultsList = facilityManager.searchFacility(s.getFacilityId());
@@ -58,8 +59,8 @@ public class AdminBookingUI extends javax.swing.JPanel {
                     b.getScheduleId(),
                     facilityName,   
                     b.getApprovedBy() == null ? "N/A" : b.getApprovedBy(),
-                    b.getArrivalTime() == null ? "Not Arrived" : b.getArrivalTime(),
-                    b.getLeavingTime() == null ? "Not Left" : b.getLeavingTime(),
+                    b.getArrivalTime() == null ? "Not Arrived" : b.getArrivalTime().format(formatter),
+                    b.getLeavingTime() == null ? "Not Left" : b.getLeavingTime().format(formatter),
                     b.getStatus()
                 });
             }
@@ -87,6 +88,8 @@ public class AdminBookingUI extends javax.swing.JPanel {
         CancelBookingButton = new javax.swing.JButton();
         DeleteBookingButton = new javax.swing.JButton();
         BackButton = new javax.swing.JButton();
+        CheckInButton = new javax.swing.JButton();
+        CheckOutButton = new javax.swing.JButton();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -189,28 +192,54 @@ public class AdminBookingUI extends javax.swing.JPanel {
             }
         });
 
+        CheckInButton.setText("Check In");
+        CheckInButton.setMaximumSize(new java.awt.Dimension(114, 27));
+        CheckInButton.setMinimumSize(new java.awt.Dimension(114, 27));
+        CheckInButton.setPreferredSize(new java.awt.Dimension(114, 27));
+        CheckInButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CheckInButtonActionPerformed(evt);
+            }
+        });
+
+        CheckOutButton.setText("Check Out");
+        CheckOutButton.setMaximumSize(new java.awt.Dimension(114, 27));
+        CheckOutButton.setMinimumSize(new java.awt.Dimension(114, 27));
+        CheckOutButton.setPreferredSize(new java.awt.Dimension(114, 27));
+        CheckOutButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CheckOutButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(437, Short.MAX_VALUE)
+                .addContainerGap(423, Short.MAX_VALUE)
                 .addComponent(BackButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(CancelBookingButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(DeleteBookingButton)
-                .addGap(268, 268, 268))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(CheckInButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(CheckOutButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(44, Short.MAX_VALUE)
+                .addContainerGap(38, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(CancelBookingButton)
                     .addComponent(DeleteBookingButton)
-                    .addComponent(BackButton))
-                .addGap(29, 29, 29))
+                    .addComponent(BackButton)
+                    .addComponent(CheckInButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(CheckOutButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(35, 35, 35))
         );
 
         add(jPanel2, java.awt.BorderLayout.PAGE_END);
@@ -302,11 +331,57 @@ public class AdminBookingUI extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_StudentIdTxtFieldActionPerformed
 
+    private void CheckInButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CheckInButtonActionPerformed
+        int row = AdminBookingTable.getSelectedRow();
+    
+        if (row == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Please select a booking from the table first.");
+            return;
+        }
+
+        String bookingId = AdminBookingTable.getValueAt(row, 0).toString();
+
+        if (bookingManager.checkInStudent(bookingId)) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Success! Student has been checked in.");
+
+            loadBookingTable(StudentIdTxtField.getText().trim()); 
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Check-In Failed. Make sure the booking status is 'Pending'.", 
+                "Error", 
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_CheckInButtonActionPerformed
+
+    private void CheckOutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CheckOutButtonActionPerformed
+        int row = AdminBookingTable.getSelectedRow();
+    
+        if (row == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Please select a booking from the table first.");
+            return;
+        }
+
+        String bookingId = AdminBookingTable.getValueAt(row, 0).toString();
+
+        if (bookingManager.checkOutStudent(bookingId)) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Success! Student has been checked out.");
+
+            loadBookingTable(StudentIdTxtField.getText().trim()); 
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Check-Out Failed. Make sure the booking status is currently 'In Progress'.", 
+                "Error", 
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_CheckOutButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable AdminBookingTable;
     private javax.swing.JButton BackButton;
     private javax.swing.JButton CancelBookingButton;
+    private javax.swing.JButton CheckInButton;
+    private javax.swing.JButton CheckOutButton;
     private javax.swing.JButton DeleteBookingButton;
     private javax.swing.JButton SearchBooking1;
     private javax.swing.JTextField StudentIdTxtField;
