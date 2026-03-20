@@ -69,22 +69,24 @@ public class FacilityManagement {
         return "Error: Facility not found.";
     }
  
-    public ListInterface<Facility> searchFacility(String id, String type) {
-        ListInterface<Facility> searchResults = new SingleLinkedList<>();
-        ListInterface<Facility> allFacilities = facilityCollection.getAllFacilities();
- 
-        for (int i = 0; i < allFacilities.size(); i++) {
-            Facility f = allFacilities.get(i);
- 
-            boolean matchesId   = f.getFacilityId().toLowerCase().contains(id.toLowerCase())
-                                || f.getName().toLowerCase().contains(id.toLowerCase());
-            boolean matchesType = (type == null || type.equals("ALL") || f.getType().equals(type));
- 
-            if (matchesId && matchesType) {
-                searchResults.add(f);
+    public ListInterface<Facility> searchFacility(String keyword, String type) {
+        ListInterface<Facility> results = new SingleLinkedList<>();
+        ListInterface<Facility> facilityList = facilityCollection.getAllFacilities();
+
+        for (int i = 0; i < facilityList.size(); i++) {     
+            Facility f = facilityList.get(i);
+
+            boolean matchesKeyword = f.getFacilityId().toLowerCase().contains(keyword.toLowerCase())
+                                  || f.getName().toLowerCase().contains(keyword.toLowerCase());
+
+            boolean matchesType = (type == null || type.equals("ALL")
+                                  || f.getType().equals(type));
+
+            if (matchesKeyword && matchesType) {
+                results.add(f);                       
             }
         }
-        return searchResults;
+        return results; 
     }
     
     public Facility getFacilityById(String facilityId) {
@@ -93,6 +95,48 @@ public class FacilityManagement {
  
     public ListInterface<Facility> searchFacility(String id) {
         return searchFacility(id, "ALL");
+    }
+    
+    public ListInterface<Facility> sortFacilities(String sortBy, String order) {
+        ListInterface<Facility> list = facilityCollection.getAllFacilities();
+        int n = list.size();
+
+        for (int i = 0; i < n - 1; i++) {
+            int indexOfSmallest = i;
+
+            for (int j = i + 1; j < n; j++) {
+                int cmp = compareBy(list.get(j), list.get(indexOfSmallest), sortBy);
+
+                if (order.equalsIgnoreCase("desc")) cmp = -cmp;
+
+                if (cmp < 0) {
+                    indexOfSmallest = j;
+                }
+            }
+
+            if (indexOfSmallest != i) {
+                Facility temp = list.get(i);
+                list.set(i,              list.get(indexOfSmallest));
+                list.set(indexOfSmallest, temp);
+            }
+        }
+        return list;
+    }
+    private int compareBy(Facility a, Facility b, String attribute) {
+        switch (attribute.toLowerCase()) {
+            case "id":       
+                return a.getFacilityId().compareToIgnoreCase(b.getFacilityId());
+            case "name":     
+                return a.getName().compareToIgnoreCase(b.getName());
+            case "type":     
+                return a.getType().compareToIgnoreCase(b.getType());
+            case "location": 
+                return a.getLocation().compareToIgnoreCase(b.getLocation());
+            case "capacity": 
+                return Integer.compare(a.getMaxCapacity(), b.getMaxCapacity());
+            default:         
+                return 0;
+        }
     }
 }
  

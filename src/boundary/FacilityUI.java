@@ -21,18 +21,22 @@ public class FacilityUI extends javax.swing.JPanel {
     }
     
     private void loadTableData() {
-        javax.swing.table.DefaultTableModel model =
-                (javax.swing.table.DefaultTableModel) jTable1.getModel();
+        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
         model.setRowCount(0);
  
         adt.ListInterface<entity.Facility> facilities = facilityManager.getAllFacilities();
  
         String currentOption = null;
+        String sortOption = null;
+        
         Object selected = typeCB.getSelectedItem();
         if (selected != null) {
             String selStr = selected.toString().trim();
-            if (!selStr.isEmpty()) currentOption = selStr;
+            if (!selStr.isEmpty()) 
+                currentOption = selStr;
         }
+        
+        sortOption = sortCB.getSelectedItem().toString().trim();
  
         typeCB.removeAllItems();
         typeCB.addItem("ALL");
@@ -60,17 +64,29 @@ public class FacilityUI extends javax.swing.JPanel {
             if (!exists) typeCB.addItem(type);
         }
  
-        if (currentOption == null) typeCB.setSelectedItem("ALL");
-        else                       typeCB.setSelectedItem(currentOption);
+        if (currentOption == null) 
+            typeCB.setSelectedItem("ALL");
+        else                       
+            typeCB.setSelectedItem(currentOption);
+        
+        
+        if(sortOption == null)
+            sortCB.setSelectedItem("ID");
+        else
+            sortCB.setSelectedItem(sortOption);
     }
  
     private void loadTableData(String id) {
-        javax.swing.table.DefaultTableModel model =
-                (javax.swing.table.DefaultTableModel) jTable1.getModel();
+        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
         model.setRowCount(0);
  
         Object selected = typeCB.getSelectedItem();
         String type = (selected != null) ? selected.toString() : "ALL";
+        
+        Object selectedSort = sortCB.getSelectedItem();
+        String sortBy = (selectedSort != null) ? selectedSort.toString() : "ID";
+        
+        facilityManager.sortFacilities(sortBy, "asc");
  
         adt.ListInterface<entity.Facility> searchResults = facilityManager.searchFacility(id, type);
  
@@ -100,6 +116,7 @@ public class FacilityUI extends javax.swing.JPanel {
         facilitySearchTF = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         typeCB = new javax.swing.JComboBox<>();
+        sortCB = new javax.swing.JComboBox<>();
 
         jButton1.setText("Add Facility");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -169,6 +186,13 @@ public class FacilityUI extends javax.swing.JPanel {
             }
         });
 
+        sortCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ID", "Name", "Type", "Location", "Capacity" }));
+        sortCB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sortCBActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -181,14 +205,16 @@ public class FacilityUI extends javax.swing.JPanel {
                     .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 639, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 639, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(typeCB, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(facilitySearchTF)))
+                        .addComponent(typeCB, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(facilitySearchTF, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(sortCB, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -199,7 +225,8 @@ public class FacilityUI extends javax.swing.JPanel {
                 .addGap(6, 6, 6)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(facilitySearchTF, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(typeCB, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(typeCB, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(sortCB, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -217,7 +244,7 @@ public class FacilityUI extends javax.swing.JPanel {
         FacilityDialog dialog = new FacilityDialog(null, true, this.facilityManager);
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
-        loadTableData();
+        loadTableData(facilitySearchTF.getText().trim());
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -241,7 +268,8 @@ public class FacilityUI extends javax.swing.JPanel {
  
             if (message.equals("Facility Successfully Removed")) {
                 javax.swing.JOptionPane.showMessageDialog(this, message);
-                loadTableData();
+                loadTableData(facilitySearchTF.getText().trim());
+
             } else {
                 javax.swing.JOptionPane.showMessageDialog(this, message, "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
             }
@@ -270,7 +298,8 @@ public class FacilityUI extends javax.swing.JPanel {
         FacilityDialog dialog = new FacilityDialog(null, true, this.facilityManager, selectedFacility);
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
-        loadTableData();
+        loadTableData(facilitySearchTF.getText().trim());
+
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void facilitySearchTFKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_facilitySearchTFKeyPressed
@@ -300,6 +329,11 @@ public class FacilityUI extends javax.swing.JPanel {
         loadTableData(id);
     }//GEN-LAST:event_typeCBActionPerformed
 
+    private void sortCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortCBActionPerformed
+        String id = facilitySearchTF.getText().trim();
+        loadTableData(id);
+    }//GEN-LAST:event_sortCBActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField facilitySearchTF;
@@ -309,6 +343,7 @@ public class FacilityUI extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JComboBox<String> sortCB;
     private javax.swing.JComboBox<String> typeCB;
     // End of variables declaration//GEN-END:variables
 }
