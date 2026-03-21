@@ -1,0 +1,183 @@
+package control;
+
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import entity.Schedule;
+import entity.ScheduleSession;
+import adt.*;
+import java.time.LocalTime;
+import java.io.Serializable;
+import CollectionADT.ScheduleCollection;
+
+public class ScheduleControl implements Serializable{    
+    // Change to LinkedList
+    private ListInterface<Schedule> schedule;
+    private ScheduleCollection scheduleDAO;
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    
+    // Temporary
+    private String[] facilities = {
+        "Badminton Court 1",
+        "Badminton Court 2",
+        "Swimming Pool 1",
+        "Swimming Pool 2",
+        "Pickleball Court 1",
+        "Pickleball Court 2"
+    };
+    
+    // Constructor
+    public ScheduleControl(){
+        this.scheduleDAO = new ScheduleCollection();
+        this.schedule = scheduleDAO.retrieveSchedules();
+        
+        if (this.schedule == null) {
+            System.out.println("No save file found. Start from fresh.");
+            this.schedule = new SingleLinkedList<>();
+        }
+        
+        this.verifyAndPatchUpcomingSchedules();
+    }
+    
+    private void verifyAndPatchUpcomingSchedules(){
+        boolean dataWasAdded = false;
+        LocalDate today = LocalDate.now();
+        
+        for (int dayOffset = 0; dayOffset < 3; dayOffset++) {
+            LocalDate targetDate = today.plusDays(dayOffset);
+            String targetDateString = targetDate.format(DATE_FORMATTER);
+            
+            for (int i = 0; i < facilities.length; i++) {
+                String currentFacility = facilities[i];
+                boolean scheduleExists = false;
+                
+                for (int j = 0; j < this.schedule.size(); j++) {
+                    Schedule existingSchedule = schedule.get(j);
+                    if (existingSchedule.getFacility().equals(currentFacility) && existingSchedule.getDate().equals(targetDateString)) {
+                        scheduleExists = true;
+                        break;
+                    }
+                }
+                
+                if (!scheduleExists) {
+                    Schedule newSchedule = new Schedule(currentFacility, targetDate);
+                    newSchedule.setSessions(this.divideSession(newSchedule));
+                    schedule.add(newSchedule);
+                    dataWasAdded = true;
+                    System.out.println("Generating missing schedule: " + currentFacility + " for" + targetDateString);
+                }
+            }
+        }
+        
+        if (dataWasAdded) {
+            scheduleDAO.saveSchedules(this.schedule);
+        }
+    }
+    
+    private ListInterface<ScheduleSession> divideSession(Schedule schedule){
+        ListInterface<ScheduleSession> sessions = new SingleLinkedList<>();
+        
+        LocalTime currentTime = schedule.getTime()[0];
+        while(currentTime.isBefore(schedule.getTime()[1])){
+            LocalTime nextTime = currentTime.plusHours(1);
+            String sessionString = schedule.convertTime(currentTime) + " - " + schedule.convertTime(nextTime);
+            
+            ScheduleSession newSession = new ScheduleSession(sessionString, ScheduleSession.STATUS_AVAILABLE);
+            
+            sessions.add(newSession);
+            currentTime = nextTime;
+        }
+        return sessions; 
+    }
+    
+    public void displayAllSchedule(){
+        for (int i = 0; i < schedule.size(); i++) {
+             System.out.println(schedule.get(i));
+        }
+    }
+    
+    public ListInterface<Schedule> getAllSchedule(){
+        return this.schedule;
+    }
+    
+    public void initializeDefaultSchedules(){
+        try {
+            LocalDate today = LocalDate.now();
+            for (int dayOffset = 0; dayOffset < 3; dayOffset++) {
+                LocalDate targetDate = today.plusDays(dayOffset);
+                for (int i = 0; i < facilities.length; i++) {
+                    Schedule newSchedule = new Schedule(facilities[i], targetDate);
+                    newSchedule.setSessions(divideSession(newSchedule));
+                    schedule.add(newSchedule);
+                }
+            }
+        } catch(Exception e) {
+            System.out.println("Failed to initialize default schedule. Error: " + e);
+        }
+        
+    }
+    
+    public String getAllSchedulesText(){
+        return schedule.toString();
+    }
+    
+    public void deleteFacilititySchedule(int index){
+        try {
+            if(schedule.remove(index)){
+                System.out.println("Deletion Complete.");
+                scheduleDAO.saveSchedules(this.schedule);
+            } else {
+                System.out.println("Deletion Failed.");
+            }
+        } catch(Exception e) {
+            System.out.println("Failed to perform deletion. Error: " + e);
+        }
+    }
+    
+    public boolean deleteScheduleSession(int facilityIndex, int timeIndex){
+        boolean indicator = false;
+        try {
+            indicator = schedule.get(facilityIndex).getSessions().remove(timeIndex);
+            scheduleDAO.saveSchedules(this.schedule);
+        } catch(Exception e){
+            System.out.println("Failed to delete schedule session via index number. Error: " + e);
+        }
+        return indicator;
+    }
+    
+    public boolean deleteScheduleSession(String facility, int timeIndex){
+        boolean indicator = false;
+        try {
+            for (int i = 0; i < schedule.size(); i++) {
+                if (schedule.get(i).getFacility().equals(facility)) {
+                    indicator = schedule.get(i).getSessions().remove(timeIndex);
+                    scheduleDAO.saveSchedules(this.schedule);
+                    break;
+                }
+            }
+        } catch(Exception e){
+            System.out.println("Failed to delete schedule session via facility name. Error: " + e);
+        }
+        return indicator;
+    }
+    
+    // Use case, compare string of the time .equals(String time), get the time index
+    public void modifyScheduleStatus(int index, int time_index, String status){
+        try {
+            schedule.get(index).getSessions().get(time_index).setAvailability(status);
+            scheduleDAO.saveSchedules(this.schedule);
+        } catch (Exception e){
+            System.out.println("Failed to modify. Error: " + e);
+        }
+    }
+    
+    // Use when add new facility
+    public void addNewSchedule(String facility){
+        Schedule newSchedule = new Schedule(facility);
+        try {
+            newSchedule.setSessions(this.divideSession(newSchedule));
+            schedule.add(newSchedule);
+        } catch(Exception e) {
+            System.out.println("Failed to add new schedule. Error: " + e);
+        }
+    }
+}
