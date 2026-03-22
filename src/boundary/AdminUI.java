@@ -215,7 +215,12 @@ public class AdminUI extends javax.swing.JPanel {
     }//GEN-LAST:event_reportBTActionPerformed
 
     private void logoutBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBTActionPerformed
-        javax.swing.SwingUtilities.getWindowAncestor(this).dispose();
+        java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
+
+        if (window instanceof MainMenu) {
+            MainMenu mainMenu = (MainMenu) window;
+            mainMenu.backToMenu();
+        }
     }//GEN-LAST:event_logoutBTActionPerformed
 
     private void adminManagementBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminManagementBTActionPerformed

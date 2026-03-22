@@ -42,9 +42,12 @@ public class MainMenu extends javax.swing.JFrame {
         this.scheduleManager = scheduleManager;
         
     }
-
     
-    
+    public void backToMenu() {
+        MainMenu newMenu = new MainMenu(adminManager, studentManager, bookingManager, facilityManager, scheduleManager);
+        newMenu.setVisible(true);
+        this.dispose();
+    }
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -134,16 +137,15 @@ public class MainMenu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void adminBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminBTActionPerformed
-       AdminUI adminUI67 = new AdminUI(adminManager, studentManager, bookingManager, facilityManager, scheduleManager);
-
-        this.setContentPane(adminUI67);
-        this.revalidate();
-        this.repaint();
+       AdminUI adminUI = new AdminUI(adminManager, studentManager, bookingManager, facilityManager, scheduleManager);
+       this.setContentPane(adminUI);
+       this.revalidate();
+       this.repaint();
     }//GEN-LAST:event_adminBTActionPerformed
 
     private void studentBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_studentBTActionPerformed
-        StudentUI studentUI66 = new StudentUI(bookingManager, scheduleManager, facilityManager);
-        this.setContentPane(studentUI66);
+        StudentUI studentUI = new StudentUI(bookingManager, scheduleManager, facilityManager);
+        this.setContentPane(studentUI);
         this.revalidate();
         this.repaint();
     }//GEN-LAST:event_studentBTActionPerformed

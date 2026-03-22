@@ -177,7 +177,12 @@ public class StudentUI extends javax.swing.JPanel {
     }//GEN-LAST:event_viewBookingButtonActionPerformed
 
     private void logoutBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBTActionPerformed
-        // TODO add your handling code here:
+        java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
+
+        if (window instanceof MainMenu) {
+            MainMenu mainMenu = (MainMenu) window;
+            mainMenu.backToMenu();
+        }
     }//GEN-LAST:event_logoutBTActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
