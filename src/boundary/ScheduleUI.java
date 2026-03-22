@@ -72,7 +72,7 @@ public class ScheduleUI extends javax.swing.JFrame {
             
             // Only add rows if the schedule's date matches the dropdown date!
             if (currentSchedule.getDate().equals(targetDate)) {
-                String facilityName = currentSchedule.getFacility();
+                String facilityName = currentSchedule.getFacility().getName();
                 ListInterface<ScheduleSession> sessions = currentSchedule.getSessions();
                 
                 // Note: I changed this to j = 0 so it doesn't skip your 08:00 session!
@@ -358,7 +358,7 @@ class GroupBorderRenderer extends DefaultTableCellRenderer {
     private int findScheduleIndex(String facilityName, String date) {
         for (int i = 0; i < allSchedule.size(); i++) {
             Schedule s = allSchedule.get(i);
-            if (s.getFacility().equals(facilityName) && s.getDate().equals(date)) {
+            if (s.getFacility().getName().equals(facilityName) && s.getDate().equals(date)) {
                 return i;
             }
         }

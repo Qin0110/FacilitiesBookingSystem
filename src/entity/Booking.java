@@ -9,22 +9,27 @@ public class Booking implements Serializable {
     
     private String bookingId;
     private String studentId;    
-    private String scheduleId;   
+//    private String scheduleId;
     private String approvedBy;   
-    
+    private Schedule schedule;
     
     private LocalDateTime arrivalTime;
     private LocalDateTime leavingTime;
-    private String status;     
+    private String status;
+    
+    private String bookingDate;
+    private String bookingSession;
 
-    public Booking(String bookingId, String studentId, String scheduleId, LocalDateTime arrivalTime, LocalDateTime leavingTime) {
+    public Booking(String bookingId, String studentId, Schedule schedule, int sessionIndex, LocalDateTime arrivalTime, LocalDateTime leavingTime) {
         this.bookingId = bookingId;
         this.studentId = studentId;
-        this.scheduleId = scheduleId;
+        this.schedule = schedule;
         this.arrivalTime = arrivalTime;
         this.leavingTime = leavingTime;
         this.status = "Pending";
         this.approvedBy = "N/A"; 
+        this.bookingDate = schedule.getDate();
+        this.bookingSession = schedule.getSessions().get(sessionIndex).getSession();
     }
 
     public String getBookingId() { 
@@ -35,8 +40,8 @@ public class Booking implements Serializable {
         return studentId; 
     }
     
-    public String getScheduleId() {
-        return scheduleId; 
+    public String getSchedule() {
+        return this.bookingDate  + " " + this.bookingSession; 
     }
     
     public LocalDateTime getArrivalTime() {
@@ -78,14 +83,15 @@ public class Booking implements Serializable {
         if (obj == null || getClass() != obj.getClass()) return false;
         Booking booking = (Booking) obj;
         // The booking is only considered a duplicate if ALL THREE keys match exactly
-        return bookingId.equals(booking.bookingId) &&
-               studentId.equals(booking.studentId) &&
-               scheduleId.equals(booking.scheduleId);
+        return this.bookingId.equals(booking.bookingId) &&
+               this.studentId.equals(booking.studentId) &&
+               this.bookingSession.equals(booking.bookingSession) && // Schedule ID to booking session + booking Date
+               this.bookingDate.equals(booking.bookingDate); // Facility name no need (?) since passed in Schedule object contains facility
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(bookingId, studentId, scheduleId);
+        return Objects.hash(bookingId, studentId, this.bookingDate + " " + this.bookingSession);
     }
 
     @Override
@@ -98,7 +104,7 @@ public class Booking implements Serializable {
         return String.format("Booking ID: %s | Student: %s | Schedule: %s | Arrival: %s | Leaving: %s | Status: %s | Approved By: %s", 
                 bookingId, 
                 studentId, 
-                scheduleId,
+                this.bookingDate + " " + this.bookingSession,
                 arrivalStr, 
                 leavingStr, 
                 status, 

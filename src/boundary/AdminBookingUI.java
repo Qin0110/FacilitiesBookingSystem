@@ -1,15 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
 package boundary;
 import control.BookingManagement;
 import control.FacilityManagement;
-import control.ScheduleManagement;
-/**
- *
- * @author user
- */
+import control.ScheduleControl;
+
 public class AdminBookingUI extends javax.swing.JPanel {
 
     /**
@@ -17,10 +10,10 @@ public class AdminBookingUI extends javax.swing.JPanel {
      */
     
     private BookingManagement bookingManager;
-    private ScheduleManagement scheduleManager;
+    private ScheduleControl scheduleManager;
     private FacilityManagement facilityManager;
     
-    public AdminBookingUI(BookingManagement bm, ScheduleManagement sm, FacilityManagement fm) {
+    public AdminBookingUI(BookingManagement bm, ScheduleControl sm, FacilityManagement fm) {
         initComponents(); 
         
         this.bookingManager = bm;

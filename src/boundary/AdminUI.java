@@ -6,7 +6,7 @@ package boundary;
 import control.BookingManagement;
 import control.StudentManagement; 
 import control.FacilityManagement;
-import control.ScheduleManagement;
+import control.ScheduleControl;
 import control.AdminManagement;
 /**
  *
@@ -19,11 +19,11 @@ public class AdminUI extends javax.swing.JPanel {
     private AdminManagement adminManager;
     private BookingManagement bookingManager;
     private FacilityManagement facilityManager;
-    private ScheduleManagement scheduleManager;
+    private ScheduleControl scheduleManager;
     /**
      * Creates new form AdminUI67
      */
-    public AdminUI(AdminManagement adminControl, StudentManagement studentControl, BookingManagement bookingControl, FacilityManagement facilityControl, ScheduleManagement scheduleControl) {
+    public AdminUI(AdminManagement adminControl, StudentManagement studentControl, BookingManagement bookingControl, FacilityManagement facilityControl, ScheduleControl scheduleControl) {
         this.studentManager = studentControl;
         this.adminManager = adminControl;
         this.bookingManager = bookingControl;
