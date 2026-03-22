@@ -1,28 +1,23 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package boundary;
 
 import control.BookingManagement;
+
 /**
  *
  * @author user
  */
-public class BookingHistoryAndCancel extends javax.swing.JFrame {
-
-    /**
-     * Creates new form CancelBookingUI
-     */
-    
-    private BookingManagement bookingManager;
+public class BookingHistoryAndCancel extends javax.swing.JPanel {
+private BookingManagement bookingManager;
     private control.ScheduleManagement scheduleManager;
     
     public BookingHistoryAndCancel(BookingManagement bookingManager, control.ScheduleManagement scheduleManager) {
         initComponents();
         this.bookingManager = bookingManager;
         this.scheduleManager = scheduleManager;
-        setLocationRelativeTo(null); 
     }
     
     private void loadBookingTable(String targetStudentId) {
@@ -77,13 +72,9 @@ public class BookingHistoryAndCancel extends javax.swing.JFrame {
         BackButton = new javax.swing.JButton();
         CancelBookingButton = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(800, 500));
-
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Booking History And Booking Cancelation");
-        getContentPane().add(jLabel1, java.awt.BorderLayout.NORTH);
 
         jPanel1.setMinimumSize(new java.awt.Dimension(200, 200));
 
@@ -128,8 +119,6 @@ public class BookingHistoryAndCancel extends javax.swing.JFrame {
                 .addContainerGap(141, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel1, java.awt.BorderLayout.LINE_START);
-
         BookingTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -142,8 +131,6 @@ public class BookingHistoryAndCancel extends javax.swing.JFrame {
             }
         ));
         jScrollPane1.setViewportView(BookingTable);
-
-        getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
         BackButton.setText("Back");
         BackButton.addActionListener(new java.awt.event.ActionListener() {
@@ -180,24 +167,55 @@ public class BookingHistoryAndCancel extends javax.swing.JFrame {
                 .addGap(27, 27, 27))
         );
 
-        getContentPane().add(jPanel2, java.awt.BorderLayout.PAGE_END);
-
-        pack();
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 872, Short.MAX_VALUE)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 872, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(0, 0, 0)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 557, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGap(0, 0, Short.MAX_VALUE)))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 436, Short.MAX_VALUE)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jLabel1)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+        );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void StudentIdTxtFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StudentIdTxtFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_StudentIdTxtFieldActionPerformed
 
     private void SearchBookingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchBookingActionPerformed
         String studentId = StudentIdTxtField.getText().trim();
- 
+
         if (studentId.isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(this, "Please enter your Student ID first!");
             return;
         }
-        
+
         loadBookingTable(studentId);
     }//GEN-LAST:event_SearchBookingActionPerformed
 
     private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
-        this.dispose();
+        this.setVisible(false);
     }//GEN-LAST:event_BackButtonActionPerformed
 
     private void CancelBookingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelBookingButtonActionPerformed
@@ -206,41 +224,34 @@ public class BookingHistoryAndCancel extends javax.swing.JFrame {
             javax.swing.JOptionPane.showMessageDialog(this, "Please select a booking to cancel!");
             return;
         }
-        
+
         String bookingId = BookingTable.getValueAt(row, 0).toString();
         String scheduleId = BookingTable.getValueAt(row, 1).toString();
-        String currentStatus = BookingTable.getValueAt(row, 3).toString(); 
-        String studentId = StudentIdTxtField.getText().trim(); 
+        String currentStatus = BookingTable.getValueAt(row, 3).toString();
+        String studentId = StudentIdTxtField.getText().trim();
 
         if (currentStatus.equals("Cancelled")) {
             javax.swing.JOptionPane.showMessageDialog(this, "This booking is already cancelled!");
             return;
         }
 
-        int choice = javax.swing.JOptionPane.showConfirmDialog(this, 
-                "Are you sure you want to cancel Booking " + bookingId + "?", 
-                "Confirm Cancellation", 
-                javax.swing.JOptionPane.YES_NO_OPTION);
-                
+        int choice = javax.swing.JOptionPane.showConfirmDialog(this,
+            "Are you sure you want to cancel Booking " + bookingId + "?",
+            "Confirm Cancellation",
+            javax.swing.JOptionPane.YES_NO_OPTION);
+
         if (choice == javax.swing.JOptionPane.YES_OPTION) {
             boolean success = bookingManager.cancelBooking(bookingId, studentId, scheduleId);
-            
+
             if (success) {
                 javax.swing.JOptionPane.showMessageDialog(this, "Booking Cancelled Successfully.");
-                loadBookingTable(studentId); 
+                loadBookingTable(studentId);
             } else {
                 javax.swing.JOptionPane.showMessageDialog(this, "Error: Could not cancel booking.");
             }
         }
     }//GEN-LAST:event_CancelBookingButtonActionPerformed
 
-    private void StudentIdTxtFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StudentIdTxtFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_StudentIdTxtFieldActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BackButton;

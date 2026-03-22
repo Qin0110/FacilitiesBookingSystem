@@ -14,7 +14,7 @@ public class StudentManagement {
     public StudentManagement() {
         
     }
-
+    
 
     // ===============================
     // Add New Student
@@ -87,13 +87,7 @@ public class StudentManagement {
     }
     
     public Student getStudentById(String studentId) {
-        for (int i = 0; i < studentList.size(); i++) {
-            Student student = studentList.get(i);
-            if (student.getStudentId().equals(studentId)) {
-                return student; 
-            }
-        }
-        return null; 
+            return studentCollection.getStudentById(studentId);
     }
     
 }

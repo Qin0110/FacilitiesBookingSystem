@@ -165,15 +165,15 @@ public class StudentUI extends javax.swing.JPanel {
     }//GEN-LAST:event_viewBTActionPerformed
 
     private void makeBookingBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_makeBookingBTActionPerformed
-        new boundary.BookingUI(bookingManager, scheduleManager, facilityManager).setVisible(true);
+        //new boundary.BookingUI(bookingManager, scheduleManager, facilityManager).setVisible(true);
     }//GEN-LAST:event_makeBookingBTActionPerformed
 
     private void cancelBookingBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBookingBTActionPerformed
-        new boundary.BookingHistoryAndCancel(bookingManager, scheduleManager).setVisible(true);
+        //new boundary.BookingHistoryAndCancel(bookingManager, scheduleManager).setVisible(true);
     }//GEN-LAST:event_cancelBookingBTActionPerformed
 
     private void viewBookingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewBookingButtonActionPerformed
-        new boundary.BookingHistoryAndCancel(bookingManager, scheduleManager).setVisible(true);
+        //new boundary.BookingHistoryAndCancel(bookingManager, scheduleManager).setVisible(true);
     }//GEN-LAST:event_viewBookingButtonActionPerformed
 
     private void logoutBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBTActionPerformed
