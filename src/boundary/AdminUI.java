@@ -198,7 +198,12 @@ public class AdminUI extends javax.swing.JPanel {
     }//GEN-LAST:event_studentManagementBTActionPerformed
 
     private void scheduleManagementBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_scheduleManagementBTActionPerformed
-        // TODO add your handling code here:
+//        mainContentPanel.removeAll();
+        // Schedule Using JFrame instead of JPanel, cannot use showPanel method.
+        ScheduleUI scheduleUI = new ScheduleUI();
+        scheduleUI.setVisible(true);
+//        mainContentPanel.revalidate();
+//        mainContentPanel.repaint();
     }//GEN-LAST:event_scheduleManagementBTActionPerformed
 
     private void maintenanceManagementBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_maintenanceManagementBTActionPerformed
