@@ -26,12 +26,12 @@ public class BookingManagement {
      * Replaces the need for a single Schedule ID.
      * <p>Returns an array containing [scheduleIndex, sessionIndex]. Returns null if not found.
      */
-    private int[] findScheduleIndices(String facilityId, String date, String timeSession) {
+    private int[] findScheduleIndices(String facilityName, String date, String timeSession) {
         ListInterface<Schedule> allSchedules = scheduleManager.getAllSchedule(); 
         
         for (int i = 0; i < allSchedules.size(); i++) {
             Schedule s = allSchedules.get(i);
-            if (s.getFacility().getFacilityId().equals(facilityId) && s.getDate().equals(date)) {
+            if (s.getFacility().getName().equals(facilityName) && s.getDate().equals(date)) {
                 for (int j = 0; j < s.getSessions().size(); j++) {
                     if (s.getSessions().get(j).getSession().equals(timeSession)) {
                         return new int[]{i, j};
@@ -76,17 +76,17 @@ public class BookingManagement {
         }
     }
 
-    public boolean cancelBooking(String bookingId, String facilityId, String date, String timeSession) {
+    public boolean cancelBooking(String studentId, String bookingId, String facilityName, String date, String timeSession) {
         Booking targetBooking = bookingCollection.getBookingById(bookingId);
-        
-        if (targetBooking != null && targetBooking.getStatus().equals("Confirmed")) {
+        if (targetBooking != null && 
+                targetBooking.getStatus().equals("Confirmed") && 
+                targetBooking.getStudentId().equals(studentId)) {
             bookingCollection.updateBookingStatus(bookingId, "Cancelled");
             
-            int[] indices = findScheduleIndices(facilityId, date, timeSession);
+            int[] indices = findScheduleIndices(facilityName, date, timeSession);
             if (indices != null) {
                 scheduleManager.modifyScheduleStatus(indices[0], indices[1], ScheduleSession.STATUS_AVAILABLE);
             }
-            
             return true;
         }
         return false; 

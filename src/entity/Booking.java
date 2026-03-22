@@ -40,8 +40,12 @@ public class Booking implements Serializable {
         return studentId; 
     }
     
-    public String getSchedule() {
+    public String getScheduleSession() {
         return this.bookingDate  + " " + this.bookingSession; 
+    }
+    
+    public Schedule getSchedule(){
+        return this.schedule;
     }
     
     public LocalDateTime getArrivalTime() {
