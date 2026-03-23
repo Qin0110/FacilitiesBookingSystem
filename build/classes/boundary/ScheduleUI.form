@@ -87,6 +87,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Delete Facility Schedule"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteFacilityScheduleActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JComboBox" name="jComboBox1">
           <Properties>
@@ -107,6 +110,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Delete Schedule Session"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteScheduleSessionActionPerformed"/>
+          </Events>
         </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane1">
           <AuxValues>
@@ -155,6 +161,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Modify Schedule Session"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="modifyScheduleSessionActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

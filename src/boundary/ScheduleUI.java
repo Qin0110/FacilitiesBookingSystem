@@ -162,10 +162,20 @@ class GroupBorderRenderer extends DefaultTableCellRenderer {
         setTitle("All Schedule");
 
         deleteFacilitySchedule.setText("Delete Facility Schedule");
+        deleteFacilitySchedule.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteFacilityScheduleActionPerformed(evt);
+            }
+        });
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         deleteScheduleSession.setText("Delete Schedule Session");
+        deleteScheduleSession.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteScheduleSessionActionPerformed(evt);
+            }
+        });
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -187,6 +197,11 @@ class GroupBorderRenderer extends DefaultTableCellRenderer {
         }
 
         modifyScheduleSession.setText("Modify Schedule Session");
+        modifyScheduleSession.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modifyScheduleSessionActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -237,6 +252,108 @@ class GroupBorderRenderer extends DefaultTableCellRenderer {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void deleteFacilityScheduleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteFacilityScheduleActionPerformed
+        int selectedRow = jTable1.getSelectedRow();
+        if (selectedRow == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Please select any row belonging to the facility you want to delete.");
+            return;
+        }
+
+        String facility = getFacilityForSelectedRow(selectedRow);
+        String currentDate = (String) jComboBox1.getSelectedItem();
+
+        // Confirm deletion
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(
+                this, 
+                "Are you sure you want to permanently delete the ENTIRE schedule for " + facility + " on " + currentDate + "?\nAll sessions will be removed.",
+                "Confirm Delete Facility", 
+                javax.swing.JOptionPane.YES_NO_OPTION,
+                javax.swing.JOptionPane.WARNING_MESSAGE
+        );
+
+        if (confirm == javax.swing.JOptionPane.YES_OPTION) {
+            int targetIndex = findScheduleIndex(facility, currentDate);
+            if (targetIndex != -1) {
+                myControl.deleteFacilititySchedule(targetIndex);
+                updateTableForDate(currentDate); // Refresh table
+            }
+        }
+    }//GEN-LAST:event_deleteFacilityScheduleActionPerformed
+
+    private void deleteScheduleSessionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteScheduleSessionActionPerformed
+        int selectedRow = jTable1.getSelectedRow();
+        if (selectedRow == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Please select a time session row to delete.");
+            return;
+        }
+
+        String facility = getFacilityForSelectedRow(selectedRow);
+        String timeSlot = (String) jTable1.getValueAt(selectedRow, 1);
+        String currentDate = (String) jComboBox1.getSelectedItem();
+
+        // Confirm deletion
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(
+                this, 
+                "Are you sure you want to permanently delete the " + timeSlot + " session for " + facility + "?",
+                "Confirm Delete Session", 
+                javax.swing.JOptionPane.YES_NO_OPTION,
+                javax.swing.JOptionPane.WARNING_MESSAGE
+        );
+
+        if (confirm == javax.swing.JOptionPane.YES_OPTION) {
+            int targetIndex = findScheduleIndex(facility, currentDate);
+            if (targetIndex != -1) {
+                int timeIndex = findTimeIndex(targetIndex, timeSlot);
+                if (timeIndex != -1) {
+                    myControl.deleteScheduleSession(targetIndex, timeIndex);
+                    updateTableForDate(currentDate); // Refresh table
+                }
+            }
+        }
+    }//GEN-LAST:event_deleteScheduleSessionActionPerformed
+
+    private void modifyScheduleSessionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyScheduleSessionActionPerformed
+        int selectedRow = jTable1.getSelectedRow();
+        if (selectedRow == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Please select a time session row to modify.");
+            return;
+        }
+    
+        // 1. Get the data from the selected row
+        String facility = getFacilityForSelectedRow(selectedRow);
+        String timeSlot = (String) jTable1.getValueAt(selectedRow, 1);
+        String currentStatus = (String) jTable1.getValueAt(selectedRow, 2);
+        String currentDate = (String) jComboBox1.getSelectedItem();
+
+        // 2. Pop-up to ask for the new status
+        String[] options = {ScheduleSession.STATUS_AVAILABLE, ScheduleSession.STATUS_BOOKED, ScheduleSession.STATUS_MAINTENANCE, ScheduleSession.STATUS_NOT_AVAILABLE};
+        String newStatus = (String) javax.swing.JOptionPane.showInputDialog(
+                this, 
+                "Modify Status for " + facility + " at " + timeSlot + "\nCurrent Status: " + currentStatus,
+                "Modify Session",
+                javax.swing.JOptionPane.QUESTION_MESSAGE,
+                null, 
+                options, 
+                currentStatus
+        );
+
+        // 3. If they picked a new status, update the data
+        if (newStatus != null && !newStatus.equals(currentStatus)) {
+            // Find the schedule index based on facility and date
+            int targetIndex = findScheduleIndex(facility, currentDate);
+            
+            if (targetIndex != -1) {
+                // Since your list is 0-indexed, we need to find the specific time slot index
+                int timeIndex = findTimeIndex(targetIndex, timeSlot);
+                if (timeIndex != -1) {
+                    myControl.modifyScheduleStatus(targetIndex, timeIndex, newStatus);
+                    updateTableForDate(currentDate); // Refresh the table to show the new color!
+                    javax.swing.JOptionPane.showMessageDialog(this, "Status updated successfully.");
+                }
+            }
+        }
+    }//GEN-LAST:event_modifyScheduleSessionActionPerformed
 
     
     private String getFacilityForSelectedRow(int row) {
