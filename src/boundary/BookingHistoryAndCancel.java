@@ -5,19 +5,21 @@
 package boundary;
 
 import control.BookingManagement;
-
+import control.FacilityManagement;
 /**
  *
  * @author user
  */
 public class BookingHistoryAndCancel extends javax.swing.JPanel {
 private BookingManagement bookingManager;
-    private control.ScheduleManagement scheduleManager;
+private control.ScheduleManagement scheduleManager;
+private control.FacilityManagement facilityManager;
     
-    public BookingHistoryAndCancel(BookingManagement bookingManager, control.ScheduleManagement scheduleManager) {
+    public BookingHistoryAndCancel(BookingManagement bookingManager, control.ScheduleManagement scheduleManager, control.FacilityManagement facilityManager) {
         initComponents();
         this.bookingManager = bookingManager;
         this.scheduleManager = scheduleManager;
+        this.facilityManager = facilityManager;
     }
     
     private void loadBookingTable(String targetStudentId) {
@@ -215,7 +217,14 @@ private BookingManagement bookingManager;
     }//GEN-LAST:event_SearchBookingActionPerformed
 
     private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
-        this.setVisible(false);
+        StudentUI studentUI = new StudentUI(bookingManager, scheduleManager, facilityManager);
+
+        java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
+        if (window instanceof javax.swing.JFrame frame) {
+            frame.setContentPane(studentUI);
+            frame.revalidate();
+            frame.repaint();
+        }
     }//GEN-LAST:event_BackButtonActionPerformed
 
     private void CancelBookingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelBookingButtonActionPerformed

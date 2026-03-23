@@ -218,7 +218,14 @@ public class BookingUI extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void CancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelButtonActionPerformed
-        this.setVisible(false);
+        StudentUI studentUI = new StudentUI(bookingManager, scheduleManager, facilityManager);
+
+        java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
+        if (window instanceof javax.swing.JFrame frame) {
+            frame.setContentPane(studentUI);
+            frame.revalidate();
+            frame.repaint();
+        }
     }//GEN-LAST:event_CancelButtonActionPerformed
 
     private void BookButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BookButtonActionPerformed

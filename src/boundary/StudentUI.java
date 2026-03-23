@@ -19,6 +19,13 @@ public class StudentUI extends javax.swing.JPanel {
         initComponents();
         
     }
+    
+    public StudentUI(BookingManagement bookingControl, ScheduleManagement scheduleManager) {
+        this.bookingManager = bookingControl;
+        this.scheduleManager = scheduleManager;
+        initComponents();
+        
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -165,15 +172,36 @@ public class StudentUI extends javax.swing.JPanel {
     }//GEN-LAST:event_viewBTActionPerformed
 
     private void makeBookingBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_makeBookingBTActionPerformed
-        //new boundary.BookingUI(bookingManager, scheduleManager, facilityManager).setVisible(true);
+       BookingUI bookingUI = new BookingUI(bookingManager, scheduleManager, facilityManager);
+
+        java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
+        if (window instanceof javax.swing.JFrame frame) {
+            frame.setContentPane(bookingUI);
+            frame.revalidate();
+            frame.repaint();
+        }
     }//GEN-LAST:event_makeBookingBTActionPerformed
 
     private void cancelBookingBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBookingBTActionPerformed
-        //new boundary.BookingHistoryAndCancel(bookingManager, scheduleManager).setVisible(true);
+        BookingHistoryAndCancel bookingHistoryUI = new BookingHistoryAndCancel(bookingManager, scheduleManager, facilityManager);
+
+        java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
+        if (window instanceof javax.swing.JFrame frame) {
+            frame.setContentPane(bookingHistoryUI);
+            frame.revalidate();
+            frame.repaint();
+        }
     }//GEN-LAST:event_cancelBookingBTActionPerformed
 
     private void viewBookingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewBookingButtonActionPerformed
-        //new boundary.BookingHistoryAndCancel(bookingManager, scheduleManager).setVisible(true);
+        BookingHistoryAndCancel bookingHistoryUI = new BookingHistoryAndCancel(bookingManager, scheduleManager, facilityManager);
+
+        java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
+        if (window instanceof javax.swing.JFrame frame) {
+            frame.setContentPane(bookingHistoryUI);
+            frame.revalidate();
+            frame.repaint();
+        }
     }//GEN-LAST:event_viewBookingButtonActionPerformed
 
     private void logoutBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBTActionPerformed
