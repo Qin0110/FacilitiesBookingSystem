@@ -26,15 +26,20 @@ public class BookingUI extends javax.swing.JPanel {
         initComponents();
         this.bookingManager = bookingManager;
         this.scheduleManager = scheduleManager;
-        this.allSchedule = scheduleManager.getAllSchedule();
 //        this.facilityManager = facilityManager;
-        
         loadTableData();
+        this.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                loadTableData();
+            }
+        });
     }
     
     private void loadTableData() {
         javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) ScheduleTable.getModel();
         model.setRowCount(0);
+        
+        this.allSchedule = scheduleManager.getAllSchedule();
         
         //Formatter to remove the 'T' 
         java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
