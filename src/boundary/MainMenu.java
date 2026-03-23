@@ -7,7 +7,7 @@ import UtilitiesClass.Input;
 import control.BookingManagement;
 import control.AdminManagement;
 import control.StudentManagement;
-import control.ScheduleManagement;
+import control.ScheduleControl;
 import control.FacilityManagement;
 
 /**
@@ -21,12 +21,12 @@ public class MainMenu extends javax.swing.JFrame {
     private StudentManagement studentManager;
     private AdminManagement adminManager;
     private BookingManagement bookingManager;
-    private ScheduleManagement scheduleManager;
+    private ScheduleControl scheduleManager;
     
     private StudentUI studentUI;
     private AdminUI adminUI;
 
-    public MainMenu(AdminManagement adminManager, StudentManagement studentManager, BookingManagement bookingManager, FacilityManagement facilityManager, ScheduleManagement scheduleManager) {
+    public MainMenu(AdminManagement adminManager, StudentManagement studentManager, BookingManagement bookingManager, FacilityManagement facilityManager, ScheduleControl scheduleManager) {
         initComponents();
         setSize(1173, 811);
   

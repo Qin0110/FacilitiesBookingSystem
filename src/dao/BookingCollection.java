@@ -13,12 +13,6 @@ public class BookingCollection implements Serializable {
 
     public BookingCollection() {
         bookingList = DATFile.loadFromFile(FILE_NAME);
-        /*if (bookingList.isEmpty()) {
-            bookingList.add(new Booking("B101", "23WMR00001", "SCH-B003", null, null));
-            bookingList.add(new Booking("B102", "23WMR00002", "SCH-G001", null, null));
-            
-            saveData(); 
-        }*/
     }
     
     private void saveData() {
@@ -45,19 +39,6 @@ public class BookingCollection implements Serializable {
         for (int i = 0; i < bookingList.size(); i++) {
             Booking b = bookingList.get(i);
             if (b.getBookingId().equalsIgnoreCase(bookingId)) {
-                return b;
-            }
-        }
-        return null;
-    }
-    
-    //specific for the cancel
-    public Booking getBooking(String bookingId, String studentId, String scheduleId) {
-        for (int i = 0; i < bookingList.size(); i++) {
-            Booking b = bookingList.get(i);
-            if (b.getBookingId().equals(bookingId) && 
-                b.getStudentId().equals(studentId) && 
-                b.getScheduleId().equals(scheduleId)) {
                 return b;
             }
         }
@@ -97,7 +78,13 @@ public class BookingCollection implements Serializable {
         Booking lastBooking = bookingList.get(bookingList.size() - 1);
         String lastId = lastBooking.getBookingId(); 
         
-        int idNum = Integer.parseInt(lastId.substring(1)); 
-        return "B" + (idNum + 1); 
+        // Added a quick safety catch here just in case an old test booking 
+        // with a weird ID format (like "Test1") gets saved to your file!
+        try {
+            int idNum = Integer.parseInt(lastId.substring(1)); 
+            return "B" + (idNum + 1); 
+        } catch (Exception e) {
+            return "B" + (bookingList.size() + 100); 
+        }
     }
 }

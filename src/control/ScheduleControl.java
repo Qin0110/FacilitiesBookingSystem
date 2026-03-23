@@ -2,33 +2,28 @@ package control;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import entity.Facility;
 import entity.Schedule;
 import entity.ScheduleSession;
 import adt.*;
 import java.time.LocalTime;
 import java.io.Serializable;
-import CollectionADT.ScheduleCollection;
+import dao.ScheduleCollection;
+import dao.FacilityCollection;
 
 public class ScheduleControl implements Serializable{    
     // Change to LinkedList
     private ListInterface<Schedule> schedule;
     private ScheduleCollection scheduleDAO;
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-    
-    // Temporary
-    private String[] facilities = {
-        "Badminton Court 1",
-        "Badminton Court 2",
-        "Swimming Pool 1",
-        "Swimming Pool 2",
-        "Pickleball Court 1",
-        "Pickleball Court 2"
-    };
+    private ListInterface<Facility> facilities;
+    private FacilityCollection facilityDAO;
     
     // Constructor
     public ScheduleControl(){
         this.scheduleDAO = new ScheduleCollection();
         this.schedule = scheduleDAO.retrieveSchedules();
+        this.facilityDAO = new FacilityCollection();
+        this.facilities = facilityDAO.getAllFacilities();
         
         if (this.schedule == null) {
             System.out.println("No save file found. Start from fresh.");
@@ -44,22 +39,22 @@ public class ScheduleControl implements Serializable{
         
         for (int dayOffset = 0; dayOffset < 3; dayOffset++) {
             LocalDate targetDate = today.plusDays(dayOffset);
-            String targetDateString = targetDate.format(DATE_FORMATTER);
+            String targetDateString = targetDate.format(Schedule.DATE_FORMATTER);
             
-            for (int i = 0; i < facilities.length; i++) {
-                String currentFacility = facilities[i];
+            for (int i = 0; i < facilities.size(); i++) {
+                String currentFacility = facilities.get(i).getName();
                 boolean scheduleExists = false;
                 
                 for (int j = 0; j < this.schedule.size(); j++) {
                     Schedule existingSchedule = schedule.get(j);
-                    if (existingSchedule.getFacility().equals(currentFacility) && existingSchedule.getDate().equals(targetDateString)) {
+                    if (existingSchedule.getFacility().getName().equals(currentFacility) && existingSchedule.getDate().equals(targetDateString)) {
                         scheduleExists = true;
                         break;
                     }
                 }
                 
                 if (!scheduleExists) {
-                    Schedule newSchedule = new Schedule(currentFacility, targetDate);
+                    Schedule newSchedule = new Schedule(facilities.get(i), targetDate);
                     newSchedule.setSessions(this.divideSession(newSchedule));
                     schedule.add(newSchedule);
                     dataWasAdded = true;
@@ -104,8 +99,8 @@ public class ScheduleControl implements Serializable{
             LocalDate today = LocalDate.now();
             for (int dayOffset = 0; dayOffset < 3; dayOffset++) {
                 LocalDate targetDate = today.plusDays(dayOffset);
-                for (int i = 0; i < facilities.length; i++) {
-                    Schedule newSchedule = new Schedule(facilities[i], targetDate);
+                for (int i = 0; i < facilities.size(); i++) {
+                    Schedule newSchedule = new Schedule(facilities.get(i), targetDate);
                     newSchedule.setSessions(divideSession(newSchedule));
                     schedule.add(newSchedule);
                 }
@@ -118,6 +113,33 @@ public class ScheduleControl implements Serializable{
     
     public String getAllSchedulesText(){
         return schedule.toString();
+    }
+    
+    /**
+     * Function that return integer index number, index 0 is facility associate with specific date index.
+     * <p> getSpecificSchedule[1] is session index.
+     * @param facilityName
+     * @param date
+     * @param session
+     * @return [facilityDateIndex, sessionIndex]
+     */
+    public int[] getSpecificScheduleIndex(String facilityName, String date, String session){
+        int facilityDateIndex = 0;
+        int sessionIndex = 0;
+        for (int i = 0; i < schedule.size(); i++) {
+            if (schedule.get(i).getFacility().getName().equals(facilityName) && 
+                    schedule.get(i).getDate().equals(date)) {
+                facilityDateIndex = i;
+                ListInterface<ScheduleSession> currentFacilitySession = schedule.get(i).getSessions();
+                for (int j = 0; j < currentFacilitySession.size(); j++) {
+                    if (currentFacilitySession.get(j).getSession().equals(session)) {
+                        sessionIndex = j;
+                        break;
+                    }
+                }
+            }
+        }
+        return new int[]{facilityDateIndex, sessionIndex};
     }
     
     public void deleteFacilititySchedule(int index){
@@ -171,7 +193,7 @@ public class ScheduleControl implements Serializable{
     }
     
     // Use when add new facility
-    public void addNewSchedule(String facility){
+    public void addNewSchedule(Facility facility){
         Schedule newSchedule = new Schedule(facility);
         try {
             newSchedule.setSessions(this.divideSession(newSchedule));

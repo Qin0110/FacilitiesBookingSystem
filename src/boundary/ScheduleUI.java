@@ -72,7 +72,7 @@ public class ScheduleUI extends javax.swing.JFrame {
             
             // Only add rows if the schedule's date matches the dropdown date!
             if (currentSchedule.getDate().equals(targetDate)) {
-                String facilityName = currentSchedule.getFacility();
+                String facilityName = currentSchedule.getFacility().getName();
                 ListInterface<ScheduleSession> sessions = currentSchedule.getSessions();
                 
                 // Note: I changed this to j = 0 so it doesn't skip your 08:00 session!
@@ -150,15 +150,22 @@ class GroupBorderRenderer extends DefaultTableCellRenderer {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
+        deleteFacilitySchedule = new javax.swing.JButton();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        deleteScheduleSession = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jComboBox1 = new javax.swing.JComboBox<>();
         modifyScheduleSession = new javax.swing.JButton();
-        deleteScheduleSession = new javax.swing.JButton();
-        deleteFacilitySchedule = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("All Schedule");
+
+        deleteFacilitySchedule.setText("Delete Facility Schedule");
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        deleteScheduleSession.setText("Delete Schedule Session");
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -179,169 +186,57 @@ class GroupBorderRenderer extends DefaultTableCellRenderer {
             jTable1.getColumnModel().getColumn(0).setMaxWidth(150);
         }
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         modifyScheduleSession.setText("Modify Schedule Session");
-        modifyScheduleSession.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                modifyScheduleSessionActionPerformed(evt);
-            }
-        });
 
-        deleteScheduleSession.setText("Delete Schedule Session");
-        deleteScheduleSession.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteScheduleSessionActionPerformed(evt);
-            }
-        });
-
-        deleteFacilitySchedule.setText("Delete Facility Schedule");
-        deleteFacilitySchedule.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteFacilityScheduleActionPerformed(evt);
-            }
-        });
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 625, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(deleteFacilitySchedule, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(deleteScheduleSession, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(modifyScheduleSession, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(171, 171, 171)
+                        .addComponent(deleteFacilitySchedule, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(deleteScheduleSession, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(modifyScheduleSession, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 650, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(deleteFacilitySchedule, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(deleteScheduleSession, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(modifyScheduleSession, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addGap(6, 6, 6))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(modifyScheduleSession, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(deleteScheduleSession, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(deleteFacilitySchedule, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(241, 241, 241))))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void modifyScheduleSessionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyScheduleSessionActionPerformed
-        int selectedRow = jTable1.getSelectedRow();
-        if (selectedRow == -1) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Please select a time session row to modify.");
-            return;
-        }
-
-        // 1. Get the data from the selected row
-        String facility = getFacilityForSelectedRow(selectedRow);
-        String timeSlot = (String) jTable1.getValueAt(selectedRow, 1);
-        String currentStatus = (String) jTable1.getValueAt(selectedRow, 2);
-        String currentDate = (String) jComboBox1.getSelectedItem();
-
-        // 2. Pop-up to ask for the new status
-        String[] options = {ScheduleSession.STATUS_AVAILABLE, ScheduleSession.STATUS_BOOKED, ScheduleSession.STATUS_MAINTENANCE, ScheduleSession.STATUS_NOT_AVAILABLE};
-        String newStatus = (String) javax.swing.JOptionPane.showInputDialog(
-                this, 
-                "Modify Status for " + facility + " at " + timeSlot + "\nCurrent Status: " + currentStatus,
-                "Modify Session",
-                javax.swing.JOptionPane.QUESTION_MESSAGE,
-                null, 
-                options, 
-                currentStatus
-        );
-
-        // 3. If they picked a new status, update the data
-        if (newStatus != null && !newStatus.equals(currentStatus)) {
-            // Find the schedule index based on facility and date
-            int targetIndex = findScheduleIndex(facility, currentDate);
-            
-            if (targetIndex != -1) {
-                // Since your list is 0-indexed, we need to find the specific time slot index
-                int timeIndex = findTimeIndex(targetIndex, timeSlot);
-                if (timeIndex != -1) {
-                    myControl.modifyScheduleStatus(targetIndex, timeIndex, newStatus);
-                    updateTableForDate(currentDate); // Refresh the table to show the new color!
-                    javax.swing.JOptionPane.showMessageDialog(this, "Status updated successfully.");
-                }
-            }
-        }
-    }//GEN-LAST:event_modifyScheduleSessionActionPerformed
-
-    private void deleteScheduleSessionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteScheduleSessionActionPerformed
-        int selectedRow = jTable1.getSelectedRow();
-        if (selectedRow == -1) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Please select a time session row to delete.");
-            return;
-        }
-
-        String facility = getFacilityForSelectedRow(selectedRow);
-        String timeSlot = (String) jTable1.getValueAt(selectedRow, 1);
-        String currentDate = (String) jComboBox1.getSelectedItem();
-
-        // Confirm deletion
-        int confirm = javax.swing.JOptionPane.showConfirmDialog(
-                this, 
-                "Are you sure you want to permanently delete the " + timeSlot + " session for " + facility + "?",
-                "Confirm Delete Session", 
-                javax.swing.JOptionPane.YES_NO_OPTION,
-                javax.swing.JOptionPane.WARNING_MESSAGE
-        );
-
-        if (confirm == javax.swing.JOptionPane.YES_OPTION) {
-            int targetIndex = findScheduleIndex(facility, currentDate);
-            if (targetIndex != -1) {
-                int timeIndex = findTimeIndex(targetIndex, timeSlot);
-                if (timeIndex != -1) {
-                    myControl.deleteScheduleSession(targetIndex, timeIndex);
-                    updateTableForDate(currentDate); // Refresh table
-                }
-            }
-        }
-    }//GEN-LAST:event_deleteScheduleSessionActionPerformed
-
-    private void deleteFacilityScheduleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteFacilityScheduleActionPerformed
-        int selectedRow = jTable1.getSelectedRow();
-        if (selectedRow == -1) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Please select any row belonging to the facility you want to delete.");
-            return;
-        }
-
-        String facility = getFacilityForSelectedRow(selectedRow);
-        String currentDate = (String) jComboBox1.getSelectedItem();
-
-        // Confirm deletion
-        int confirm = javax.swing.JOptionPane.showConfirmDialog(
-                this, 
-                "Are you sure you want to permanently delete the ENTIRE schedule for " + facility + " on " + currentDate + "?\nAll sessions will be removed.",
-                "Confirm Delete Facility", 
-                javax.swing.JOptionPane.YES_NO_OPTION,
-                javax.swing.JOptionPane.WARNING_MESSAGE
-        );
-
-        if (confirm == javax.swing.JOptionPane.YES_OPTION) {
-            int targetIndex = findScheduleIndex(facility, currentDate);
-            if (targetIndex != -1) {
-                myControl.deleteFacilititySchedule(targetIndex);
-                updateTableForDate(currentDate); // Refresh table
-            }
-        }
-    }//GEN-LAST:event_deleteFacilityScheduleActionPerformed
 
     
     private String getFacilityForSelectedRow(int row) {
@@ -358,7 +253,7 @@ class GroupBorderRenderer extends DefaultTableCellRenderer {
     private int findScheduleIndex(String facilityName, String date) {
         for (int i = 0; i < allSchedule.size(); i++) {
             Schedule s = allSchedule.get(i);
-            if (s.getFacility().equals(facilityName) && s.getDate().equals(date)) {
+            if (s.getFacility().getName().equals(facilityName) && s.getDate().equals(date)) {
                 return i;
             }
         }
@@ -417,6 +312,7 @@ class GroupBorderRenderer extends DefaultTableCellRenderer {
     private javax.swing.JButton deleteFacilitySchedule;
     private javax.swing.JButton deleteScheduleSession;
     private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JButton modifyScheduleSession;

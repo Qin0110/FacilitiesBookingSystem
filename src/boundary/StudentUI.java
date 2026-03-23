@@ -1,6 +1,6 @@
 package boundary;
 import control.BookingManagement;
-import control.ScheduleManagement;
+import control.ScheduleControl;
 import control.FacilityManagement;
 /**
  *
@@ -9,10 +9,10 @@ import control.FacilityManagement;
 public class StudentUI extends javax.swing.JPanel {
 
     private BookingManagement bookingManager;
-    private ScheduleManagement scheduleManager;
+    private ScheduleControl scheduleManager;
     private FacilityManagement facilityManager;
     
-    public StudentUI(BookingManagement bookingControl, ScheduleManagement scheduleManager, FacilityManagement facilityManager) {
+    public StudentUI(BookingManagement bookingControl, ScheduleControl scheduleManager, FacilityManagement facilityManager) {
         this.bookingManager = bookingControl;
         this.scheduleManager = scheduleManager;
         this.facilityManager = facilityManager;

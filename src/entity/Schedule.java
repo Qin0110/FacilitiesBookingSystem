@@ -1,81 +1,88 @@
-
 package entity;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
+import adt.*;
+import java.io.Serializable;
 
-
-public class Schedule {
-    private String scheduleId;   
-    private String facilityId;   
+public class Schedule implements Serializable{
+    public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     
-    private LocalDateTime startingTime;
-    private LocalDateTime endingTime;
-    private String availability;  
-
-    public Schedule(String scheduleId, String facilityId, LocalDateTime startingTime, LocalDateTime endingTime) {
-        this.scheduleId = scheduleId;
-        this.facilityId = facilityId;
-        this.startingTime = startingTime;
-        this.endingTime = endingTime;
-        this.availability = "Available"; 
-    }
-
-    public String getScheduleId() { 
-        return scheduleId; 
+    // Invoke Facilities facility classes. Change here
+    private Facility facility;
+//    private String scheduleId;
+    private LocalTime startTime = LocalTime.of(8, 0); // May Have differnet start time
+    private LocalTime endTime = LocalTime.of(21, 0); // May Have different end time
+    private LocalDate date = LocalDate.now();
+    
+    private ListInterface<ScheduleSession> sessions = new SingleLinkedList<>();
+    
+    public Schedule(Facility facility){
+        this.facility = facility;
     }
     
-    public String getFacilityId() { 
-        return facilityId; 
+    public Schedule(Facility facility, LocalDate date){
+        this(facility);
+        this.date = date;
     }
     
-    public LocalDateTime getStartingTime() { 
-        return startingTime; 
+    public Schedule(Facility facility, ListInterface<ScheduleSession> sessions){
+        this(facility);
+        this.sessions = sessions;
     }
     
-    public LocalDateTime getEndingTime() { 
-        return endingTime; 
+    public void setSessions(ListInterface<ScheduleSession> sessions){
+        this.sessions = sessions;
     }
     
-    public String getAvailability() { 
-        return availability; 
+//    public ScheduleSession getParticularSession(int index){
+//        return sessions.get(index);
+//    }
+    
+    public ListInterface<ScheduleSession> getSessions(){
+        return this.sessions;
     }
 
-    public void setStartingTime(LocalDateTime startingTime) { 
-        this.startingTime = startingTime; 
+    public Facility getFacility(){
+        return this.facility;
     }
     
-    public void setEndingTime(LocalDateTime endingTime) {
-        this.endingTime = endingTime; 
+    public LocalTime[] getTime(){
+        return new LocalTime[] {this.startTime, this.endTime};
     }
     
-    public void setAvailability(String availability) {
-        this.availability = availability; 
+    public String[] getTimeString(){
+        return new String[] {startTime.format(TIME_FORMATTER), endTime.format(TIME_FORMATTER)};
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Schedule schedule = (Schedule) obj;
-        return scheduleId.equals(schedule.scheduleId);
+    
+    public String getDate(){
+        return this.date.format(DATE_FORMATTER);
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(scheduleId);
+    
+    public void setDate(LocalDate date){
+        this.date = date;
     }
-
-    @Override
-    public String toString() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        return String.format("Schedule ID: %s | Facility ID: %s | Start: %s | End: %s | Status: %s", 
-                scheduleId, 
-                facilityId, 
-                startingTime.format(formatter), 
-                endingTime.format(formatter), 
-                availability);
+    
+    public String convertTime(LocalTime time){
+        return time.format(TIME_FORMATTER);
+    }
+    
+    public void setStartTime(LocalTime startTime){
+        this.startTime = startTime;
+    }
+    
+    public void setEndTime(LocalTime endTime){
+        this.endTime = endTime;
+    }
+    
+    public void setTime(LocalTime startTime, LocalTime endTime){
+        this.setStartTime(startTime);
+        this.setEndTime(endTime);
+    }
+    
+    public String toString(){
+        return this.facility + ": " + "\n" +
+                this.sessions.toString() + "\n";
     }
 }

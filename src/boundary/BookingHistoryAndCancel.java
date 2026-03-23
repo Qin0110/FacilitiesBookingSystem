@@ -1,46 +1,45 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
 package boundary;
 
 import control.BookingManagement;
-import control.FacilityManagement;
-/**
- *
- * @author user
- */
+import control.ScheduleControl;
+import adt.*;
+import entity.Booking;
+import entity.Schedule;
+import entity.ScheduleSession;
+
 public class BookingHistoryAndCancel extends javax.swing.JPanel {
-private BookingManagement bookingManager;
-private control.ScheduleManagement scheduleManager;
-private control.FacilityManagement facilityManager;
     
-    public BookingHistoryAndCancel(BookingManagement bookingManager, control.ScheduleManagement scheduleManager, control.FacilityManagement facilityManager) {
+    private BookingManagement bookingManager;
+    private ScheduleControl scheduleManager;
+    private ListInterface<Booking> allBookings;
+    private ListInterface<Schedule> allSchedules;
+    
+    public BookingHistoryAndCancel(BookingManagement bookingManager, ScheduleControl scheduleManager) {
         initComponents();
         this.bookingManager = bookingManager;
         this.scheduleManager = scheduleManager;
-        this.facilityManager = facilityManager;
+        this.allBookings = bookingManager.getAllBookings();
+        this.allSchedules = scheduleManager.getAllSchedule();
+        
     }
     
     private void loadBookingTable(String targetStudentId) {
         javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) BookingTable.getModel();
         model.setRowCount(0); 
 
-        adt.ListInterface<entity.Booking> allBookings = bookingManager.getAllBookings();
-
-        for (int i = 0; i < allBookings.size(); i++) {
-            entity.Booking b = allBookings.get(i);
+        for (int i = 0; i < this.allBookings.size(); i++) {
+            Booking b = this.allBookings.get(i);
             
             if (b.getStudentId().equalsIgnoreCase(targetStudentId)) {
-                String schedId = b.getScheduleId();
+                String name = b.getSchedule().getFacility().getName();
+                String facilityName = (name != null) ? name : "Unknown";
                 
-                entity.Schedule s = scheduleManager.getScheduleById(schedId);
-                
-                String facilityName = (s != null) ? s.getFacilityId() : "Unknown";
+                //What is this for????
+                //Schedule s = scheduleManager.getScheduleById(schedId);
                 
                 model.addRow(new Object[]{
                     b.getBookingId(),
-                    b.getScheduleId(),
+                    b.getScheduleSession(),
                     facilityName,  
                     b.getStatus()
                 });
@@ -129,7 +128,7 @@ private control.FacilityManagement facilityManager;
                 {null, null, null, null}
             },
             new String [] {
-                "Booking ID", "Schedule ID", "Facility ID", "Status"
+                "Booking ID", "Schedule", "Facility", "Status"
             }
         ));
         jScrollPane1.setViewportView(BookingTable);
@@ -217,14 +216,7 @@ private control.FacilityManagement facilityManager;
     }//GEN-LAST:event_SearchBookingActionPerformed
 
     private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
-        StudentUI studentUI = new StudentUI(bookingManager, scheduleManager, facilityManager);
-
-        java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
-        if (window instanceof javax.swing.JFrame frame) {
-            frame.setContentPane(studentUI);
-            frame.revalidate();
-            frame.repaint();
-        }
+        this.setVisible(false);
     }//GEN-LAST:event_BackButtonActionPerformed
 
     private void CancelBookingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelBookingButtonActionPerformed
@@ -235,7 +227,8 @@ private control.FacilityManagement facilityManager;
         }
 
         String bookingId = BookingTable.getValueAt(row, 0).toString();
-        String scheduleId = BookingTable.getValueAt(row, 1).toString();
+        String scheduleSession = BookingTable.getValueAt(row, 1).toString();
+        String facilityName = BookingTable.getValueAt(row, 2).toString();
         String currentStatus = BookingTable.getValueAt(row, 3).toString();
         String studentId = StudentIdTxtField.getText().trim();
 
@@ -248,9 +241,13 @@ private control.FacilityManagement facilityManager;
             "Are you sure you want to cancel Booking " + bookingId + "?",
             "Confirm Cancellation",
             javax.swing.JOptionPane.YES_NO_OPTION);
-
+        
+        String[] sessionDateTime = scheduleSession.split(" ", 2);
+        String date = sessionDateTime[0];
+        String session = sessionDateTime[1];
+        
         if (choice == javax.swing.JOptionPane.YES_OPTION) {
-            boolean success = bookingManager.cancelBooking(bookingId, studentId, scheduleId);
+            boolean success = bookingManager.cancelBooking(studentId, bookingId, facilityName, date, session);
 
             if (success) {
                 javax.swing.JOptionPane.showMessageDialog(this, "Booking Cancelled Successfully.");

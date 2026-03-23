@@ -1,15 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
 package boundary;
 import control.BookingManagement;
 import control.FacilityManagement;
-import control.ScheduleManagement;
-/**
- *
- * @author user
- */
+import control.ScheduleControl;
+
 public class AdminBookingUI extends javax.swing.JPanel {
 
     /**
@@ -17,10 +10,10 @@ public class AdminBookingUI extends javax.swing.JPanel {
      */
     
     private BookingManagement bookingManager;
-    private ScheduleManagement scheduleManager;
+    private ScheduleControl scheduleManager;
     private FacilityManagement facilityManager;
     
-    public AdminBookingUI(BookingManagement bm, ScheduleManagement sm, FacilityManagement fm) {
+    public AdminBookingUI(BookingManagement bm, ScheduleControl sm, FacilityManagement fm) {
         initComponents(); 
         
         this.bookingManager = bm;
@@ -41,22 +34,25 @@ public class AdminBookingUI extends javax.swing.JPanel {
             
             if (filterId.isEmpty() || b.getStudentId().equalsIgnoreCase(filterId)) {
                 
-                String schedId = b.getScheduleId();
-                entity.Schedule s = scheduleManager.getScheduleById(schedId);
+                String schedId = b.getScheduleSession();
+                
+                //This is just for validation?
+                //entity.Schedule s = scheduleManager.getScheduleById(schedId);
+                
                 String facilityName = "Unknown";
                 java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
                 
-                if (s != null) {
-                    adt.ListInterface<entity.Facility> resultsList = facilityManager.searchFacility(s.getFacilityId());
-                    if (resultsList != null && resultsList.size() > 0) {
-                        facilityName = resultsList.get(0).getName(); 
-                    }
-                }
+//                if (s != null) {
+//                    adt.ListInterface<entity.Facility> resultsList = facilityManager.searchFacility(s.getFacilityId());
+//                    if (resultsList != null && resultsList.size() > 0) {
+//                        facilityName = resultsList.get(0).getName(); 
+//                    }
+//                }
                 
                 model.addRow(new Object[]{
-                        b.getBookingId(),
+                    b.getBookingId(),
                     b.getStudentId(),
-                    b.getScheduleId(),
+                    b.getScheduleSession(),
                     facilityName,   
                     b.getApprovedBy() == null ? "N/A" : b.getApprovedBy(),
                     b.getArrivalTime() == null ? "Not Arrived" : b.getArrivalTime().format(formatter),
@@ -164,7 +160,7 @@ public class AdminBookingUI extends javax.swing.JPanel {
                 {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Booking ID", "Student ID", "Schedule ID", "Facility Name", "Admin", "Arrival Time", "Leaving Time", "Status"
+                "Booking ID", "Student ID", "Session", "Facility Name", "Admin", "Arrival Time", "Leaving Time", "Status"
             }
         ));
         jScrollPane1.setViewportView(AdminBookingTable);
@@ -270,9 +266,14 @@ public class AdminBookingUI extends javax.swing.JPanel {
 
         String bookingId = AdminBookingTable.getValueAt(row, 0).toString();
         String studentId = AdminBookingTable.getValueAt(row, 1).toString();
-        String scheduleId = AdminBookingTable.getValueAt(row, 2).toString();
+        String scheduleSession = AdminBookingTable.getValueAt(row, 2).toString();
+        String facilityName = AdminBookingTable.getValueAt(row, 3).toString();
         String currentStatus = AdminBookingTable.getValueAt(row, 7).toString();
 
+        String[] sessionDateTime = scheduleSession.split(" ", 2);
+        String date = sessionDateTime[0];
+        String session = sessionDateTime[1];
+        
         if (currentStatus.equals("Cancelled")) {
             javax.swing.JOptionPane.showMessageDialog(this, "Already cancelled!");
             return;
@@ -280,7 +281,7 @@ public class AdminBookingUI extends javax.swing.JPanel {
 
         int choice = javax.swing.JOptionPane.showConfirmDialog(this, "Cancel Booking " + bookingId + "?", "Confirm", javax.swing.JOptionPane.YES_NO_OPTION);
         if (choice == javax.swing.JOptionPane.YES_OPTION) {
-            boolean success = bookingManager.cancelBooking(bookingId, studentId, scheduleId);
+            boolean success = bookingManager.cancelBooking(bookingId, studentId, facilityName, date, session);
             if (success) {
                 javax.swing.JOptionPane.showMessageDialog(this, "Booking Cancelled. Schedule is now Available.");
                 loadBookingTable(StudentIdTxtField.getText().trim()); 

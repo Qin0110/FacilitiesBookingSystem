@@ -6,7 +6,10 @@ package boundary;
 
 import control.BookingManagement;
 import control.FacilityManagement;
-import control.ScheduleManagement;
+import control.ScheduleControl;
+import entity.Schedule;
+import entity.ScheduleSession;
+import adt.*;
 
 /**
  *
@@ -15,41 +18,43 @@ import control.ScheduleManagement;
 public class BookingUI extends javax.swing.JPanel {
 
     private BookingManagement bookingManager;
-    private ScheduleManagement scheduleManager;
+    private ScheduleControl scheduleManager;
     private FacilityManagement facilityManager;
+    private ListInterface<Schedule> allSchedule;
     
-    public BookingUI(BookingManagement bookingManager, ScheduleManagement scheduleManager, FacilityManagement facilityManager) {
+    public BookingUI(BookingManagement bookingManager, ScheduleControl scheduleManager, FacilityManagement facilityManager) {
         initComponents();
         this.bookingManager = bookingManager;
         this.scheduleManager = scheduleManager;
-        this.facilityManager = facilityManager;
+        this.allSchedule = scheduleManager.getAllSchedule();
+//        this.facilityManager = facilityManager;
         
         loadTableData();
     }
     
     private void loadTableData() {
         javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) ScheduleTable.getModel();
-        model.setRowCount(0); 
-
-        adt.ListInterface<entity.Schedule> list = scheduleManager.getAllSchedules();
+        model.setRowCount(0);
         
         //Formatter to remove the 'T' 
         java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-        for (int i = 0; i < list.size(); i++) {
-            entity.Schedule s = list.get(i);
+        for (int i = 0; i < this.allSchedule.size(); i++) {
+            entity.Schedule s = this.allSchedule.get(i);
+            String facilityName = s.getFacility().getName();
+            String date = s.getDate();
+            ListInterface<ScheduleSession> sessions = s.getSessions();
             
-            //if (s.getAvailability().equals("Available")) {
-                
-                model.addRow(new Object[]{
-                    s.getScheduleId(), 
-                    s.getFacilityId(), 
-                    s.getStartingTime().format(formatter),
-                    s.getEndingTime().format(formatter),   
-                    s.getAvailability()                   
-                });
-                
-            //}
+            for (int j = 0; j < sessions.size(); j++) {
+                //if (s.getAvailability().equals("Available")) {
+                    model.addRow(new Object[]{
+                        facilityName, 
+                        date, 
+                        s.getSessions().get(j).getSession(),
+                        s.getSessions().get(j).getAvailability()
+                    });
+                //}
+            }
         }
     }
 
@@ -71,7 +76,11 @@ public class BookingUI extends javax.swing.JPanel {
         idText1 = new javax.swing.JLabel();
         StudentIdTxtField = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
-        ScheduleIdTextField = new javax.swing.JTextField();
+        FacilityName = new javax.swing.JTextField();
+        DateField = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        SessionField = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
 
         CancelButton.setText("Cancel");
@@ -111,13 +120,13 @@ public class BookingUI extends javax.swing.JPanel {
 
         ScheduleTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Schedule ID", "Facility ID", "Starting Time", "Ending Time", "Availability"
+                "Facility Name", "Date", "Session", "Availability"
             }
         ));
         ScheduleTable.setMinimumSize(new java.awt.Dimension(300, 300));
@@ -140,11 +149,29 @@ public class BookingUI extends javax.swing.JPanel {
         });
 
         jLabel1.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
-        jLabel1.setText("Schedule ID: ");
+        jLabel1.setText("Facility: ");
 
-        ScheduleIdTextField.addActionListener(new java.awt.event.ActionListener() {
+        FacilityName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ScheduleIdTextFieldActionPerformed(evt);
+                FacilityNameActionPerformed(evt);
+            }
+        });
+
+        DateField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DateFieldActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        jLabel3.setText("Date: ");
+
+        jLabel4.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        jLabel4.setText("Session: ");
+
+        SessionField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SessionFieldActionPerformed(evt);
             }
         });
 
@@ -153,16 +180,22 @@ public class BookingUI extends javax.swing.JPanel {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(11, 11, 11)
-                        .addComponent(idText1, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel1))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 14, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(idText1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(ScheduleIdTextField)
-                    .addComponent(StudentIdTxtField, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(FacilityName)
+                    .addComponent(StudentIdTxtField, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(DateField)
+                    .addComponent(SessionField))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -175,7 +208,15 @@ public class BookingUI extends javax.swing.JPanel {
                 .addGap(28, 28, 28)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(ScheduleIdTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(FacilityName, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(28, 28, 28)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(DateField, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(28, 28, 28)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(SessionField, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(225, Short.MAX_VALUE))
         );
 
@@ -189,7 +230,7 @@ public class BookingUI extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 877, Short.MAX_VALUE)
+            .addGap(0, 889, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
@@ -204,7 +245,7 @@ public class BookingUI extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 493, Short.MAX_VALUE)
+            .addGap(0, 613, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
@@ -230,16 +271,20 @@ public class BookingUI extends javax.swing.JPanel {
 
     private void BookButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BookButtonActionPerformed
         String studentId = StudentIdTxtField.getText().trim().toUpperCase();
-        String scheduleId = ScheduleIdTextField.getText().trim().toUpperCase();
+        String facility = FacilityName.getText().trim();
+        String date = DateField.getText().trim();
+        String session = SessionField.getText().trim();
+        String facilityId = new String();
 
-        if (studentId.isEmpty() || scheduleId.isEmpty()) {
+        if (studentId.isEmpty() || facility.isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(this, "Please fill in all fields!", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
             return;
         }
-
-        entity.Schedule selectedSchedule = scheduleManager.getScheduleById(scheduleId);
-        if (selectedSchedule != null) {
-            String facilityId = selectedSchedule.getFacilityId();
+        
+        int[] selectedScheduleIndex = scheduleManager.getSpecificScheduleIndex(facility, date, session);
+        
+        if (selectedScheduleIndex[0] != 0 || selectedScheduleIndex[1] != 0) {
+            facilityId = scheduleManager.getAllSchedule().get(selectedScheduleIndex[0]).getFacility().getFacilityId();
 
             entity.Facility selectedFacility = facilityManager.getFacilityById(facilityId);
 
@@ -328,13 +373,13 @@ public class BookingUI extends javax.swing.JPanel {
             }
         }
 
-        String result = bookingManager.createBooking(studentId, scheduleId);
+        String result = bookingManager.createBooking(studentId, facilityId, date, session);
 
         // Pop ups
         if (result.equals("SUCCESS")) {
             javax.swing.JOptionPane.showMessageDialog(this, "Booking Successful!", "Success", javax.swing.JOptionPane.INFORMATION_MESSAGE);
             StudentIdTxtField.setText(""); // Clear the text boxes
-            ScheduleIdTextField.setText("");
+            FacilityName.setText("");
 
             loadTableData();
         }
@@ -348,28 +393,45 @@ public class BookingUI extends javax.swing.JPanel {
 
     private void ScheduleTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ScheduleTableMouseClicked
         int row = ScheduleTable.getSelectedRow();
-        String id = ScheduleTable.getValueAt(row, 0).toString();
-        ScheduleIdTextField.setText(id);
+        String facility = ScheduleTable.getValueAt(row, 0).toString();
+        String date = ScheduleTable.getValueAt(row, 1).toString();
+        String session = ScheduleTable.getValueAt(row, 2).toString();
+        
+        FacilityName.setText(facility);
+        DateField.setText(date);
+        SessionField.setText(session);
     }//GEN-LAST:event_ScheduleTableMouseClicked
 
     private void StudentIdTxtFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StudentIdTxtFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_StudentIdTxtFieldActionPerformed
 
-    private void ScheduleIdTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ScheduleIdTextFieldActionPerformed
+    private void FacilityNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FacilityNameActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_ScheduleIdTextFieldActionPerformed
+    }//GEN-LAST:event_FacilityNameActionPerformed
+
+    private void DateFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DateFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_DateFieldActionPerformed
+
+    private void SessionFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SessionFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_SessionFieldActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BookButton;
     private javax.swing.JButton CancelButton;
-    private javax.swing.JTextField ScheduleIdTextField;
+    private javax.swing.JTextField DateField;
+    private javax.swing.JTextField FacilityName;
     private javax.swing.JTable ScheduleTable;
+    private javax.swing.JTextField SessionField;
     private javax.swing.JTextField StudentIdTxtField;
     private javax.swing.JLabel idText1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
