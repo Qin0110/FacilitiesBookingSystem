@@ -216,7 +216,14 @@ public class BookingHistoryAndCancel extends javax.swing.JPanel {
     }//GEN-LAST:event_SearchBookingActionPerformed
 
     private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
-        this.setVisible(false);
+        StudentUI studentUI = new StudentUI(bookingManager, scheduleManager);
+
+        java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
+        if (window instanceof javax.swing.JFrame frame) {
+            frame.setContentPane(studentUI);
+            frame.revalidate();
+            frame.repaint();
+        }
     }//GEN-LAST:event_BackButtonActionPerformed
 
     private void CancelBookingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelBookingButtonActionPerformed
