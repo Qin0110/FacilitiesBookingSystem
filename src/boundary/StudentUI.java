@@ -20,7 +20,7 @@ public class StudentUI extends javax.swing.JPanel {
         
     }
     
-    public StudentUI(BookingManagement bookingControl, ScheduleManagement scheduleManager) {
+    public StudentUI(BookingManagement bookingControl, ScheduleControl scheduleManager) {
         this.bookingManager = bookingControl;
         this.scheduleManager = scheduleManager;
         initComponents();
@@ -183,7 +183,7 @@ public class StudentUI extends javax.swing.JPanel {
     }//GEN-LAST:event_makeBookingBTActionPerformed
 
     private void cancelBookingBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBookingBTActionPerformed
-        BookingHistoryAndCancel bookingHistoryUI = new BookingHistoryAndCancel(bookingManager, scheduleManager, facilityManager);
+        BookingHistoryAndCancel bookingHistoryUI = new BookingHistoryAndCancel(bookingManager, scheduleManager);
 
         java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
         if (window instanceof javax.swing.JFrame frame) {
@@ -194,7 +194,7 @@ public class StudentUI extends javax.swing.JPanel {
     }//GEN-LAST:event_cancelBookingBTActionPerformed
 
     private void viewBookingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewBookingButtonActionPerformed
-        BookingHistoryAndCancel bookingHistoryUI = new BookingHistoryAndCancel(bookingManager, scheduleManager, facilityManager);
+        BookingHistoryAndCancel bookingHistoryUI = new BookingHistoryAndCancel(bookingManager, scheduleManager);
 
         java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
         if (window instanceof javax.swing.JFrame frame) {
