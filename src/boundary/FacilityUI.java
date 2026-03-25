@@ -103,6 +103,25 @@ public class FacilityUI extends javax.swing.JPanel {
         }
     }
 
+    
+    private void saveToFile(String defaultFileName, String fileContent, String dialogTitle) {
+        javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
+        fileChooser.setDialogTitle(dialogTitle);
+        fileChooser.setSelectedFile(new java.io.File(defaultFileName));
+        
+        int userSelection = fileChooser.showSaveDialog(this);
+        
+        if (userSelection == javax.swing.JFileChooser.APPROVE_OPTION) {
+            java.io.File fileToSave = fileChooser.getSelectedFile();
+            
+            try (java.io.FileWriter writer = new java.io.FileWriter(fileToSave)) {
+                writer.write(fileContent);
+                javax.swing.JOptionPane.showMessageDialog(this, "File successfully downloaded to:\n" + fileToSave.getAbsolutePath());
+            } catch (java.io.IOException e) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Error saving file: " + e.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -117,6 +136,7 @@ public class FacilityUI extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         typeCB = new javax.swing.JComboBox<>();
         sortCB = new javax.swing.JComboBox<>();
+        jButton4 = new javax.swing.JButton();
 
         jButton1.setText("Add Facility");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -193,6 +213,13 @@ public class FacilityUI extends javax.swing.JPanel {
             }
         });
 
+        jButton4.setText("Generate Report");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -202,7 +229,8 @@ public class FacilityUI extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 639, Short.MAX_VALUE)
@@ -235,7 +263,9 @@ public class FacilityUI extends javax.swing.JPanel {
                         .addGap(18, 18, 18)
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(22, 22, 22))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -334,12 +364,53 @@ public class FacilityUI extends javax.swing.JPanel {
         loadTableData(id);
     }//GEN-LAST:event_sortCBActionPerformed
 
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        String visualReport = facilityManager.generateDistributionReport();
+
+        // 2. Build the visual pane
+        javax.swing.JTextArea textArea = new javax.swing.JTextArea(visualReport);
+        textArea.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 14));
+        textArea.setEditable(false);
+        textArea.setBackground(new java.awt.Color(240, 240, 240));
+
+        javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textArea);
+        scrollPane.setPreferredSize(new java.awt.Dimension(450, 450));
+
+        // 3. Create the custom buttons for the popup
+        Object[] options = {"Close", "Save as .TXT (Visual)", "Download .CSV (Excel)"};
+
+        // 4. Show the dialog!
+        int choice = javax.swing.JOptionPane.showOptionDialog(
+                this, 
+                scrollPane, 
+                "Facility Distribution Report", 
+                javax.swing.JOptionPane.YES_NO_CANCEL_OPTION, 
+                javax.swing.JOptionPane.PLAIN_MESSAGE, 
+                null, 
+                options, 
+                options[0] // Default button is "Close"
+        );
+
+        // 5. Handle the user's click
+        if (choice == 1) { 
+            // They clicked "Save as .TXT"
+            saveToFile("Facility_Distribution_Report.txt", visualReport, "Save Visual Report");
+            
+        } else if (choice == 2) { 
+            // They clicked "Download .CSV"
+            // We call the CSV backend method we made earlier!
+            String csvData = facilityManager.generateDistributionCSV(); 
+            saveToFile("Facility_Data.csv", csvData, "Download CSV Data");
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField facilitySearchTF;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;

@@ -138,5 +138,110 @@ public class FacilityManagement {
                 return 0;
         }
     }
+    
+    public String generateDistributionCSV() {
+        adt.ListInterface<entity.Facility> list = facilityCollection.getAllFacilities();
+        adt.ListInterface<String> uniqueTypes = new adt.SingleLinkedList<>();
+
+        // PHASE 1: Find unique types
+        for (int i = 0; i < list.size(); i++) {
+            String type = list.get(i).getType();
+            boolean exists = false;
+            for (int j = 0; j < uniqueTypes.size(); j++) {
+                if (uniqueTypes.get(j).equalsIgnoreCase(type)) {
+                    exists = true; break;
+                }
+            }
+            if (!exists) uniqueTypes.add(type);
+        }
+
+        // PHASE 2: Build the CSV String
+        StringBuilder csv = new StringBuilder();
+        // The CSV Header row
+        csv.append("Facility Type,Total Quantity,Combined Capacity\n");
+
+        for (int i = 0; i < uniqueTypes.size(); i++) {
+            String currentType = uniqueTypes.get(i);
+            int count = 0;
+            int totalCapacity = 0;
+
+            for (int j = 0; j < list.size(); j++) {
+                entity.Facility f = list.get(j);
+                if (f.getType().equalsIgnoreCase(currentType)) {
+                    count++;
+                    totalCapacity += f.getMaxCapacity();
+                }
+            }
+            
+            // Append the data separated by commas
+            csv.append(currentType).append(",")
+               .append(count).append(",")
+               .append(totalCapacity).append("\n");
+        }
+
+        return csv.toString();
+    }
+    public String generateDistributionReport() {
+        adt.ListInterface<Facility> list = facilityCollection.getAllFacilities();
+        adt.ListInterface<String> uniqueTypes = new adt.SingleLinkedList<>();
+
+        // PHASE 1: Find all unique Facility Types
+        for (int i = 0; i < list.size(); i++) {
+            String type = list.get(i).getType();
+            boolean exists = false;
+
+            // Check if we already found this type
+            for (int j = 0; j < uniqueTypes.size(); j++) {
+                if (uniqueTypes.get(j).equalsIgnoreCase(type)) {
+                    exists = true;
+                    break;
+                }
+            }
+            // If it's a new type, add it to our unique list
+            if (!exists) {
+                uniqueTypes.add(type);
+            }
+        }
+
+        // PHASE 2 & 3: Calculate stats and build the text report
+        StringBuilder report = new StringBuilder();
+        report.append("=====================================================\n");
+        report.append("               FACILITY DISTRIBUTION REPORT\n");
+        report.append("=====================================================\n\n");
+
+        int grandTotalFacilities = 0;
+        int grandTotalCapacity = 0;
+
+        for (int i = 0; i < uniqueTypes.size(); i++) {
+            String currentType = uniqueTypes.get(i);
+            int count = 0;
+            int totalCapacity = 0;
+
+            // Search the whole database to count this specific type
+            for (int j = 0; j < list.size(); j++) {
+                Facility f = list.get(j);
+                if (f.getType().equalsIgnoreCase(currentType)) {
+                    count++;
+                    totalCapacity += f.getMaxCapacity();
+                }
+            }
+
+            // Append the stats to the report
+            report.append(String.format("Facility Type : %s\n", currentType.toUpperCase()));
+            report.append(String.format("  -> Total Quantity    : %d facilities\n", count));
+            report.append(String.format("  -> Combined Capacity : %d people\n", totalCapacity));
+            report.append("-----------------------------------------------------\n");
+
+            grandTotalFacilities += count;
+            grandTotalCapacity += totalCapacity;
+        }
+
+        report.append(String.format("\nGRAND TOTAL FACILITIES : %d\n", grandTotalFacilities));
+        report.append(String.format("GRAND TOTAL CAPACITY   : %d people\n", grandTotalCapacity));
+        report.append("=====================================================\n");
+        report.append("          End of Report - Generated Successfully\n");
+
+        return report.toString();
+    }
 }
  
