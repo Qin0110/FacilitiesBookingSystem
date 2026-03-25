@@ -1,6 +1,6 @@
 package boundary;
 import control.BookingManagement;
-import control.ScheduleManagement;
+import control.ScheduleControl;
 import control.FacilityManagement;
 /**
  *
@@ -9,13 +9,20 @@ import control.FacilityManagement;
 public class StudentUI extends javax.swing.JPanel {
 
     private BookingManagement bookingManager;
-    private ScheduleManagement scheduleManager;
+    private ScheduleControl scheduleManager;
     private FacilityManagement facilityManager;
     
-    public StudentUI(BookingManagement bookingControl, ScheduleManagement scheduleManager, FacilityManagement facilityManager) {
+    public StudentUI(BookingManagement bookingControl, ScheduleControl scheduleManager, FacilityManagement facilityManager) {
         this.bookingManager = bookingControl;
         this.scheduleManager = scheduleManager;
         this.facilityManager = facilityManager;
+        initComponents();
+        
+    }
+    
+    public StudentUI(BookingManagement bookingControl, ScheduleControl scheduleManager) {
+        this.bookingManager = bookingControl;
+        this.scheduleManager = scheduleManager;
         initComponents();
         
     }
@@ -165,15 +172,36 @@ public class StudentUI extends javax.swing.JPanel {
     }//GEN-LAST:event_viewBTActionPerformed
 
     private void makeBookingBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_makeBookingBTActionPerformed
-        //new boundary.BookingUI(bookingManager, scheduleManager, facilityManager).setVisible(true);
+       BookingUI bookingUI = new BookingUI(bookingManager, scheduleManager, facilityManager);
+
+        java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
+        if (window instanceof javax.swing.JFrame frame) {
+            frame.setContentPane(bookingUI);
+            frame.revalidate();
+            frame.repaint();
+        }
     }//GEN-LAST:event_makeBookingBTActionPerformed
 
     private void cancelBookingBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBookingBTActionPerformed
-        //new boundary.BookingHistoryAndCancel(bookingManager, scheduleManager).setVisible(true);
+        BookingHistoryAndCancel bookingHistoryUI = new BookingHistoryAndCancel(bookingManager, scheduleManager);
+
+        java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
+        if (window instanceof javax.swing.JFrame frame) {
+            frame.setContentPane(bookingHistoryUI);
+            frame.revalidate();
+            frame.repaint();
+        }
     }//GEN-LAST:event_cancelBookingBTActionPerformed
 
     private void viewBookingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewBookingButtonActionPerformed
-        //new boundary.BookingHistoryAndCancel(bookingManager, scheduleManager).setVisible(true);
+        BookingHistoryAndCancel bookingHistoryUI = new BookingHistoryAndCancel(bookingManager, scheduleManager);
+
+        java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
+        if (window instanceof javax.swing.JFrame frame) {
+            frame.setContentPane(bookingHistoryUI);
+            frame.revalidate();
+            frame.repaint();
+        }
     }//GEN-LAST:event_viewBookingButtonActionPerformed
 
     private void logoutBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBTActionPerformed

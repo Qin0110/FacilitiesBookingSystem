@@ -6,7 +6,7 @@ package boundary;
 import control.BookingManagement;
 import control.StudentManagement; 
 import control.FacilityManagement;
-import control.ScheduleManagement;
+import control.ScheduleControl;
 import control.AdminManagement;
 /**
  *
@@ -19,11 +19,11 @@ public class AdminUI extends javax.swing.JPanel {
     private AdminManagement adminManager;
     private BookingManagement bookingManager;
     private FacilityManagement facilityManager;
-    private ScheduleManagement scheduleManager;
+    private ScheduleControl scheduleManager;
     /**
      * Creates new form AdminUI67
      */
-    public AdminUI(AdminManagement adminControl, StudentManagement studentControl, BookingManagement bookingControl, FacilityManagement facilityControl, ScheduleManagement scheduleControl) {
+    public AdminUI(AdminManagement adminControl, StudentManagement studentControl, BookingManagement bookingControl, FacilityManagement facilityControl, ScheduleControl scheduleControl) {
         this.studentManager = studentControl;
         this.adminManager = adminControl;
         this.bookingManager = bookingControl;
@@ -198,7 +198,9 @@ public class AdminUI extends javax.swing.JPanel {
     }//GEN-LAST:event_studentManagementBTActionPerformed
 
     private void scheduleManagementBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_scheduleManagementBTActionPerformed
-        // TODO add your handling code here:
+        ScheduleUI scheduleUI = new ScheduleUI(this.scheduleManager);
+        scheduleUI.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        scheduleUI.setVisible(true);
     }//GEN-LAST:event_scheduleManagementBTActionPerformed
 
     private void maintenanceManagementBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_maintenanceManagementBTActionPerformed
