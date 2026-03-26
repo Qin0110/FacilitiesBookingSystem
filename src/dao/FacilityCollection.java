@@ -130,4 +130,70 @@ public class FacilityCollection implements Serializable {
     public int getTotalFacilities() {
         return facilityList.size();
     }
+    
+    public ListInterface<Facility> searchFacility(String keyword, String type) {
+        ListInterface<Facility> results = new adt.SingleLinkedList<>(); // Make sure to use the full path or import it
+
+        for (int i = 0; i < facilityList.size(); i++) {     
+            Facility f = facilityList.get(i);
+
+            boolean matchesKeyword = f.getFacilityId().toLowerCase().contains(keyword.toLowerCase())
+                                  || f.getName().toLowerCase().contains(keyword.toLowerCase());
+
+            boolean matchesType = (type == null || type.equals("ALL")
+                                  || f.getType().equals(type));
+
+            if (matchesKeyword && matchesType) {
+                results.add(f);                       
+            }
+        }
+        return results; 
+    }
+
+    public ListInterface<Facility> searchFacility(String id) {
+        return searchFacility(id, "ALL");
+    }
+
+    public void sortFacilities(String sortBy, String order) {
+        int n = facilityList.size();
+
+        for (int i = 0; i < n - 1; i++) {
+            int indexOfSmallest = i;
+
+            for (int j = i + 1; j < n; j++) {
+                int cmp = compareBy(facilityList.get(j), facilityList.get(indexOfSmallest), sortBy);
+
+                if (order.equalsIgnoreCase("desc")) cmp = -cmp;
+
+                if (cmp < 0) {
+                    indexOfSmallest = j;
+                }
+            }
+
+            if (indexOfSmallest != i) {
+                Facility temp = facilityList.get(i);
+                facilityList.set(i, facilityList.get(indexOfSmallest));
+                facilityList.set(indexOfSmallest, temp);
+            }
+        }
+        
+        saveData(); 
+    }
+
+    private int compareBy(Facility a, Facility b, String attribute) {
+        switch (attribute.toLowerCase()) {
+            case "id":       
+                return a.getFacilityId().compareToIgnoreCase(b.getFacilityId());
+            case "name":     
+                return a.getName().compareToIgnoreCase(b.getName());
+            case "type":     
+                return a.getType().compareToIgnoreCase(b.getType());
+            case "location": 
+                return a.getLocation().compareToIgnoreCase(b.getLocation());
+            case "capacity": 
+                return Integer.compare(a.getMaxCapacity(), b.getMaxCapacity());
+            default:         
+                return 0;
+        }
+    }
 }

@@ -20,6 +20,10 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
     public AdminInAdminModeUI(AdminManagement adminManager) {
         initComponents();
         this.adminManager = adminManager;
+        jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+        
+        adminTable.setShowGrid(false);
+        adminTable.setIntercellSpacing(new java.awt.Dimension(0, 0));
         loadTableData();
     }
     
@@ -27,7 +31,7 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
         //declare reference, =..... is like casting
         //e.g. Object obj = "hello"  -- here type is string but point to object
         //     String str = (String) obj  --change the object to string
-        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
+        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) adminTable.getModel();
         model.setRowCount(0);
         
         adt.ListInterface<entity.Admin> admin = adminManager.getAllAdmins();
@@ -45,7 +49,7 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
     }
     
     private void loadTableData(String id){
-        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
+        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) adminTable.getModel();
         model.setRowCount(0);
         
         Object selected = typeCB.getSelectedItem();
@@ -88,7 +92,7 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
         removeBT = new javax.swing.JButton();
         updateBT = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        adminTable = new javax.swing.JTable();
         adminSearchTF = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         typeCB = new javax.swing.JComboBox<>();
@@ -114,7 +118,9 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jScrollPane1.setBorder(null);
+
+        adminTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
                 {null, null, null, null, null},
@@ -133,7 +139,7 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(adminTable);
 
         adminSearchTF.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -214,7 +220,7 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
     }//GEN-LAST:event_AddBTActionPerformed
 
     private void removeBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeBTActionPerformed
-        int selectedRow = jTable1.getSelectedRow();
+        int selectedRow = adminTable.getSelectedRow();
 
         if (selectedRow == -1) {
             javax.swing.JOptionPane.showMessageDialog(this,
@@ -224,8 +230,8 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
             return;
         }
 
-        String adminId = jTable1.getValueAt(selectedRow, 0).toString();
-        String name = jTable1.getValueAt(selectedRow, 1).toString();
+        String adminId = adminTable.getValueAt(selectedRow, 0).toString();
+        String name = adminTable.getValueAt(selectedRow, 1).toString();
 
         int confirm = javax.swing.JOptionPane.showConfirmDialog(this,
             "Are you sure you want to remove " + name + " (" + adminId + ")?",
@@ -252,7 +258,7 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
     }//GEN-LAST:event_removeBTActionPerformed
 
     private void updateBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBTActionPerformed
-        int selectedRow = jTable1.getSelectedRow();
+        int selectedRow = adminTable.getSelectedRow();
         String id, name, position, email, phoneNumber;
 
         if (selectedRow == -1) {
@@ -263,11 +269,11 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
             return;
         }
 
-        id = jTable1.getValueAt(selectedRow, 0).toString();
-        name = jTable1.getValueAt(selectedRow, 1).toString();
-        position = jTable1.getValueAt(selectedRow, 2).toString();
-        email = jTable1.getValueAt(selectedRow, 3).toString();
-        phoneNumber = jTable1.getValueAt(selectedRow, 4).toString();
+        id = adminTable.getValueAt(selectedRow, 0).toString();
+        name = adminTable.getValueAt(selectedRow, 1).toString();
+        position = adminTable.getValueAt(selectedRow, 2).toString();
+        email = adminTable.getValueAt(selectedRow, 3).toString();
+        phoneNumber = adminTable.getValueAt(selectedRow, 4).toString();
 
         entity.Admin selectedAdmin = new entity.Admin(id, name, position, email, phoneNumber);
 
@@ -309,9 +315,9 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton AddBT;
     private javax.swing.JTextField adminSearchTF;
+    private javax.swing.JTable adminTable;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JButton removeBT;
     private javax.swing.JComboBox<String> typeCB;
     private javax.swing.JButton updateBT;

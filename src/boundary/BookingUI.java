@@ -24,9 +24,25 @@ public class BookingUI extends javax.swing.JPanel {
     
     public BookingUI(BookingManagement bookingManager, ScheduleControl scheduleManager, FacilityManagement facilityManager) {
         initComponents();
+       
+      
         this.bookingManager = bookingManager;
         this.scheduleManager = scheduleManager;
-//        this.facilityManager = facilityManager;
+        this.facilityManager = facilityManager;
+        GroupBorderRenderer renderer = new GroupBorderRenderer(3, false); 
+        for (int i = 0; i < ScheduleTable.getColumnCount(); i++) {
+            ScheduleTable.getColumnModel().getColumn(i).setCellRenderer(renderer);
+        }
+        dateCB.removeAllItems();
+        java.time.LocalDate today = java.time.LocalDate.now();
+        for (int dayOffset = 0; dayOffset < 3; dayOffset++) {
+            java.time.LocalDate targetDate = today.plusDays(dayOffset);
+            String targetDateString = targetDate.format(entity.Schedule.DATE_FORMATTER);
+            dateCB.addItem(targetDateString);
+        }
+        if (dateCB.getItemCount() > 0) {
+            dateCB.setSelectedIndex(0);
+        }
         loadTableData();
         this.addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
@@ -39,10 +55,10 @@ public class BookingUI extends javax.swing.JPanel {
         javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) ScheduleTable.getModel();
         model.setRowCount(0);
         
-        this.allSchedule = scheduleManager.getAllSchedule();
+        this.allSchedule = scheduleManager.getThreeDaySchedules();
         
         //Formatter to remove the 'T' 
-        java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        /*java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
         for (int i = 0; i < this.allSchedule.size(); i++) {
             entity.Schedule s = this.allSchedule.get(i);
@@ -60,7 +76,54 @@ public class BookingUI extends javax.swing.JPanel {
                     });
                 //}
             }
+        }*/
+        String selectedDate = (String) dateCB.getSelectedItem();
+        if (selectedDate == null || this.allSchedule == null) return;
+
+        // Grab the current time and a formatter to check against
+        java.time.LocalDateTime now = java.time.LocalDateTime.now();
+        java.time.format.DateTimeFormatter dateFormatter = java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+        for (int i = 0; i < this.allSchedule.size(); i++) {
+            entity.Schedule s = this.allSchedule.get(i);
+            
+            if (s.getDate().equals(selectedDate)) {
+                
+                String facilityName = s.getFacility().getName();
+                String date = s.getDate();
+                adt.ListInterface<ScheduleSession> sessions = s.getSessions();
+
+                for (int j = 0; j < sessions.size(); j++) {
+                    String sessionStr = sessions.get(j).getSession();
+                    
+                    String startTimeStr = sessionStr.split(" ")[0]; 
+                        
+                    java.time.LocalDate schedDate = java.time.LocalDate.parse(date, dateFormatter);
+                    java.time.LocalTime startTime = java.time.LocalTime.parse(startTimeStr);
+                    java.time.LocalDateTime sessionStartDateTime = java.time.LocalDateTime.of(schedDate, startTime);
+
+                    if (sessionStartDateTime.isBefore(now)) {
+                        model.addRow(new Object[]{
+                            facilityName, 
+                            date, 
+                            sessionStr,
+                            "Expired" 
+                        });
+                    } else {
+                        model.addRow(new Object[]{
+                            facilityName, 
+                            date, 
+                            sessionStr,
+                            sessions.get(j).getAvailability()
+                        });
+                    }
+                        
+              
+                }
+            }
         }
+        
+        
     }
 
     /**
@@ -72,9 +135,6 @@ public class BookingUI extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel2 = new javax.swing.JPanel();
-        CancelButton = new javax.swing.JButton();
-        BookButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         ScheduleTable = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
@@ -82,46 +142,15 @@ public class BookingUI extends javax.swing.JPanel {
         StudentIdTxtField = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         FacilityName = new javax.swing.JTextField();
-        DateField = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         SessionField = new javax.swing.JTextField();
+        dateCB = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
+        CancelButton = new javax.swing.JButton();
+        BookButton = new javax.swing.JButton();
 
-        CancelButton.setText("Cancel");
-        CancelButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CancelButtonActionPerformed(evt);
-            }
-        });
-
-        BookButton.setText("Book Facility");
-        BookButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BookButtonActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(645, Short.MAX_VALUE)
-                .addComponent(CancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(BookButton)
-                .addGap(24, 24, 24))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(25, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(BookButton)
-                    .addComponent(CancelButton))
-                .addGap(17, 17, 17))
-        );
+        jScrollPane1.setBorder(null);
 
         ScheduleTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -133,7 +162,15 @@ public class BookingUI extends javax.swing.JPanel {
             new String [] {
                 "Facility Name", "Date", "Session", "Availability"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         ScheduleTable.setMinimumSize(new java.awt.Dimension(300, 300));
         ScheduleTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -162,12 +199,6 @@ public class BookingUI extends javax.swing.JPanel {
             }
         });
 
-        DateField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DateFieldActionPerformed(evt);
-            }
-        });
-
         jLabel3.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
         jLabel3.setText("Date: ");
 
@@ -180,28 +211,30 @@ public class BookingUI extends javax.swing.JPanel {
             }
         });
 
+        dateCB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dateCBActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 14, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel1))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 14, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(idText1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(FacilityName)
-                    .addComponent(StudentIdTxtField, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(DateField)
+                    .addComponent(jLabel1)
+                    .addComponent(idText1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(dateCB, javax.swing.GroupLayout.Alignment.LEADING, 0, 165, Short.MAX_VALUE)
+                    .addComponent(FacilityName, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(StudentIdTxtField, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(SessionField))
-                .addContainerGap())
+                .addGap(9, 9, 9))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -214,15 +247,15 @@ public class BookingUI extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(FacilityName, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(28, 28, 28)
+                .addGap(29, 29, 29)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(DateField, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(28, 28, 28)
+                    .addComponent(dateCB, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addGap(31, 31, 31)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(SessionField, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(225, Short.MAX_VALUE))
+                .addContainerGap(192, Short.MAX_VALUE))
         );
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
@@ -231,35 +264,54 @@ public class BookingUI extends javax.swing.JPanel {
         jLabel2.setMaximumSize(new java.awt.Dimension(270, 120));
         jLabel2.setMinimumSize(new java.awt.Dimension(270, 120));
 
+        CancelButton.setText("Cancel");
+        CancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CancelButtonActionPerformed(evt);
+            }
+        });
+
+        BookButton.setText("Book Facility");
+        BookButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BookButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 889, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 877, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(0, 0, 0)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 511, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 511, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(CancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(BookButton)))))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 613, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(33, 33, 33)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(33, 33, 33)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(CancelButton)
+                            .addComponent(BookButton)))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -277,7 +329,7 @@ public class BookingUI extends javax.swing.JPanel {
     private void BookButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BookButtonActionPerformed
         String studentId = StudentIdTxtField.getText().trim().toUpperCase();
         String facility = FacilityName.getText().trim();
-        String date = DateField.getText().trim();
+        String date = dateCB.getSelectedItem().toString().trim();
         String session = SessionField.getText().trim();
         String facilityId = new String();
 
@@ -288,7 +340,7 @@ public class BookingUI extends javax.swing.JPanel {
         
         int[] selectedScheduleIndex = scheduleManager.getSpecificScheduleIndex(facility, date, session);
         
-        if (selectedScheduleIndex[0] != 0 || selectedScheduleIndex[1] != 0) {
+        if (selectedScheduleIndex[0] != -1 && selectedScheduleIndex[1] != -1) {
             facilityId = scheduleManager.getAllSchedule().get(selectedScheduleIndex[0]).getFacility().getFacilityId();
 
             entity.Facility selectedFacility = facilityManager.getFacilityById(facilityId);
@@ -383,13 +435,19 @@ public class BookingUI extends javax.swing.JPanel {
         // Pop ups
         if (result.equals("SUCCESS")) {
             javax.swing.JOptionPane.showMessageDialog(this, "Booking Successful!", "Success", javax.swing.JOptionPane.INFORMATION_MESSAGE);
-            StudentIdTxtField.setText(""); // Clear the text boxes
+            StudentIdTxtField.setText("");
             FacilityName.setText("");
+            SessionField.setText("");
 
             loadTableData();
         }
         else if (result.equals("FULL")) {
             javax.swing.JOptionPane.showMessageDialog(this, "This facility is already booked! Please choose an Available schedule.", "Facility Full", javax.swing.JOptionPane.WARNING_MESSAGE);
+        }
+        else if(result.equals("LIMIT_REACHED")){
+            javax.swing.JOptionPane.showMessageDialog(this, "Booking Limit Exceeded!\nYou can only make a maximum of 3 bookings per day", "Limit Reached", javax.swing.JOptionPane.WARNING_MESSAGE);
+
+        
         }
         else {
             javax.swing.JOptionPane.showMessageDialog(this, "Error: " + result, "Failed", javax.swing.JOptionPane.ERROR_MESSAGE);
@@ -398,12 +456,21 @@ public class BookingUI extends javax.swing.JPanel {
 
     private void ScheduleTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ScheduleTableMouseClicked
         int row = ScheduleTable.getSelectedRow();
+        if (row == -1) return;
+        
         String facility = ScheduleTable.getValueAt(row, 0).toString();
         String date = ScheduleTable.getValueAt(row, 1).toString();
         String session = ScheduleTable.getValueAt(row, 2).toString();
+        String status = ScheduleTable.getValueAt(row, 3).toString(); // Grab the status
+        
+        if (status.equals("Expired") || status.equals("Booked") || status.equals("Unavailable")) {
+            ScheduleTable.clearSelection(); 
+            FacilityName.setText("");       
+            SessionField.setText("");
+            return;
+        }
         
         FacilityName.setText(facility);
-        DateField.setText(date);
         SessionField.setText(session);
     }//GEN-LAST:event_ScheduleTableMouseClicked
 
@@ -415,30 +482,29 @@ public class BookingUI extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_FacilityNameActionPerformed
 
-    private void DateFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DateFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_DateFieldActionPerformed
-
     private void SessionFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SessionFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_SessionFieldActionPerformed
+
+    private void dateCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dateCBActionPerformed
+        loadTableData();
+    }//GEN-LAST:event_dateCBActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BookButton;
     private javax.swing.JButton CancelButton;
-    private javax.swing.JTextField DateField;
     private javax.swing.JTextField FacilityName;
     private javax.swing.JTable ScheduleTable;
     private javax.swing.JTextField SessionField;
     private javax.swing.JTextField StudentIdTxtField;
+    private javax.swing.JComboBox<String> dateCB;
     private javax.swing.JLabel idText1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }

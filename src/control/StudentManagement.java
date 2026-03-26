@@ -1,5 +1,4 @@
 package control;
-import adt.ArrayList; //not used here
 import adt.SingleLinkedList;
 import adt.ListInterface;
 import entity.Student;

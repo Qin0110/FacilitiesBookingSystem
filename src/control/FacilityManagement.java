@@ -68,82 +68,27 @@ public class FacilityManagement {
         }
         return "Error: Facility not found.";
     }
- 
-    public ListInterface<Facility> searchFacility(String keyword, String type) {
-        ListInterface<Facility> results = new SingleLinkedList<>();
-        ListInterface<Facility> facilityList = facilityCollection.getAllFacilities();
-
-        for (int i = 0; i < facilityList.size(); i++) {     
-            Facility f = facilityList.get(i);
-
-            boolean matchesKeyword = f.getFacilityId().toLowerCase().contains(keyword.toLowerCase())
-                                  || f.getName().toLowerCase().contains(keyword.toLowerCase());
-
-            boolean matchesType = (type == null || type.equals("ALL")
-                                  || f.getType().equals(type));
-
-            if (matchesKeyword && matchesType) {
-                results.add(f);                       
-            }
-        }
-        return results; 
-    }
     
     public Facility getFacilityById(String facilityId) {
         return facilityCollection.getFacilityById(facilityId);
     }
  
-    public ListInterface<Facility> searchFacility(String id) {
-        return searchFacility(id, "ALL");
+    public ListInterface<Facility> searchFacility(String keyword, String type) {
+        return facilityCollection.searchFacility(keyword, type);
     }
     
-    public ListInterface<Facility> sortFacilities(String sortBy, String order) {
-        ListInterface<Facility> list = facilityCollection.getAllFacilities();
-        int n = list.size();
-
-        for (int i = 0; i < n - 1; i++) {
-            int indexOfSmallest = i;
-
-            for (int j = i + 1; j < n; j++) {
-                int cmp = compareBy(list.get(j), list.get(indexOfSmallest), sortBy);
-
-                if (order.equalsIgnoreCase("desc")) cmp = -cmp;
-
-                if (cmp < 0) {
-                    indexOfSmallest = j;
-                }
-            }
-
-            if (indexOfSmallest != i) {
-                Facility temp = list.get(i);
-                list.set(i,              list.get(indexOfSmallest));
-                list.set(indexOfSmallest, temp);
-            }
-        }
-        return list;
+    public ListInterface<Facility> searchFacility(String id) {
+        return facilityCollection.searchFacility(id);
     }
-    private int compareBy(Facility a, Facility b, String attribute) {
-        switch (attribute.toLowerCase()) {
-            case "id":       
-                return a.getFacilityId().compareToIgnoreCase(b.getFacilityId());
-            case "name":     
-                return a.getName().compareToIgnoreCase(b.getName());
-            case "type":     
-                return a.getType().compareToIgnoreCase(b.getType());
-            case "location": 
-                return a.getLocation().compareToIgnoreCase(b.getLocation());
-            case "capacity": 
-                return Integer.compare(a.getMaxCapacity(), b.getMaxCapacity());
-            default:         
-                return 0;
-        }
+    
+    public void sortFacilities(String sortBy, String order) {
+        facilityCollection.sortFacilities(sortBy, order);
     }
     
     public String generateDistributionCSV() {
         adt.ListInterface<entity.Facility> list = facilityCollection.getAllFacilities();
         adt.ListInterface<String> uniqueTypes = new adt.SingleLinkedList<>();
 
-        // PHASE 1: Find unique types
         for (int i = 0; i < list.size(); i++) {
             String type = list.get(i).getType();
             boolean exists = false;
@@ -155,9 +100,7 @@ public class FacilityManagement {
             if (!exists) uniqueTypes.add(type);
         }
 
-        // PHASE 2: Build the CSV String
         StringBuilder csv = new StringBuilder();
-        // The CSV Header row
         csv.append("Facility Type,Total Quantity,Combined Capacity\n");
 
         for (int i = 0; i < uniqueTypes.size(); i++) {
@@ -173,7 +116,6 @@ public class FacilityManagement {
                 }
             }
             
-            // Append the data separated by commas
             csv.append(currentType).append(",")
                .append(count).append(",")
                .append(totalCapacity).append("\n");
@@ -181,29 +123,26 @@ public class FacilityManagement {
 
         return csv.toString();
     }
+    
     public String generateDistributionReport() {
         adt.ListInterface<Facility> list = facilityCollection.getAllFacilities();
         adt.ListInterface<String> uniqueTypes = new adt.SingleLinkedList<>();
 
-        // PHASE 1: Find all unique Facility Types
         for (int i = 0; i < list.size(); i++) {
             String type = list.get(i).getType();
             boolean exists = false;
 
-            // Check if we already found this type
             for (int j = 0; j < uniqueTypes.size(); j++) {
                 if (uniqueTypes.get(j).equalsIgnoreCase(type)) {
                     exists = true;
                     break;
                 }
             }
-            // If it's a new type, add it to our unique list
             if (!exists) {
                 uniqueTypes.add(type);
             }
         }
 
-        // PHASE 2 & 3: Calculate stats and build the text report
         StringBuilder report = new StringBuilder();
         report.append("=====================================================\n");
         report.append("               FACILITY DISTRIBUTION REPORT\n");
@@ -217,7 +156,6 @@ public class FacilityManagement {
             int count = 0;
             int totalCapacity = 0;
 
-            // Search the whole database to count this specific type
             for (int j = 0; j < list.size(); j++) {
                 Facility f = list.get(j);
                 if (f.getType().equalsIgnoreCase(currentType)) {
@@ -226,7 +164,6 @@ public class FacilityManagement {
                 }
             }
 
-            // Append the stats to the report
             report.append(String.format("Facility Type : %s\n", currentType.toUpperCase()));
             report.append(String.format("  -> Total Quantity    : %d facilities\n", count));
             report.append(String.format("  -> Combined Capacity : %d people\n", totalCapacity));

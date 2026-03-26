@@ -26,7 +26,6 @@ public class ScheduleControl implements Serializable{
         this.facilities = facilityDAO.getAllFacilities();
         
         if (this.schedule == null) {
-            System.out.println("No save file found. Start from fresh.");
             this.schedule = new SingleLinkedList<>();
         }
         
@@ -82,6 +81,17 @@ public class ScheduleControl implements Serializable{
             currentTime = nextTime;
         }
         return sessions; 
+    }
+    
+    // Use when add new facility
+    public void addNewSchedule(Facility facility){
+        Schedule newSchedule = new Schedule(facility);
+        try {
+            newSchedule.setSessions(this.divideSession(newSchedule));
+            schedule.add(newSchedule);
+        } catch(Exception e) {
+            System.out.println("Failed to add new schedule. Error: " + e);
+        }
     }
     
     public void displayAllSchedule(){
@@ -142,17 +152,21 @@ public class ScheduleControl implements Serializable{
         return new int[]{facilityDateIndex, sessionIndex};
     }
     
-    public void deleteFacilititySchedule(int index){
+    public boolean deleteFacilititySchedule(int index){
         try {
             if(schedule.remove(index)){
-                System.out.println("Deletion Complete.");
+                //System.out.println("Deletion Complete.");
                 scheduleDAO.saveSchedules(this.schedule);
-            } else {
-                System.out.println("Deletion Failed.");
-            }
+                return true;
+            } 
+//            else {
+//                System.out.println("Deletion Failed.");
+//            }
         } catch(Exception e) {
             System.out.println("Failed to perform deletion. Error: " + e);
         }
+        
+        return false;
     }
     
     public boolean deleteScheduleSession(int facilityIndex, int timeIndex){
@@ -192,14 +206,30 @@ public class ScheduleControl implements Serializable{
         }
     }
     
-    // Use when add new facility
-    public void addNewSchedule(Facility facility){
-        Schedule newSchedule = new Schedule(facility);
-        try {
-            newSchedule.setSessions(this.divideSession(newSchedule));
-            schedule.add(newSchedule);
-        } catch(Exception e) {
-            System.out.println("Failed to add new schedule. Error: " + e);
+    public adt.ListInterface<entity.Schedule> getThreeDaySchedules() {
+        adt.ListInterface<entity.Schedule> filteredList = new adt.SingleLinkedList<>();
+        java.time.LocalDate today = java.time.LocalDate.now();
+        
+        String[] validDates = new String[3];
+        for (int i = 0; i < 3; i++) {
+            validDates[i] = today.plusDays(i).format(entity.Schedule.DATE_FORMATTER);
         }
+
+        for (int i = 0; i < this.schedule.size(); i++) {
+            entity.Schedule s = this.schedule.get(i);
+            String scheduleDate = s.getDate();
+            
+            if (scheduleDate.equals(validDates[0]) || 
+                scheduleDate.equals(validDates[1]) || 
+                scheduleDate.equals(validDates[2])) {
+                
+                filteredList.add(s);
+            }
+        }
+        
+        return filteredList;
     }
+    
+
+
 }

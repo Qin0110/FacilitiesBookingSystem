@@ -21,7 +21,7 @@ public class AdminDialog extends javax.swing.JDialog {
         this.adminManager = adminManager;
         saveBT.setText("Save");
         this.setTitle("Add Admin");
-        this.setSize(467, 450);
+        this.setSize(400, 450);
         backBT.setVisible(false);
         editBT.setVisible(false);
         cancelBT.setVisible(true);
@@ -46,11 +46,13 @@ public class AdminDialog extends javax.swing.JDialog {
         idTF.setEnabled(false);
         saveBT.setText("Update");
         this.setTitle("Update Admin Details");
-        this.setSize(467, 450);
+        this.setSize(400, 450);
         backBT.setVisible(true);
         editBT.setVisible(true);
         cancelBT.setVisible(false);
         saveBT.setVisible(false);
+        
+        
         idTF.setEditable(false);
         nameTF.setEditable(false);
         positionCB.setEnabled(false);
@@ -260,44 +262,57 @@ public class AdminDialog extends javax.swing.JDialog {
 
         if (id.isEmpty() || name.isEmpty() || email.isEmpty() || phoneNumber.isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(this,
-                "Please fill in all text fields!", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
-            return;
+                "Please fill in all text fields!", "Missing Input", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return; 
         }
 
-        try {
-            String message = adminManager.addNewAdmin(id, name, position, email, phoneNumber);
-
-            if (isUpdateMode) {
-                message = adminManager.updateAdmin(id, name, position, email, phoneNumber);
-            } else {
-                message = adminManager.addNewAdmin(id, name, position, email, phoneNumber);
-            }
-            // check if message starts with "Invalid"
-            if (message.startsWith("INVALID_INPUT:")) {
-                javax.swing.JOptionPane.showMessageDialog(this, message, "Database Error", javax.swing.JOptionPane.ERROR_MESSAGE);
-            } else {
-                javax.swing.JOptionPane.showMessageDialog(this, message);
-                this.dispose();
-            }
-
-            //            if (message.equals("Admin Successfully Added") || message.equals("Admin Successfully Updated")) {
-                //                javax.swing.JOptionPane.showMessageDialog(this, message);
-                //                this.dispose();
-                //            } else {
-                //                javax.swing.JOptionPane.showMessageDialog(this, message, "Database Error", javax.swing.JOptionPane.ERROR_MESSAGE);
-                //            }
-
-        }catch (Exception e) {
+        if (id.length() > 10) {
             javax.swing.JOptionPane.showMessageDialog(this,
-                "System Error: " + e.getMessage(),
-                "Error",
-                javax.swing.JOptionPane.ERROR_MESSAGE);
-
+                "ID is too long! Maximum 10 characters allowed.", "Invalid Length", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return; 
         }
+        
+        if (name.length() < 3 || name.length() > 50) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Name must be between 3 and 50 characters.", "Invalid Length", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return; 
+        }
+        
+        if (email.length() > 100) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Email is too long! Maximum 100 characters allowed.", "Invalid Length", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return; 
+        }
+
+      
+        String message;
+            
+        if (isUpdateMode) {
+            message = adminManager.updateAdmin(id, name, position, email, phoneNumber);
+        } else {
+            message = adminManager.addNewAdmin(id, name, position, email, phoneNumber);
+        }
+
+        if (message.equals("TRUE")) {
+            String successMsg = isUpdateMode ? "Admin Successfully Updated!" : "Admin Successfully Added!";
+            javax.swing.JOptionPane.showMessageDialog(this, successMsg, "Success", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            this.dispose(); 
+        } 
+        else if (message.startsWith("ERROR:")) {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                message.replace("ERROR: ", ""), // Remove the "ERROR:" prefix for a cleaner popup
+                "Validation Error", 
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+        } 
+        else {
+            javax.swing.JOptionPane.showMessageDialog(this, message, "Failed", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+
+       
     }//GEN-LAST:event_saveBTActionPerformed
 
     private void positionCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_positionCBActionPerformed
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_positionCBActionPerformed
 
 

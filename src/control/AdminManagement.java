@@ -1,5 +1,4 @@
 package control;
-import adt.ArrayList; //not used here
 import adt.SingleLinkedList;
 import adt.ListInterface;
 import entity.Admin;
@@ -20,15 +19,22 @@ public class AdminManagement {
     // Add New Admin
     // ===============================
     public String addNewAdmin(String id, String name, String position, String email, String phoneNumber) {
-
         try {
             Admin newAdmin = new Admin(id, name, position, email, phoneNumber);
-            adminCollection.add(newAdmin);
+            
+            boolean isAdded = adminCollection.add(newAdmin); 
+            
+            if (!isAdded) {
+                return "ERROR: Admin ID '" + id + "' already exists! Please use a unique ID.";
+            }
+            
         } catch (IllegalArgumentException e) {
             return "ERROR: " + e.getMessage();
         }
         return "TRUE";
     }
+    
+    
 
     // ===============================
     // Get All Admins

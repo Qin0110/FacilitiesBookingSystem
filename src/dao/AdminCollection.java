@@ -17,7 +17,7 @@ public class AdminCollection implements Serializable {
         if (adminList.isEmpty()) {
             
             adminList.add(new Admin("A001", "Mr. Tan", "Facility Manager", "tan099@gmail.com", "017-3573716"));
-            adminList.add(new Admin("A002", "Mr. Khoo", "Facility Manager", "khoo666@gmail.com", "019-669-5214"));
+            adminList.add(new Admin("A002", "Mr. Khoo", "Facility Manager", "khoo666@gmail.com", "019-6695214"));
             adminList.add(new Admin("A005", "Ms. Lim", "Facility Assistant", "lim123@gmail.com", "012-3456789"));
             adminList.add(new Admin("A003", "Mr. Lee", "Facility Assistant", "lee888@gmail.com", "013-9876543"));
             adminList.add(new Admin("A004", "Ms. Wong", "Facility Manager", "wong777@gmail.com", "016-2233445"));
