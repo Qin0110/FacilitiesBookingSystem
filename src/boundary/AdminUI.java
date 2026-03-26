@@ -84,7 +84,7 @@ public class AdminUI extends javax.swing.JPanel {
             }
         });
 
-        BookingBT.setText("Booking & Waitlist Override");
+        BookingBT.setText("Booking History");
         BookingBT.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BookingBTActionPerformed(evt);

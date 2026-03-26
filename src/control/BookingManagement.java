@@ -56,7 +56,7 @@ public class BookingManagement {
         }
         
         int dailyBookings = countStudentBookingsPerDay(studentId, date);
-        if(dailyBookings >= 3)
+        if(dailyBookings >= 2)
             return "LIMIT_REACHED";
         
         
@@ -109,6 +109,108 @@ public class BookingManagement {
     
     public ListInterface<Booking> getAllBookings() {
         return bookingCollection.getAllBookings();
+    }
+    
+    public ListInterface<entity.Booking> searchBooking(String query, String criteria) {
+        adt.ListInterface<Booking> allBookings = bookingCollection.getAllBookings();
+
+        if (query == null || query.trim().isEmpty()) {
+            return allBookings; 
+        }
+
+        String lowerCaseQuery = query.toLowerCase().trim();
+        adt.ListInterface<Booking> searchResults = new adt.SingleLinkedList<>();
+
+        for (int i = 0; i < allBookings.size(); i++) {
+            Booking b = allBookings.get(i);
+            boolean matchesSearch = false;
+
+            String facilityName = "";
+            if (b.getSchedule() != null && b.getSchedule().getFacility() != null) {
+                facilityName = b.getSchedule().getFacility().getName().toLowerCase();
+            }
+
+            switch (criteria.toUpperCase()) {
+                case "BOOKING ID":
+                    matchesSearch = b.getBookingId().toLowerCase().contains(lowerCaseQuery);
+                    break;
+                case "STUDENT ID":
+                    matchesSearch = b.getStudentId().toLowerCase().contains(lowerCaseQuery);
+                    break;
+                case "FACILITY NAME":
+                    matchesSearch = facilityName.contains(lowerCaseQuery);
+                    break;
+                case "DATE/SESSION":
+                    matchesSearch = b.getScheduleSession().toLowerCase().contains(lowerCaseQuery);
+                    break;
+                case "STATUS":
+                    matchesSearch = b.getStatus().toLowerCase().contains(lowerCaseQuery);
+                    break;
+                default: 
+                    matchesSearch = b.getBookingId().toLowerCase().contains(lowerCaseQuery) ||
+                                    b.getStudentId().toLowerCase().contains(lowerCaseQuery) ||
+                                    b.getStatus().toLowerCase().contains(lowerCaseQuery) ||
+                                    b.getScheduleSession().toLowerCase().contains(lowerCaseQuery) || 
+                                    facilityName.contains(lowerCaseQuery);
+                    break;
+            }
+
+            if (matchesSearch) {
+                searchResults.add(b);
+            }
+        }
+
+        return searchResults;
+    }
+    
+    public adt.ListInterface<entity.Booking> sortBookings(adt.ListInterface<entity.Booking> listToSort, String criteria, boolean ascending) {
+        adt.ListInterface<entity.Booking> sortedList = new adt.SingleLinkedList<>();
+        for (int i = 0; i < listToSort.size(); i++) {
+            sortedList.add(listToSort.get(i));
+        }
+
+        int n = sortedList.size();
+        
+        if (n <= 1) {
+            return sortedList;
+        } 
+        for (int i = 1; i < n; i++) {
+            entity.Booking currentItem = sortedList.get(i);
+            int j = i - 1;
+
+            while (j >= 0) {
+                entity.Booking itemToCompare = sortedList.get(j);
+                
+                int cmp = compareBy(itemToCompare, currentItem, criteria);
+                
+                if (!ascending) cmp = -cmp;
+
+                if (cmp > 0) {
+                    sortedList.set(j + 1, itemToCompare);
+                    j--;
+                } else {
+                    break; 
+                }
+            }
+            sortedList.set(j + 1, currentItem);
+        }
+        return sortedList;
+    }
+
+
+    private int compareBy(entity.Booking a, entity.Booking b, String attribute) {
+        switch (attribute.toUpperCase()) {
+            case "BOOKING ID":
+                return a.getBookingId().compareToIgnoreCase(b.getBookingId());
+            case "STUDENT ID":
+                return a.getStudentId().compareToIgnoreCase(b.getStudentId());
+            case "STATUS":
+                return a.getStatus().compareToIgnoreCase(b.getStatus());
+            case "DATE":
+                return a.getScheduleSession().compareToIgnoreCase(b.getScheduleSession());
+            default:
+                return 0; 
+        }
     }
     
     public boolean validateMember(String studentId, String studentName) {

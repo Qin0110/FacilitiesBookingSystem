@@ -36,7 +36,7 @@ public class MainMenu extends javax.swing.JFrame {
         this.bookingManager = bookingManager;
         this.facilityManager = facilityManager;
         this.scheduleManager = scheduleManager;
-        
+        setTitle("TARUMT FACILITIES BOOKING SYSTEM");
     }
     
     public void backToMenu() {

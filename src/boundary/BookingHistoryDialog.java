@@ -354,7 +354,12 @@ public class BookingHistoryDialog extends javax.swing.JDialog {
             this.statusTF.setText("In Progress"); 
             this.arrivalTimeTF.setText(java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         } else {
-            javax.swing.JOptionPane.showMessageDialog(this, "Check-In Failed. Status must be 'Pending' or 'Confirmed'.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Check-In Failed.\n\n" +
+                "1. The booking status must be 'Pending' or 'Confirmed'.\n" +
+                "2. The current time must be within the valid check-in window (15 mins before/after start time).", 
+                "Check-In Error", 
+                javax.swing.JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_CheckInButtonActionPerformed
 
@@ -365,7 +370,11 @@ public class BookingHistoryDialog extends javax.swing.JDialog {
             this.statusTF.setText("Completed");
             this.leavingTimeTF.setText(java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         } else {
-            javax.swing.JOptionPane.showMessageDialog(this, "Check-Out Failed. Status must be 'In Progress'.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Check-Out Failed.\n\n" +
+                "The student's booking must currently be 'In Progress' to perform a check-out.", 
+                "Check-Out Error", 
+                javax.swing.JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_CheckOutButtonActionPerformed
 

@@ -5,46 +5,43 @@ import control.ScheduleControl;
 import adt.*;
 import entity.Booking;
 import entity.Schedule;
-import entity.ScheduleSession;
 
 public class BookingHistoryAndCancel extends javax.swing.JPanel {
     
     private BookingManagement bookingManager;
-    private ScheduleControl scheduleManager;
     private ListInterface<Booking> allBookings;
-    private ListInterface<Schedule> allSchedules;
     
     public BookingHistoryAndCancel(BookingManagement bookingManager, ScheduleControl scheduleManager) {
         initComponents();
         this.bookingManager = bookingManager;
-        this.scheduleManager = scheduleManager;
-        this.allBookings = bookingManager.getAllBookings();
-        this.allSchedules = scheduleManager.getAllSchedule();
-        
+        this.allBookings = bookingManager.getAllBookings();        
     }
     
     private void loadBookingTable(String targetStudentId) {
         javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) BookingTable.getModel();
         model.setRowCount(0); 
 
-        for (int i = 0; i < this.allBookings.size(); i++) {
-            Booking b = this.allBookings.get(i);
+
+        adt.ListInterface<entity.Booking> searchResults = bookingManager.searchBooking(targetStudentId, "Student ID");
+
+        adt.ListInterface<entity.Booking> finalSortedList = bookingManager.sortBookings(searchResults, "Date", true);
+
+        for (int i = 0; i < finalSortedList.size(); i++) {
+            entity.Booking b = finalSortedList.get(i);
             
-            if (b.getStudentId().equalsIgnoreCase(targetStudentId)) {
-                String name = b.getSchedule().getFacility().getName();
-                String facilityName = (name != null) ? name : "Unknown";
-                
-                //What is this for????
-                //Schedule s = scheduleManager.getScheduleById(schedId);
-                
-                model.addRow(new Object[]{
-                    b.getBookingId(),
-                    b.getScheduleSession(),
-                    facilityName,  
-                    b.getStatus()
-                });
+            String facilityName = "Unknown";
+            if (b.getSchedule() != null && b.getSchedule().getFacility() != null) {
+                facilityName = b.getSchedule().getFacility().getName();
             }
+            
+            model.addRow(new Object[]{
+                b.getBookingId(),
+                b.getScheduleSession(),
+                facilityName,  
+                b.getStatus()
+            });
         }
+        
         if (model.getRowCount() == 0) {
             javax.swing.JOptionPane.showMessageDialog(this, 
                 "No bookings found for Student ID: " + targetStudentId, 
@@ -69,9 +66,8 @@ public class BookingHistoryAndCancel extends javax.swing.JPanel {
         SearchBooking = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         BookingTable = new javax.swing.JTable();
-        jPanel2 = new javax.swing.JPanel();
-        BackButton = new javax.swing.JButton();
         CancelBookingButton = new javax.swing.JButton();
+        BackButton = new javax.swing.JButton();
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -100,27 +96,26 @@ public class BookingHistoryAndCancel extends javax.swing.JPanel {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(16, 16, 16)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel2)
-                        .addGap(127, 127, 127))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(SearchBooking, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(StudentIdTxtField, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap())))
+                        .addGap(95, 95, 95))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(SearchBooking, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(StudentIdTxtField, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(42, 42, 42)
+                .addContainerGap()
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(StudentIdTxtField, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(SearchBooking, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(141, Short.MAX_VALUE))
+                .addContainerGap(151, Short.MAX_VALUE))
         );
 
         BookingTable.setModel(new javax.swing.table.DefaultTableModel(
@@ -136,34 +131,17 @@ public class BookingHistoryAndCancel extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(BookingTable);
 
-        BackButton.setText("Back");
-        BackButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BackButtonActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(693, Short.MAX_VALUE)
-                .addComponent(BackButton)
-                .addGap(99, 99, 99))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(46, Short.MAX_VALUE)
-                .addComponent(BackButton)
-                .addGap(27, 27, 27))
-        );
-
         CancelBookingButton.setText("Cancel Booking");
         CancelBookingButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 CancelBookingButtonActionPerformed(evt);
+            }
+        });
+
+        BackButton.setText("Back");
+        BackButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BackButtonActionPerformed(evt);
             }
         });
 
@@ -175,6 +153,8 @@ public class BookingHistoryAndCancel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(BackButton)
+                        .addGap(18, 18, 18)
                         .addComponent(CancelBookingButton))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(19, 19, 19)
@@ -185,9 +165,7 @@ public class BookingHistoryAndCancel extends javax.swing.JPanel {
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(0, 15, Short.MAX_VALUE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 872, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 872, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(0, 31, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
@@ -198,15 +176,15 @@ public class BookingHistoryAndCancel extends javax.swing.JPanel {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(35, 35, 35)
-                .addComponent(CancelBookingButton)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(CancelBookingButton)
+                    .addComponent(BackButton))
                 .addGap(29, 29, 29))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addGap(0, 1, Short.MAX_VALUE)
                     .addComponent(jLabel1)
-                    .addGap(304, 304, 304)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                    .addGap(0, 407, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -224,17 +202,6 @@ public class BookingHistoryAndCancel extends javax.swing.JPanel {
 
         loadBookingTable(studentId);
     }//GEN-LAST:event_SearchBookingActionPerformed
-
-    private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
-//        StudentUI studentUI = new StudentUI(bookingManager, scheduleManager);
-//
-//        java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
-//        if (window instanceof javax.swing.JFrame frame) {
-//            frame.setContentPane(studentUI);
-//            frame.revalidate();
-//            frame.repaint();
-//        }
-    }//GEN-LAST:event_BackButtonActionPerformed
 
     private void CancelBookingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelBookingButtonActionPerformed
         int row = BookingTable.getSelectedRow();
@@ -282,6 +249,17 @@ public class BookingHistoryAndCancel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_CancelBookingButtonActionPerformed
 
+    private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
+        //        StudentUI studentUI = new StudentUI(bookingManager, scheduleManager);
+        //
+        //        java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
+        //        if (window instanceof javax.swing.JFrame frame) {
+            //            frame.setContentPane(studentUI);
+            //            frame.revalidate();
+            //            frame.repaint();
+            //        }
+    }//GEN-LAST:event_BackButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BackButton;
@@ -292,7 +270,6 @@ public class BookingHistoryAndCancel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }

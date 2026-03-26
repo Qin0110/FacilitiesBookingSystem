@@ -10,8 +10,6 @@ public class AdminBookingUI extends javax.swing.JPanel {
      */
     
     private BookingManagement bookingManager;
-    private ScheduleControl scheduleManager;
-    private FacilityManagement facilityManager;
     
     public AdminBookingUI(BookingManagement bm, ScheduleControl sm, FacilityManagement fm) {
         initComponents(); 
@@ -21,8 +19,6 @@ public class AdminBookingUI extends javax.swing.JPanel {
         AdminBookingTable.setIntercellSpacing(new java.awt.Dimension(0, 0));
         
         this.bookingManager = bm;
-        this.scheduleManager = sm;
-        this.facilityManager = fm;
         
         this.bookingManager.refreshBookingStatuses();
         
@@ -31,8 +27,7 @@ public class AdminBookingUI extends javax.swing.JPanel {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 bookingManager.refreshBookingStatuses();
                 
-                // Redraw the table so the Admin sees the text change from Confirmed to Pending live!
-                loadBookingTable(StudentIdTxtField.getText().trim());
+                loadBookingTable(TxtField.getText().trim());
             }
         });
         automationTimer.start(); 
@@ -40,43 +35,46 @@ public class AdminBookingUI extends javax.swing.JPanel {
         loadBookingTable("");
     }
     
-    private void loadBookingTable(String filterId) {
+    private void loadBookingTable(String filterQuery) {
         javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) AdminBookingTable.getModel();
         model.setRowCount(0); 
 
-        adt.ListInterface<entity.Booking> allBookings = bookingManager.getAllBookings();
+        String searchCriteria = "All";
+        if (SearchComboBox != null) {
+            searchCriteria = SearchComboBox.getSelectedItem().toString();
+        }
 
-        for (int i = 0; i < allBookings.size(); i++) {
-            entity.Booking b = allBookings.get(i);
+        adt.ListInterface<entity.Booking> searchResults = bookingManager.searchBooking(filterQuery, searchCriteria);
+        
+        String sortCriteria = "Booking ID";
+        boolean isAscending = true;
+        
+        if (SortCriteriaComboBox1 != null && SortOrderComboBox != null) {
+            sortCriteria = SortCriteriaComboBox1.getSelectedItem().toString();             
+            isAscending = SortOrderComboBox.getSelectedItem().toString().equals("Ascending");
+        }        
+        adt.ListInterface<entity.Booking> finalSortedList = bookingManager.sortBookings(searchResults, sortCriteria, isAscending);
+
+        java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        for (int i = 0; i < finalSortedList.size(); i++) {
+            entity.Booking b = finalSortedList.get(i);
             
-            if (filterId.isEmpty() || b.getStudentId().equalsIgnoreCase(filterId)) {
-                
-                String schedId = b.getScheduleSession();
-                
-                //This is just for validation?
-                //entity.Schedule s = scheduleManager.getScheduleById(schedId);
-                
-                String facilityName = "Unknown";
-                java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-                
-//                if (s != null) {
-//                    adt.ListInterface<entity.Facility> resultsList = facilityManager.searchFacility(s.getFacilityId());
-//                    if (resultsList != null && resultsList.size() > 0) {
-//                        facilityName = resultsList.get(0).getName(); 
-//                    }
-//                }
-                
-                model.addRow(new Object[]{
-                    b.getBookingId(),
-                    b.getStudentId(),
-                    b.getScheduleSession(),
-                    facilityName,   
-                    b.getApprovedBy() == null ? "N/A" : b.getApprovedBy(),
-                    b.getArrivalTime() == null ? "Not Arrived" : b.getArrivalTime().format(formatter),
-                    b.getLeavingTime() == null ? "Not Left" : b.getLeavingTime().format(formatter),
-                    b.getStatus()
-                });
+            String facilityName = "Unknown";
+            if (b.getSchedule() != null && b.getSchedule().getFacility() != null) {
+                facilityName = b.getSchedule().getFacility().getName(); 
             }
+                
+            model.addRow(new Object[]{
+                b.getBookingId(),
+                b.getStudentId(),
+                b.getScheduleSession(), 
+                facilityName,   
+                b.getApprovedBy() == null ? "N/A" : b.getApprovedBy(),
+                b.getArrivalTime() == null ? "Not Arrived" : b.getArrivalTime().format(formatter),
+                b.getLeavingTime() == null ? "Not Left" : b.getLeavingTime().format(formatter),
+                b.getStatus()
+            });
         }
     }
     
@@ -85,31 +83,56 @@ public class AdminBookingUI extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jDesktopPane1 = new javax.swing.JDesktopPane();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        StudentIdTxtField = new javax.swing.JTextField();
+        TxtField = new javax.swing.JTextField();
         SearchBooking1 = new javax.swing.JButton();
-        ViewAllButton = new javax.swing.JButton();
+        SearchComboBox = new javax.swing.JComboBox<>();
+        jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         AdminBookingTable = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        SortCriteriaComboBox1 = new javax.swing.JComboBox<>();
+        SortOrderComboBox = new javax.swing.JComboBox<>();
+        jPanel6 = new javax.swing.JPanel();
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout jDesktopPane1Layout = new javax.swing.GroupLayout(jDesktopPane1);
+        jDesktopPane1.setLayout(jDesktopPane1Layout);
+        jDesktopPane1Layout.setHorizontalGroup(
+            jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        jDesktopPane1Layout.setVerticalGroup(
+            jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
 
         setLayout(new java.awt.BorderLayout());
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Booking History");
-        add(jLabel1, java.awt.BorderLayout.PAGE_START);
-
         jPanel1.setMinimumSize(new java.awt.Dimension(200, 200));
+        jPanel1.setPreferredSize(new java.awt.Dimension(300, 427));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel2.setText("Search Student ID:");
+        jLabel2.setText("Search (ID, Facility, etc):");
 
-        StudentIdTxtField.addActionListener(new java.awt.event.ActionListener() {
+        TxtField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                StudentIdTxtFieldActionPerformed(evt);
+                TxtFieldActionPerformed(evt);
             }
         });
 
@@ -120,46 +143,44 @@ public class AdminBookingUI extends javax.swing.JPanel {
             }
         });
 
-        ViewAllButton.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
-        ViewAllButton.setText("View All");
-        ViewAllButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ViewAllButtonActionPerformed(evt);
-            }
-        });
+        SearchComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "Booking ID", "Student ID", "Facility Name", "Date/Session", "Status" }));
+
+        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jButton1.setText("Generate Report");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(30, 30, 30)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(StudentIdTxtField)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(33, 33, 33))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(ViewAllButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(SearchBooking1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addGap(10, 10, 10))
+                        .addComponent(TxtField, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(SearchComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(SearchBooking1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(14, 14, 14))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(46, 46, 46)
                 .addComponent(jLabel2)
+                .addGap(7, 7, 7)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(SearchComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(SearchBooking1, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(StudentIdTxtField, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(SearchBooking1, javax.swing.GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE)
-                    .addComponent(ViewAllButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(254, Short.MAX_VALUE))
+                .addComponent(TxtField, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 263, Short.MAX_VALUE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         add(jPanel1, java.awt.BorderLayout.LINE_START);
@@ -194,39 +215,93 @@ public class AdminBookingUI extends javax.swing.JPanel {
 
         add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
+        jPanel2.setPreferredSize(new java.awt.Dimension(1103, 30));
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1091, Short.MAX_VALUE)
+            .addGap(0, 1103, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGap(0, 30, Short.MAX_VALUE)
         );
 
         add(jPanel2, java.awt.BorderLayout.PAGE_END);
+
+        jPanel5.setPreferredSize(new java.awt.Dimension(1103, 90));
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Booking History");
+
+        SortCriteriaComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Booking ID", "Student ID", "Date", "Status" }));
+        SortCriteriaComboBox1.setPreferredSize(new java.awt.Dimension(100, 25));
+        SortCriteriaComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SortCriteriaComboBox1ActionPerformed(evt);
+            }
+        });
+
+        SortOrderComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ascending", "Descending" }));
+        SortOrderComboBox.setPreferredSize(new java.awt.Dimension(100, 25));
+        SortOrderComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SortOrderComboBoxActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(300, 300, 300)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 270, Short.MAX_VALUE)
+                .addComponent(SortCriteriaComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(SortOrderComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(33, 33, 33))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(SortCriteriaComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(SortOrderComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        add(jPanel5, java.awt.BorderLayout.PAGE_START);
+
+        jPanel6.setPreferredSize(new java.awt.Dimension(30, 443));
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 30, Short.MAX_VALUE)
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 443, Short.MAX_VALUE)
+        );
+
+        add(jPanel6, java.awt.BorderLayout.LINE_END);
     }// </editor-fold>//GEN-END:initComponents
 
     private void SearchBooking1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchBooking1ActionPerformed
-        String studentId = StudentIdTxtField.getText().trim().toUpperCase();
-
-        if (studentId.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Please enter your Student ID first!");
-            return;
-        }
-
-        loadBookingTable(studentId);
+        String filterQuery = TxtField.getText().trim().toUpperCase();
+        loadBookingTable(filterQuery);
     }//GEN-LAST:event_SearchBooking1ActionPerformed
 
-    private void ViewAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ViewAllButtonActionPerformed
-        StudentIdTxtField.setText("");
-        loadBookingTable("");
-    }//GEN-LAST:event_ViewAllButtonActionPerformed
-
-    private void StudentIdTxtFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StudentIdTxtFieldActionPerformed
+    private void TxtFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TxtFieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_StudentIdTxtFieldActionPerformed
+    }//GEN-LAST:event_TxtFieldActionPerformed
 
     private void AdminBookingTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AdminBookingTableMouseClicked
         if (evt.getClickCount() == 2) {
@@ -256,20 +331,35 @@ public class AdminBookingUI extends javax.swing.JPanel {
             detailsDialog.setLocationRelativeTo(this);
             detailsDialog.setVisible(true);
             
-            loadBookingTable(StudentIdTxtField.getText().trim());
+            loadBookingTable(TxtField.getText().trim());
         }
     }//GEN-LAST:event_AdminBookingTableMouseClicked
+
+    private void SortCriteriaComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SortCriteriaComboBox1ActionPerformed
+        loadBookingTable(TxtField.getText().trim());
+    }//GEN-LAST:event_SortCriteriaComboBox1ActionPerformed
+
+    private void SortOrderComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SortOrderComboBoxActionPerformed
+        loadBookingTable(TxtField.getText().trim());
+    }//GEN-LAST:event_SortOrderComboBoxActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable AdminBookingTable;
     private javax.swing.JButton SearchBooking1;
-    private javax.swing.JTextField StudentIdTxtField;
-    private javax.swing.JButton ViewAllButton;
+    private javax.swing.JComboBox<String> SearchComboBox;
+    private javax.swing.JComboBox<String> SortCriteriaComboBox1;
+    private javax.swing.JComboBox<String> SortOrderComboBox;
+    private javax.swing.JTextField TxtField;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }
