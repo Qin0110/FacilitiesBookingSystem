@@ -18,46 +18,51 @@ public class AdminDialog extends javax.swing.JDialog {
     public AdminDialog(java.awt.Frame parent, boolean modal, control.AdminManagement adminManager) {
         super(parent, modal);
         initComponents();
+        
         this.adminManager = adminManager;
-        saveBT.setText("Save");
-        this.setTitle("Add Admin");
-        this.setSize(400, 450);
-        backBT.setVisible(false);
-        editBT.setVisible(false);
-        cancelBT.setVisible(true);
-        saveBT.setVisible(true);
+        
+        // UI Setup for Add Mode
+        this.setTitle("Add Admin"); 
+        saveButton.setText("Save");
+        
+        backButton.setVisible(true);
+        editButton.setVisible(false);
+        cancelButton.setVisible(false);
+        saveButton.setVisible(true);
+        
+        
     }
-    
+    /**
+     * Constructor for VIEWING/UPDATING an existing admin
+     */
     public AdminDialog(java.awt.Frame parent, boolean modal, control.AdminManagement adminManager, entity.Admin adminToEdit) {
         super(parent, modal);
         initComponents();
+        
         this.adminManager = adminManager;
         this.originalAdmin  = adminToEdit;
         this.isUpdateMode = true;
        
+        idTextField.setText(adminToEdit.getAdminId());
+        nameTextField.setText(adminToEdit.getName());
+        positionComboBox.setSelectedItem(adminToEdit.getPosition());
+        emailTextField.setText(adminToEdit.getEmail());
+        phoneNumberTextField.setText(adminToEdit.getPhoneNumber());
         
-        
-        idTF.setText(adminToEdit.getAdminId());
-        nameTF.setText(adminToEdit.getName());
-        positionCB.setSelectedItem(adminToEdit.getPosition());
-        emailTF.setText(adminToEdit.getEmail());
-        phoneNumberTF.setText(adminToEdit.getPhoneNumber());
-         
-        idTF.setEnabled(false);
-        saveBT.setText("Update");
+        saveButton.setText("Update");
         this.setTitle("Update Admin Details");
-        this.setSize(400, 450);
-        backBT.setVisible(true);
-        editBT.setVisible(true);
-        cancelBT.setVisible(false);
-        saveBT.setVisible(false);
+     
+        backButton.setVisible(true);
+        editButton.setVisible(true);
+        cancelButton.setVisible(false);
+        saveButton.setVisible(false);
         
         
-        idTF.setEditable(false);
-        nameTF.setEditable(false);
-        positionCB.setEnabled(false);
-        emailTF.setEnabled(false);
-        phoneNumberTF.setEnabled(false);
+        idTextField.setEditable(false);
+        nameTextField.setEditable(false);
+        positionComboBox.setEnabled(false);
+        emailTextField.setEnabled(false);
+        phoneNumberTextField.setEnabled(false);
        
     }
 
@@ -70,76 +75,180 @@ public class AdminDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        phoneNumebrText = new javax.swing.JLabel();
-        phoneNumberTF = new javax.swing.JTextField();
-        positionCB = new javax.swing.JComboBox<>();
-        nameTF = new javax.swing.JTextField();
-        editBT = new javax.swing.JButton();
-        emailTF = new javax.swing.JTextField();
-        backBT = new javax.swing.JButton();
-        idText = new javax.swing.JLabel();
-        nameText = new javax.swing.JLabel();
-        positionText = new javax.swing.JLabel();
-        cancelBT = new javax.swing.JButton();
-        emailText = new javax.swing.JLabel();
-        saveBT = new javax.swing.JButton();
-        idTF = new javax.swing.JTextField();
+        jPanel2 = new javax.swing.JPanel();
+        backButton = new javax.swing.JButton();
+        cancelButton = new javax.swing.JButton();
+        saveButton = new javax.swing.JButton();
+        editButton = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        profile = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        idTextField = new javax.swing.JTextField();
+        emailTextField = new javax.swing.JTextField();
+        nameTextField = new javax.swing.JTextField();
+        phoneNumberTextField = new javax.swing.JTextField();
+        positionComboBox = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        phoneNumebrText.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
-        phoneNumebrText.setText("Phone number");
-
-        positionCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Facility Manager", "Facility Assistant" }));
-        positionCB.addActionListener(new java.awt.event.ActionListener() {
+        backButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        backButton.setForeground(new java.awt.Color(41, 98, 160));
+        backButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/backBT.png"))); // NOI18N
+        backButton.setText("Back");
+        backButton.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(41, 98, 160), 1, true));
+        backButton.setFocusPainted(false);
+        backButton.setIconTextGap(10);
+        backButton.setOpaque(true);
+        backButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                positionCBActionPerformed(evt);
+                backButtonActionPerformed(evt);
             }
         });
 
-        editBT.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/editBT.png"))); // NOI18N
-        editBT.setText("Edit");
-        editBT.addActionListener(new java.awt.event.ActionListener() {
+        cancelButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        cancelButton.setForeground(new java.awt.Color(41, 98, 160));
+        cancelButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/cancelBT.png"))); // NOI18N
+        cancelButton.setText("Cancel");
+        cancelButton.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(41, 98, 160), 1, true));
+        cancelButton.setFocusPainted(false);
+        cancelButton.setIconTextGap(10);
+        cancelButton.setOpaque(true);
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                editBTActionPerformed(evt);
+                cancelButtonActionPerformed(evt);
             }
         });
 
-        backBT.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/backBT.png"))); // NOI18N
-        backBT.setText("Back");
-        backBT.addActionListener(new java.awt.event.ActionListener() {
+        saveButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        saveButton.setForeground(new java.awt.Color(41, 98, 160));
+        saveButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/saveBT.png"))); // NOI18N
+        saveButton.setText("Save");
+        saveButton.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(41, 98, 160), 1, true));
+        saveButton.setFocusPainted(false);
+        saveButton.setIconTextGap(10);
+        saveButton.setOpaque(true);
+        saveButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                backBTActionPerformed(evt);
+                saveButtonActionPerformed(evt);
             }
         });
 
-        idText.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
-        idText.setText("ID");
-
-        nameText.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
-        nameText.setText("Name");
-
-        positionText.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
-        positionText.setText("Position");
-
-        cancelBT.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/cancelBT.png"))); // NOI18N
-        cancelBT.setText("Cancel");
-        cancelBT.addActionListener(new java.awt.event.ActionListener() {
+        editButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        editButton.setForeground(new java.awt.Color(41, 98, 160));
+        editButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/editBT.png"))); // NOI18N
+        editButton.setText("Edit");
+        editButton.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(41, 98, 160), 1, true));
+        editButton.setFocusPainted(false);
+        editButton.setIconTextGap(10);
+        editButton.setOpaque(true);
+        editButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cancelBTActionPerformed(evt);
+                editButtonActionPerformed(evt);
             }
         });
 
-        emailText.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
-        emailText.setText("Email");
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(114, 114, 114)
+                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
-        saveBT.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/saveBT.png"))); // NOI18N
-        saveBT.setText("Save");
-        saveBT.addActionListener(new java.awt.event.ActionListener() {
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel2.setText("Admin Profile");
+
+        profile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/profilePhoto.png"))); // NOI18N
+
+        idTextField.setBackground(new java.awt.Color(232, 244, 248));
+        idTextField.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(33, 115, 126)), "ID"));
+        idTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveBTActionPerformed(evt);
+                idTextFieldActionPerformed(evt);
             }
         });
+
+        emailTextField.setBackground(new java.awt.Color(232, 244, 248));
+        emailTextField.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(33, 115, 126)), "Email"));
+        emailTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                emailTextFieldActionPerformed(evt);
+            }
+        });
+
+        nameTextField.setBackground(new java.awt.Color(232, 244, 248));
+        nameTextField.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(33, 115, 126)), "Name"));
+        nameTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nameTextFieldActionPerformed(evt);
+            }
+        });
+
+        phoneNumberTextField.setBackground(new java.awt.Color(232, 244, 248));
+        phoneNumberTextField.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(33, 115, 126)), "Phone Number"));
+        phoneNumberTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                phoneNumberTextFieldActionPerformed(evt);
+            }
+        });
+
+        positionComboBox.setBackground(new java.awt.Color(232, 244, 248));
+        positionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Data Science", "Software Engineering", "Software Developer" }));
+        positionComboBox.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(33, 115, 126)), "Programme"));
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(idTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(emailTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(positionComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, 201, Short.MAX_VALUE)
+                            .addComponent(nameTextField, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(phoneNumberTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(37, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(idTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(emailTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(phoneNumberTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(positionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(20, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -148,188 +257,151 @@ public class AdminDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(idText, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(emailText, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(nameText, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(positionText, javax.swing.GroupLayout.Alignment.LEADING))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(positionCB, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(idTF, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(nameTF, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(emailTF, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(phoneNumebrText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(18, 18, 18)
-                                .addComponent(phoneNumberTF, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(21, 21, 21))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(backBT, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(editBT, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cancelBT, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(saveBT, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addComponent(profile)
+                        .addGap(18, 18, 18)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, 0))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(idText, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(idTF, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE))
-                .addGap(17, 17, 17)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(nameText, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(nameTF, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(positionText, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(positionCB, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(emailText, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(emailTF, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(phoneNumebrText, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(phoneNumberTF, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(12, 12, 12)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(backBT, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(editBT, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cancelBT, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(saveBT, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(9, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(27, 27, 27)
+                        .addComponent(profile)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void editBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBTActionPerformed
-        backBT.setVisible(false);
-        editBT.setVisible(false);
-        cancelBT.setVisible(true);
-        saveBT.setVisible(true);
-
-        nameTF.setEditable(true);
-        idTF.setEditable(true);
-        phoneNumberTF.setEditable(true);
-        positionCB.setEnabled(true);
-        emailTF.setEnabled(true);
-    }//GEN-LAST:event_editBTActionPerformed
-
-    private void backBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBTActionPerformed
+    private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         this.dispose();
-    }//GEN-LAST:event_backBTActionPerformed
+    }//GEN-LAST:event_backButtonActionPerformed
 
-    private void cancelBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBTActionPerformed
-        if(!isUpdateMode)
-        this.dispose();
-        else{
-            idTF.setText(originalAdmin.getAdminId());
-            phoneNumberTF.setText(originalAdmin.getName());
-            positionCB.setSelectedItem(originalAdmin.getPosition());
-            emailTF.setText(originalAdmin.getEmail());
-            phoneNumberTF.setText(originalAdmin.getPhoneNumber());
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        if (!isUpdateMode) {
+            this.dispose(); // Just close if we were adding a new student and cancelled
+        } else {
+            // Revert back to original data if they cancelled an edit
+            idTextField.setText(originalAdmin.getAdminId());
+            nameTextField.setText(originalAdmin.getName()); // Fixed bug here too
+            positionComboBox.setSelectedItem(originalAdmin.getPosition());
+            emailTextField.setText(originalAdmin.getEmail());
+            phoneNumberTextField.setText(originalAdmin.getPhoneNumber());
 
-            backBT.setVisible(true);
-            editBT.setVisible(true);
-            cancelBT.setVisible(false);
-            saveBT.setVisible(false);
+            // Switch UI back to View Mode
+            backButton.setVisible(true);
+            editButton.setVisible(true);
+            cancelButton.setVisible(false);
+            saveButton.setVisible(false);
 
-            nameTF.setEditable(false);
-            idTF.setEditable(false);
-            phoneNumberTF.setEditable(false);
-            positionCB.setEnabled(false);
-            emailTF.setEnabled(false);
-
+            // Lock fields again
+            nameTextField.setEditable(false);
+            idTextField.setEditable(false);
+            phoneNumberTextField.setEditable(false);
+            emailTextField.setEditable(false);
+            positionComboBox.setEnabled(false);
         }
-    }//GEN-LAST:event_cancelBTActionPerformed
+    }//GEN-LAST:event_cancelButtonActionPerformed
 
-    private void saveBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBTActionPerformed
-        String id = idTF.getText().trim();
-        String name = nameTF.getText().trim();
-        String position = positionCB.getSelectedItem().toString();
-        String email = emailTF.getText().trim();
-        String phoneNumber = phoneNumberTF.getText().trim();
+    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+        String id = idTextField.getText().trim();
+        String name = nameTextField.getText().trim();
+        String position = positionComboBox.getSelectedItem().toString();
+        String email = emailTextField.getText().trim();
+        String phoneNumber = phoneNumberTextField.getText().trim();
 
         if (id.isEmpty() || name.isEmpty() || email.isEmpty() || phoneNumber.isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(this,
-                "Please fill in all text fields!", "Missing Input", javax.swing.JOptionPane.WARNING_MESSAGE);
-            return; 
+                "Please fill in all text fields!", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
-        if (id.length() > 10) {
+        try {
+            String message;
+
+            if (isUpdateMode) {
+                message = adminManager.updateAdmin(id, name, position, email, phoneNumber);
+            } else {
+                message = adminManager.addNewAdmin(id, name, position, email, phoneNumber);
+            }
+
+            // Handles string messages returned by the Manager (e.g., Duplicate ID)
+            if (message.contains("INVALID_INPUT") || message.contains("Invalid") ) {
+                // Show as an Error Dialog (Red X icon) and DO NOT call dispose()
+                javax.swing.JOptionPane.showMessageDialog(this, message, "Input Format Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            } else {
+                // Show as a Success Dialog (Blue 'i' icon) AND close the window
+                javax.swing.JOptionPane.showMessageDialog(this, message, "Success", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                this.dispose(); // Close dialog on success
+            }
+
+        } catch (Exception e) {
+            // Handles actual system crashes (like .dat file reading errors)
             javax.swing.JOptionPane.showMessageDialog(this,
-                "ID is too long! Maximum 10 characters allowed.", "Invalid Length", javax.swing.JOptionPane.WARNING_MESSAGE);
-            return; 
+                "System Error: " + e.getMessage(), "Critical Error", javax.swing.JOptionPane.ERROR_MESSAGE);
         }
-        
-        if (name.length() < 3 || name.length() > 50) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                "Name must be between 3 and 50 characters.", "Invalid Length", javax.swing.JOptionPane.WARNING_MESSAGE);
-            return; 
-        }
-        
-        if (email.length() > 100) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                "Email is too long! Maximum 100 characters allowed.", "Invalid Length", javax.swing.JOptionPane.WARNING_MESSAGE);
-            return; 
-        }
+    }//GEN-LAST:event_saveButtonActionPerformed
 
-      
-        String message;
-            
-        if (isUpdateMode) {
-            message = adminManager.updateAdmin(id, name, position, email, phoneNumber);
-        } else {
-            message = adminManager.addNewAdmin(id, name, position, email, phoneNumber);
-        }
+    private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
+        // Switch UI to Edit Mode
+        backButton.setVisible(false);
+        editButton.setVisible(false);
+        cancelButton.setVisible(true);
+        saveButton.setVisible(true);
 
-        if (message.equals("TRUE")) {
-            String successMsg = isUpdateMode ? "Admin Successfully Updated!" : "Admin Successfully Added!";
-            javax.swing.JOptionPane.showMessageDialog(this, successMsg, "Success", javax.swing.JOptionPane.INFORMATION_MESSAGE);
-            this.dispose(); 
-        } 
-        else if (message.startsWith("ERROR:")) {
-            javax.swing.JOptionPane.showMessageDialog(this, 
-                message.replace("ERROR: ", ""), // Remove the "ERROR:" prefix for a cleaner popup
-                "Validation Error", 
-                javax.swing.JOptionPane.ERROR_MESSAGE);
-        } 
-        else {
-            javax.swing.JOptionPane.showMessageDialog(this, message, "Failed", javax.swing.JOptionPane.ERROR_MESSAGE);
-        }
+        // Unlock fields for editing
+        nameTextField.setEditable(true);
+        phoneNumberTextField.setEditable(true);
+        emailTextField.setEditable(true);
+        phoneNumberTextField.setEnabled(true);
+        emailTextField.setEnabled(true);
+        positionComboBox.setEnabled(true);
 
-       
-    }//GEN-LAST:event_saveBTActionPerformed
+        // don let user edit id once created
+        idTextField.setEditable(false);
+    }//GEN-LAST:event_editButtonActionPerformed
 
-    private void positionCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_positionCBActionPerformed
+    private void idTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_idTextFieldActionPerformed
 
-    }//GEN-LAST:event_positionCBActionPerformed
+    private void emailTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_emailTextFieldActionPerformed
+
+    private void nameTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_nameTextFieldActionPerformed
+
+    private void phoneNumberTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_phoneNumberTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_phoneNumberTextFieldActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton backBT;
-    private javax.swing.JButton cancelBT;
-    private javax.swing.JButton editBT;
-    private javax.swing.JTextField emailTF;
-    private javax.swing.JLabel emailText;
-    private javax.swing.JTextField idTF;
-    private javax.swing.JLabel idText;
-    private javax.swing.JTextField nameTF;
-    private javax.swing.JLabel nameText;
-    private javax.swing.JTextField phoneNumberTF;
-    private javax.swing.JLabel phoneNumebrText;
-    private javax.swing.JComboBox<String> positionCB;
-    private javax.swing.JLabel positionText;
-    private javax.swing.JButton saveBT;
+    private javax.swing.JButton backButton;
+    private javax.swing.JButton cancelButton;
+    private javax.swing.JButton editButton;
+    private javax.swing.JTextField emailTextField;
+    private javax.swing.JTextField idTextField;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JTextField nameTextField;
+    private javax.swing.JTextField phoneNumberTextField;
+    private javax.swing.JComboBox<String> positionComboBox;
+    private javax.swing.JLabel profile;
+    private javax.swing.JButton saveButton;
     // End of variables declaration//GEN-END:variables
 }
