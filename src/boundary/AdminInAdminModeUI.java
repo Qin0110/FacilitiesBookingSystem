@@ -51,12 +51,18 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
     private void loadTableData(String id){
         javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) adminTable.getModel();
         model.setRowCount(0);
-        
-        Object selected = typeCB.getSelectedItem();
-        String position = (selected != null) ? selected.toString() : "ALL";
-        
-        adt.ListInterface<entity.Admin> searchResults = adminManager.searchAdminForTable(id,position);
-        
+
+        // Get Position Filter
+        Object selectedPosition = positionComboBox.getSelectedItem();
+        String position = (selectedPosition != null) ? selectedPosition.toString() : "ALL";
+
+        // Get Sort Selection (Assuming your Admin UI also has a sortByComboBox)
+        Object selectedSort = sortByComboBox.getSelectedItem();
+        String sortBy = (selectedSort != null) ? selectedSort.toString() : "";
+
+        // Pass BOTH the position filter and the sort selection to the manager
+        adt.ListInterface<entity.Admin> searchResults = adminManager.searchAdminForTable(id, position, sortBy);
+
         for (int i = 0 ; i < searchResults.size() ; i++ ){
             entity.Admin s = searchResults.get(i);
             model.addRow(new Object[]{
@@ -67,11 +73,12 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
                 s.getPhoneNumber()
             });
         }
+
         if (searchResults.size() == 0) {
-        javax.swing.JOptionPane.showMessageDialog(this, 
-            "No admin information found containing ID: " + id, 
-            "Search Results", 
-            javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "No admin information found containing ID: " + id, 
+                "Search Results", 
+                javax.swing.JOptionPane.INFORMATION_MESSAGE);
         }
         
         
@@ -88,33 +95,35 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        AddBT = new javax.swing.JButton();
-        removeBT = new javax.swing.JButton();
-        updateBT = new javax.swing.JButton();
+        AddButton = new javax.swing.JButton();
+        removeButton = new javax.swing.JButton();
+        updateButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         adminTable = new javax.swing.JTable();
-        adminSearchTF = new javax.swing.JTextField();
+        adminSearchTextField = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
-        typeCB = new javax.swing.JComboBox<>();
+        positionComboBox = new javax.swing.JComboBox<>();
+        sortByText = new javax.swing.JLabel();
+        sortByComboBox = new javax.swing.JComboBox<>();
 
-        AddBT.setText("Add Admin");
-        AddBT.addActionListener(new java.awt.event.ActionListener() {
+        AddButton.setText("Add Admin");
+        AddButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                AddBTActionPerformed(evt);
+                AddButtonActionPerformed(evt);
             }
         });
 
-        removeBT.setText("Remove Admin");
-        removeBT.addActionListener(new java.awt.event.ActionListener() {
+        removeButton.setText("Remove Admin");
+        removeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removeBTActionPerformed(evt);
+                removeButtonActionPerformed(evt);
             }
         });
 
-        updateBT.setText("Update Admin");
-        updateBT.addActionListener(new java.awt.event.ActionListener() {
+        updateButton.setText("Update Admin");
+        updateButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateBTActionPerformed(evt);
+                updateButtonActionPerformed(evt);
             }
         });
 
@@ -141,30 +150,36 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
         });
         jScrollPane1.setViewportView(adminTable);
 
-        adminSearchTF.addActionListener(new java.awt.event.ActionListener() {
+        adminSearchTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                adminSearchTFActionPerformed(evt);
+                adminSearchTextFieldActionPerformed(evt);
             }
         });
-        adminSearchTF.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                adminSearchTFKeyPressed(evt);
-            }
+        adminSearchTextField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                adminSearchTFKeyReleased(evt);
+                adminSearchTextFieldKeyReleased(evt);
             }
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                adminSearchTFKeyTyped(evt);
+                adminSearchTextFieldKeyTyped(evt);
             }
         });
 
         jLabel1.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
         jLabel1.setText("ADMIN");
 
-        typeCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Facility Manager", "Facility Assistant" }));
-        typeCB.addActionListener(new java.awt.event.ActionListener() {
+        positionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ALL", "Facility Manager", "Facility Assistant" }));
+        positionComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                typeCBActionPerformed(evt);
+                positionComboBoxActionPerformed(evt);
+            }
+        });
+
+        sortByText.setText("Sort By:");
+
+        sortByComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Admin ID", "Name", "Position", "Email", "Phone Number" }));
+        sortByComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sortByComboBoxActionPerformed(evt);
             }
         });
 
@@ -175,19 +190,24 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(removeBT, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(AddBT, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(updateBT, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(removeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(AddButton, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(typeCB, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(adminSearchTF)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(positionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(adminSearchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(sortByText)
+                                .addGap(18, 18, 18)
+                                .addComponent(sortByComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -197,29 +217,31 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(6, 6, 6)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(adminSearchTF, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(typeCB, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(adminSearchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(positionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(sortByText, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(sortByComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(AddBT, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(AddButton, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(removeBT, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(removeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(updateBT, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(22, 22, 22))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void AddBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddBTActionPerformed
+    private void AddButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddButtonActionPerformed
         AdminDialog dialog = new AdminDialog(null, true, this.adminManager);
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
         loadTableData();
-    }//GEN-LAST:event_AddBTActionPerformed
+    }//GEN-LAST:event_AddButtonActionPerformed
 
-    private void removeBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeBTActionPerformed
+    private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeButtonActionPerformed
         int selectedRow = adminTable.getSelectedRow();
 
         if (selectedRow == -1) {
@@ -255,9 +277,9 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
             }
         }
 
-    }//GEN-LAST:event_removeBTActionPerformed
+    }//GEN-LAST:event_removeButtonActionPerformed
 
-    private void updateBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBTActionPerformed
+    private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
         int selectedRow = adminTable.getSelectedRow();
         String id, name, position, email, phoneNumber;
 
@@ -283,43 +305,49 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
 
         loadTableData();
 
-    }//GEN-LAST:event_updateBTActionPerformed
+    }//GEN-LAST:event_updateButtonActionPerformed
 
-    private void adminSearchTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminSearchTFActionPerformed
+    private void adminSearchTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminSearchTextFieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_adminSearchTFActionPerformed
+    }//GEN-LAST:event_adminSearchTextFieldActionPerformed
 
-    private void adminSearchTFKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_adminSearchTFKeyPressed
-
-    }//GEN-LAST:event_adminSearchTFKeyPressed
-
-    private void adminSearchTFKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_adminSearchTFKeyReleased
-        String id = adminSearchTF.getText().trim();
+    private void adminSearchTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_adminSearchTextFieldKeyReleased
+        String id = adminSearchTextField.getText().trim();
 
         loadTableData(id);
-    }//GEN-LAST:event_adminSearchTFKeyReleased
+    }//GEN-LAST:event_adminSearchTextFieldKeyReleased
 
-    private void adminSearchTFKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_adminSearchTFKeyTyped
-        if (adminSearchTF.getText().trim().length() >= 15
+    private void positionComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_positionComboBoxActionPerformed
+        String id = adminSearchTextField.getText().trim();
+        loadTableData(id);
+    }//GEN-LAST:event_positionComboBoxActionPerformed
+
+    private void adminSearchTextFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_adminSearchTextFieldKeyTyped
+        if (adminSearchTextField.getText().trim().length() >= 15
             && evt.getKeyCode() != java.awt.event.KeyEvent.VK_BACK_SPACE) {
             evt.consume();
         }
-    }//GEN-LAST:event_adminSearchTFKeyTyped
+    }//GEN-LAST:event_adminSearchTextFieldKeyTyped
 
-    private void typeCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeCBActionPerformed
-        String id = adminSearchTF.getText().trim();
+    private void sortByComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortByComboBoxActionPerformed
+        // Get whatever is currently typed in the search bar
+        String id = adminSearchTextField.getText().trim();
+
+        // Refresh the table and apply the new sort
         loadTableData(id);
-    }//GEN-LAST:event_typeCBActionPerformed
+    }//GEN-LAST:event_sortByComboBoxActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton AddBT;
-    private javax.swing.JTextField adminSearchTF;
+    private javax.swing.JButton AddButton;
+    private javax.swing.JTextField adminSearchTextField;
     private javax.swing.JTable adminTable;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JButton removeBT;
-    private javax.swing.JComboBox<String> typeCB;
-    private javax.swing.JButton updateBT;
+    private javax.swing.JComboBox<String> positionComboBox;
+    private javax.swing.JButton removeButton;
+    private javax.swing.JComboBox<String> sortByComboBox;
+    private javax.swing.JLabel sortByText;
+    private javax.swing.JButton updateButton;
     // End of variables declaration//GEN-END:variables
 }

@@ -88,7 +88,7 @@ public class StudentManagement {
 //        return studentCollection.getStudentById(id);
 //    }
     
-    public ListInterface<Student> searchStudentForTable(String id,String programme) {
+    public ListInterface<Student> searchStudentForTable(String id,String programme, String sortBy) {
         ListInterface<Student> searchResults = new SingleLinkedList<>();
         ListInterface<Student> allStudent = studentCollection.getAllStudent();
  
@@ -103,6 +103,29 @@ public class StudentManagement {
                 searchResults.add(student);
             }
         }
+        // Sort the filtered list based on the combo box selection
+        if (sortBy != null && !sortBy.trim().isEmpty()) {
+            searchResults.sort(new adt.Comparator<entity.Student>() {
+                @Override
+                public int compare(entity.Student s1, entity.Student s2) {
+                    switch (sortBy) {
+                        case "Student ID":
+                            return s1.getStudentId().compareToIgnoreCase(s2.getStudentId());
+                        case "Name":
+                            return s1.getName().compareToIgnoreCase(s2.getName());
+                        case "Programme":
+                            return s1.getProgramme().compareToIgnoreCase(s2.getProgramme());
+                        case "Email":
+                            return s1.getEmail().compareToIgnoreCase(s2.getEmail());
+                        case "Phone Number":
+                            return s1.getPhoneNumber().compareToIgnoreCase(s2.getPhoneNumber());
+                        default:
+                            return 0; // No sorting if it doesn't match
+                    }
+                }
+            });
+        }
+
         return searchResults;
     }
     

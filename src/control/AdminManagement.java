@@ -95,7 +95,7 @@ public class AdminManagement {
 //    }
     
         
-    public ListInterface<Admin> searchAdminForTable(String id,String position) {
+    public ListInterface<Admin> searchAdminForTable(String id,String position, String sortBy) {
         ListInterface<Admin> searchResults = new SingleLinkedList<>();
         ListInterface<Admin> allAdmin = adminCollection.getAllAdmin();
  
@@ -110,6 +110,30 @@ public class AdminManagement {
                 searchResults.add(admin);
             }
         }
+        
+        // Sort the filtered list based on the combo box selection
+        if (sortBy != null && !sortBy.trim().isEmpty()) {
+            searchResults.sort(new adt.Comparator<entity.Admin>() {
+                @Override
+                public int compare(entity.Admin a1, entity.Admin a2) {
+                    switch (sortBy) {
+                        case "Admin ID":
+                            return a1.getAdminId().compareToIgnoreCase(a2.getAdminId());
+                        case "Name":
+                            return a1.getName().compareToIgnoreCase(a2.getName());
+                        case "Position":
+                            return a1.getPosition().compareToIgnoreCase(a2.getPosition());
+                        case "Email":
+                            return a1.getEmail().compareToIgnoreCase(a2.getEmail());
+                        case "Phone Number":
+                            return a1.getPhoneNumber().compareToIgnoreCase(a2.getPhoneNumber());
+                        default:
+                            return 0; // No sorting
+                    }
+                }
+            });
+        }
+        
         return searchResults;
     }
     

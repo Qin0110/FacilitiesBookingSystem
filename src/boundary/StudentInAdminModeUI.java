@@ -25,12 +25,11 @@ public class StudentInAdminModeUI extends javax.swing.JPanel {
         loadTableData();
     }
     
-    
     private void loadTableData(){
         //declare reference, =..... is like casting
         //e.g. Object obj = "hello"  -- here type is string but point to object
         //     String str = (String) obj  --change the object to string
-        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
+        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) studentTable.getModel();
         model.setRowCount(0);
         
         adt.ListInterface<entity.Student> student = studentManager.getAllStudents();
@@ -48,15 +47,20 @@ public class StudentInAdminModeUI extends javax.swing.JPanel {
     }
     
     private void loadTableData(String id){
-        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
+        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) studentTable.getModel();
         model.setRowCount(0);
-        
-        
-        Object selected = typeCB.getSelectedItem();
-        String programme = (selected != null) ? selected.toString() : "ALL";
-        
-        adt.ListInterface<entity.Student> searchResults = studentManager.searchStudentForTable(id,programme);
-        
+
+        // Get Programme Filter
+        Object selectedProgramme = ProgrammeComboBox.getSelectedItem();
+        String programme = (selectedProgramme != null) ? selectedProgramme.toString() : "ALL";
+
+        // Get Sort Selection
+        Object selectedSort = sortByComboBox.getSelectedItem();
+        String sortBy = (selectedSort != null) ? selectedSort.toString() : "";
+
+        // Pass BOTH to the manager
+        adt.ListInterface<entity.Student> searchResults = studentManager.searchStudentForTable(id, programme, sortBy);
+
         for (int i = 0 ; i < searchResults.size() ; i++ ){
             entity.Student s = searchResults.get(i);
             model.addRow(new Object[]{
@@ -67,14 +71,14 @@ public class StudentInAdminModeUI extends javax.swing.JPanel {
                 s.getPhoneNumber()
             });
         }
+
+        // Optional: Only show the "Not found" popup if they actually typed something to search
         if (searchResults.size() == 0) {
-        javax.swing.JOptionPane.showMessageDialog(this, 
-            "No student information found containing ID: " + id, 
-            "Search Results", 
-            javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "No student information found containing ID: " + id, 
+                "Search Results", 
+                javax.swing.JOptionPane.INFORMATION_MESSAGE);
         }
-        
-        
     }
 
 
@@ -89,37 +93,39 @@ public class StudentInAdminModeUI extends javax.swing.JPanel {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        AddBT = new javax.swing.JButton();
-        removeBT = new javax.swing.JButton();
-        updateBT = new javax.swing.JButton();
+        AddButton = new javax.swing.JButton();
+        removeButton = new javax.swing.JButton();
+        updateButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        studentSearchTF = new javax.swing.JTextField();
+        studentTable = new javax.swing.JTable();
+        studentSearchTextField = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
-        typeCB = new javax.swing.JComboBox<>();
+        sortByComboBox = new javax.swing.JComboBox<>();
+        ProgrammeComboBox = new javax.swing.JComboBox<>();
+        sortByText = new javax.swing.JLabel();
 
-        AddBT.setText("Add Student");
-        AddBT.addActionListener(new java.awt.event.ActionListener() {
+        AddButton.setText("Add Student");
+        AddButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                AddBTActionPerformed(evt);
+                AddButtonActionPerformed(evt);
             }
         });
 
-        removeBT.setText("Remove Student");
-        removeBT.addActionListener(new java.awt.event.ActionListener() {
+        removeButton.setText("Remove Student");
+        removeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removeBTActionPerformed(evt);
+                removeButtonActionPerformed(evt);
             }
         });
 
-        updateBT.setText("Update Student");
-        updateBT.addActionListener(new java.awt.event.ActionListener() {
+        updateButton.setText("Update Student");
+        updateButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateBTActionPerformed(evt);
+                updateButtonActionPerformed(evt);
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        studentTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
                 {null, null, null, null, null},
@@ -138,34 +144,37 @@ public class StudentInAdminModeUI extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(studentTable);
 
-        studentSearchTF.addActionListener(new java.awt.event.ActionListener() {
+        studentSearchTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                studentSearchTFActionPerformed(evt);
+                studentSearchTextFieldActionPerformed(evt);
             }
         });
-        studentSearchTF.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                studentSearchTFKeyPressed(evt);
-            }
+        studentSearchTextField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                studentSearchTFKeyReleased(evt);
-            }
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                studentSearchTFKeyTyped(evt);
+                studentSearchTextFieldKeyReleased(evt);
             }
         });
 
         jLabel1.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
         jLabel1.setText("Student");
 
-        typeCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Data Science", "Software Engineering", "Software Developer" }));
-        typeCB.addActionListener(new java.awt.event.ActionListener() {
+        sortByComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Student ID", "Name", "Programme", "Email", "Phone Number" }));
+        sortByComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                typeCBActionPerformed(evt);
+                sortByComboBoxActionPerformed(evt);
             }
         });
+
+        ProgrammeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ALL", "Data Science", "Software Engineering", "Software Developer" }));
+        ProgrammeComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ProgrammeComboBoxActionPerformed(evt);
+            }
+        });
+
+        sortByText.setText("Sort By:");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -174,19 +183,24 @@ public class StudentInAdminModeUI extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(removeBT, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(AddBT, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(updateBT, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(removeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(AddButton, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(27, 27, 27)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 639, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 639, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(typeCB, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(studentSearchTF)))
+                        .addComponent(ProgrammeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(studentSearchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(sortByText)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(sortByComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -194,19 +208,21 @@ public class StudentInAdminModeUI extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(6, 6, 6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(studentSearchTF, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(typeCB, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(studentSearchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(sortByComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ProgrammeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(sortByText, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(AddBT, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(AddButton, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(removeBT, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(removeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(updateBT, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(22, 22, 22))
         );
 
@@ -214,33 +230,29 @@ public class StudentInAdminModeUI extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 893, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 535, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void AddBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddBTActionPerformed
+    private void AddButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddButtonActionPerformed
         StudentDialog dialog = new StudentDialog(null, true, this.studentManager);
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
         loadTableData();
-    }//GEN-LAST:event_AddBTActionPerformed
+    }//GEN-LAST:event_AddButtonActionPerformed
 
-    private void removeBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeBTActionPerformed
-        int selectedRow = jTable1.getSelectedRow();
+    private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeButtonActionPerformed
+        int selectedRow = studentTable.getSelectedRow();
 
         if (selectedRow == -1) {
             javax.swing.JOptionPane.showMessageDialog(this, 
@@ -250,8 +262,8 @@ public class StudentInAdminModeUI extends javax.swing.JPanel {
             return; 
         }
 
-        String studentId = jTable1.getValueAt(selectedRow, 0).toString();
-        String name = jTable1.getValueAt(selectedRow, 1).toString();
+        String studentId = studentTable.getValueAt(selectedRow, 0).toString();
+        String name = studentTable.getValueAt(selectedRow, 1).toString();
 
         int confirm = javax.swing.JOptionPane.showConfirmDialog(this, 
             "Are you sure you want to remove " + name + " (" + studentId + ")?", 
@@ -275,10 +287,10 @@ public class StudentInAdminModeUI extends javax.swing.JPanel {
             }
         }
             
-    }//GEN-LAST:event_removeBTActionPerformed
+    }//GEN-LAST:event_removeButtonActionPerformed
 
-    private void updateBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBTActionPerformed
-        int selectedRow = jTable1.getSelectedRow();
+    private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
+        int selectedRow = studentTable.getSelectedRow();
         String id, name, programme, email, phoneNumber;
         
         if (selectedRow == -1) {
@@ -289,11 +301,11 @@ public class StudentInAdminModeUI extends javax.swing.JPanel {
             return; 
         }
         
-        id = jTable1.getValueAt(selectedRow, 0).toString();
-        name = jTable1.getValueAt(selectedRow, 1).toString();
-        programme = jTable1.getValueAt(selectedRow, 2).toString();
-        email = jTable1.getValueAt(selectedRow, 3).toString();
-        phoneNumber = jTable1.getValueAt(selectedRow, 4).toString();
+        id = studentTable.getValueAt(selectedRow, 0).toString();
+        name = studentTable.getValueAt(selectedRow, 1).toString();
+        programme = studentTable.getValueAt(selectedRow, 2).toString();
+        email = studentTable.getValueAt(selectedRow, 3).toString();
+        phoneNumber = studentTable.getValueAt(selectedRow, 4).toString();
         
         entity.Student selectedStudent = new entity.Student(id, name, programme, email, phoneNumber);
         
@@ -303,45 +315,44 @@ public class StudentInAdminModeUI extends javax.swing.JPanel {
         
         loadTableData();
                      
-    }//GEN-LAST:event_updateBTActionPerformed
+    }//GEN-LAST:event_updateButtonActionPerformed
 
-    private void studentSearchTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_studentSearchTFActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_studentSearchTFActionPerformed
+    private void studentSearchTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_studentSearchTextFieldActionPerformed
+ 
+    }//GEN-LAST:event_studentSearchTextFieldActionPerformed
 
-    private void studentSearchTFKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_studentSearchTFKeyPressed
-
-    }//GEN-LAST:event_studentSearchTFKeyPressed
-
-    private void studentSearchTFKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_studentSearchTFKeyReleased
-        String id = studentSearchTF.getText().trim();
+    private void studentSearchTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_studentSearchTextFieldKeyReleased
+        String id = studentSearchTextField.getText().trim();
 
         loadTableData(id);
-    }//GEN-LAST:event_studentSearchTFKeyReleased
+    }//GEN-LAST:event_studentSearchTextFieldKeyReleased
 
-    private void studentSearchTFKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_studentSearchTFKeyTyped
-        if (studentSearchTF.getText().trim().length() >= 15
-            && evt.getKeyCode() != java.awt.event.KeyEvent.VK_BACK_SPACE) {
-            evt.consume();
-        }
-    }//GEN-LAST:event_studentSearchTFKeyTyped
+    private void sortByComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortByComboBoxActionPerformed
+    // Get whatever is currently typed in the search bar
+    String id = studentSearchTextField.getText().trim();
+    
+    // Refresh the table and apply the new sort
+    loadTableData(id);
+    }//GEN-LAST:event_sortByComboBoxActionPerformed
 
-    private void typeCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeCBActionPerformed
-        String id = studentSearchTF.getText().trim();
-
-        loadTableData(id);
-    }//GEN-LAST:event_typeCBActionPerformed
+    private void ProgrammeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ProgrammeComboBoxActionPerformed
+       // Get whatever is currently typed in the search bar and refresh the table
+       String id = studentSearchTextField.getText().trim();
+       loadTableData(id);
+    }//GEN-LAST:event_ProgrammeComboBoxActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton AddBT;
+    private javax.swing.JButton AddButton;
+    private javax.swing.JComboBox<String> ProgrammeComboBox;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JButton removeBT;
-    private javax.swing.JTextField studentSearchTF;
-    private javax.swing.JComboBox<String> typeCB;
-    private javax.swing.JButton updateBT;
+    private javax.swing.JButton removeButton;
+    private javax.swing.JComboBox<String> sortByComboBox;
+    private javax.swing.JLabel sortByText;
+    private javax.swing.JTextField studentSearchTextField;
+    private javax.swing.JTable studentTable;
+    private javax.swing.JButton updateButton;
     // End of variables declaration//GEN-END:variables
 }
