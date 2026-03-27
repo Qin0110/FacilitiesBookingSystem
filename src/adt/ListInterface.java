@@ -12,5 +12,4 @@ public interface ListInterface<T> {
     public void clear();
     public boolean isEmpty();
     public int size();
-    public void sort(Comparator<T> comparator);
 }

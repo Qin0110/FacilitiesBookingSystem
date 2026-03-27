@@ -14,10 +14,10 @@ public class FacilityCollection implements Serializable {
     public FacilityCollection() {
         facilityList = DATFile.loadFromFile(FILE_NAME);
 
-        if (facilityList.isEmpty()) {
-            initDummyData();
-            saveData(); 
-        }
+//        if (facilityList.isEmpty()) {
+//            initDummyData();
+//            saveData(); 
+//        }
     }
     
     private void saveData() {
@@ -28,7 +28,7 @@ public class FacilityCollection implements Serializable {
         DATFile.saveToFile(FILE_NAME, facilityList);
     }
  
-    private void initDummyData() {
+    /*private void initDummyData() {
         for (int i = 1; i <= 20; i++) {
             facilityList.add(new Facility("GYM-" + String.format("%02d", i), "Gymnasium " + i, "Sports", "Club House", 1, 1));
             facilityList.add(new Facility("POOL-" + String.format("%02d", i), "Swimming Pool " + i, "Sports", "Club House", 1, 1));
@@ -69,7 +69,7 @@ public class FacilityCollection implements Serializable {
         facilityList.add(new Facility("SNOOKER-01", "Snooker Table 1", "Recreation", "Clubhouse", 1, 6));
         facilityList.add(new Facility("ARENA-FUT", "Futsal Court", "Sports", "TAR UMT Arena", 1, 16));
         facilityList.add(new Facility("ARENA-HND", "Handball Court", "Sports", "TAR UMT Arena", 1, 16));
-    }
+    }*/
  
     public boolean add(Facility facility) {
         if (isFacilityExists(facility.getFacilityId())) 
@@ -154,5 +154,46 @@ public class FacilityCollection implements Serializable {
         return searchFacility(id, "ALL");
     }
 
- 
+    public void sortFacilities(String sortBy, String order) {
+        int n = facilityList.size();
+
+        for (int i = 0; i < n - 1; i++) {
+            int indexOfSmallest = i;
+
+            for (int j = i + 1; j < n; j++) {
+                int cmp = compareBy(facilityList.get(j), facilityList.get(indexOfSmallest), sortBy);
+
+                if (order.equalsIgnoreCase("desc")) cmp = -cmp;
+
+                if (cmp < 0) {
+                    indexOfSmallest = j;
+                }
+            }
+
+            if (indexOfSmallest != i) {
+                Facility temp = facilityList.get(i);
+                facilityList.set(i, facilityList.get(indexOfSmallest));
+                facilityList.set(indexOfSmallest, temp);
+            }
+        }
+        
+        saveData(); 
+    }
+
+    private int compareBy(Facility a, Facility b, String attribute) {
+        switch (attribute.toLowerCase()) {
+            case "id":       
+                return a.getFacilityId().compareToIgnoreCase(b.getFacilityId());
+            case "name":     
+                return a.getName().compareToIgnoreCase(b.getName());
+            case "type":     
+                return a.getType().compareToIgnoreCase(b.getType());
+            case "location": 
+                return a.getLocation().compareToIgnoreCase(b.getLocation());
+            case "capacity": 
+                return Integer.compare(a.getMaxCapacity(), b.getMaxCapacity());
+            default:         
+                return 0;
+        }
+    }
 }
