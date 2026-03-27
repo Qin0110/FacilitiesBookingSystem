@@ -14,59 +14,80 @@ public class StudentManagement {
         
     }
     
-
-    // ===============================
-    // Add New Student
-    // ===============================
     public String addNewStudent(String id, String name, String programme, String email, String phoneNumber) {
+ 
+         ListInterface<Student> studentList = this.getAllStudents(); 
 
-        try {
-            Student newStudent = new Student(id, name, programme, email, phoneNumber);
-            studentCollection.add(newStudent);
-        } catch (IllegalArgumentException e) {
-            return "ERROR: " + e.getMessage();
-        }
-        return "TRUE";
+         // Loop through the list to check for duplicates
+         for (int i = 0; i < studentList.size(); i++) {
+             Student existingStudent = studentList.get(i);
+
+             if (existingStudent.getId().equalsIgnoreCase(id)) {
+                 return "Error: This Student ID already exists!"; 
+             }
+             if (existingStudent.getEmail().equalsIgnoreCase(email)) {
+                 return "Error: This Email is already registered!"; 
+             }
+             if (existingStudent.getPhoneNumber().equals(phoneNumber)) {
+                 return "Error: This Phone Number is already registered!"; 
+             }
+         }
+
+         // If no duplicates are found, create and save the student
+         try {
+             Student newStudent = new Student(id, name, programme, email, phoneNumber);
+             studentCollection.add(newStudent);
+             return "Student added successfully!";
+         } catch (IllegalArgumentException e) {
+             return "ERROR: " + e.getMessage(); // Catches format errors from Entity layer
+         }
     }
 
-    // ===============================
-    // Get All Students
-    // ===============================
     public ListInterface<Student> getAllStudents() {
         return studentCollection.getAllStudent();
     }
 
-    // ===============================
-    // Remove Student
-    // ===============================
     public boolean removeStudent(String studentId) {
         return studentCollection.remove(studentId);
     }
 
-    // ===============================
-    // Update Student
-    // ===============================
     public String updateStudent(String id, String name, String programme, String email, String phone) {
 
-        Student updatedStudent;
-        try {
-            updatedStudent = new Student(id, name, programme, email, phone);
-            studentCollection.set(updatedStudent);
-        } catch (IllegalArgumentException e) {
-            return "ERROR: " + e.getMessage();
+        ListInterface<Student> studentList = this.getAllStudents(); 
+    
+        // Loop through the list to check for duplicates
+        for (int i = 0; i < studentList.size(); i++) {
+            Student existingStudent = studentList.get(i);
+
+            //  Skip the student info currently updating
+            if (existingStudent.getId().equalsIgnoreCase(id)) {
+                continue; 
+            }
+
+            // checking OTHER students' records, id no need check since it cannot edit
+            if (existingStudent.getEmail().equalsIgnoreCase(email)) {
+                return "Error: This Email is already registered to another student!"; 
+            }
+            if (existingStudent.getPhoneNumber().equals(phone)) {
+                return "Error: This Phone Number is already registered to another student!"; 
+            }
         }
 
-        return "TRUE";
+        // update the student
+        try {
+            Student updatedStudent = new Student(id, name, programme, email, phone);
+            studentCollection.set(updatedStudent); 
+            return updatedStudent.getName() + " with Student ID " + 
+                   updatedStudent.getId() + " has been successfully updated!";
+        } catch (IllegalArgumentException e) {
+            return "Error: " + e.getMessage();
+        }
     }
 
-    // ===============================
-    // Search Student By ID
-    // ===============================
 //    public ListInterface<Student> searchStudent(String id) {
 //        return studentCollection.getStudentById(id);
 //    }
     
-        
     public ListInterface<Student> searchStudentForTable(String id,String programme) {
         ListInterface<Student> searchResults = new SingleLinkedList<>();
         ListInterface<Student> allStudent = studentCollection.getAllStudent();
