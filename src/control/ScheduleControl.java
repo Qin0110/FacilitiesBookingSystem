@@ -57,7 +57,6 @@ public class ScheduleControl implements Serializable{
                     newSchedule.setSessions(this.divideSession(newSchedule));
                     schedule.add(newSchedule);
                     dataWasAdded = true;
-                    System.out.println("Generating missing schedule: " + currentFacility + " for" + targetDateString);
                 }
             }
         }

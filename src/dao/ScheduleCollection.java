@@ -23,7 +23,6 @@ public class ScheduleCollection {
             
             objectOut.close();
             fileOut.close();
-            System.out.println("Schedules successfully saved to " + FILE_NAME);
             
         } catch (IOException e) {
             System.out.println("Error saving schedules to file: " + e.getMessage());
@@ -48,7 +47,6 @@ public class ScheduleCollection {
             
             objectIn.close();
             fileIn.close();
-            System.out.println("Schedules successfully loaded from " + FILE_NAME);
             return loadedList;
             
         } catch (IOException | ClassNotFoundException e) {

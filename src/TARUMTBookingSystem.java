@@ -13,8 +13,9 @@ public class TARUMTBookingSystem {
         
         AdminManagement adminManager = new AdminManagement();
         StudentManagement studentManager = new StudentManagement();
-        ScheduleControl scheduleManager = new ScheduleControl();
         FacilityManagement facilityManager = new FacilityManagement();
+
+        ScheduleControl scheduleManager = new ScheduleControl();
         BookingManagement bookingManager = new BookingManagement(studentManager, scheduleManager);
 
         MainMenu mainMenu = new MainMenu(adminManager, studentManager, bookingManager, facilityManager, scheduleManager);
