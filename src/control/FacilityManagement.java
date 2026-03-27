@@ -9,6 +9,10 @@ import entity.Facility;
 public class FacilityManagement {
  
     private FacilityCollection facilityCollection;
+    
+    private String currentSort1 = "ID";    
+    private String currentSort2 = "None";   
+    private String currentOrder = "ASC";
  
     public FacilityManagement() {
         this.facilityCollection = new FacilityCollection();
@@ -16,6 +20,18 @@ public class FacilityManagement {
  
     public FacilityManagement(FacilityCollection sharedCollection) {
         this.facilityCollection = sharedCollection;
+    }
+    
+    public String getCurrentSort1() { 
+        return currentSort1; 
+    }
+    
+    public String getCurrentSort2() {
+        return currentSort2; 
+    }
+    
+    public String getCurrentOrder() {
+        return currentOrder; 
     }
  
     public String addNewFacility(String id, String name, String type, String location, int minCapacity, int maxCapacity) {
@@ -81,8 +97,42 @@ public class FacilityManagement {
         return facilityCollection.searchFacility(id);
     }
     
-    public void sortFacilities(String sortBy, String order) {
-        facilityCollection.sortFacilities(sortBy, order);
+    public void sortFacilities(String sortBy1, String sortBy2, String order) {
+        
+        this.currentSort1 = sortBy1;
+        this.currentSort2 = (sortBy2 == null || sortBy2.isEmpty()) ? "None" : sortBy2;
+        this.currentOrder = order;
+
+        adt.ListInterface<entity.Facility> allFacilities = facilityCollection.getAllFacilities();
+
+        allFacilities.sort(new adt.Comparator<entity.Facility>() {
+            @Override
+            public int compare(entity.Facility a, entity.Facility b) {
+                
+                int cmp = compareSingleAttribute(a, b, sortBy1);
+
+                if (cmp == 0 && sortBy2 != null && !sortBy2.isEmpty()) {
+                    cmp = compareSingleAttribute(a, b, sortBy2);
+                }
+
+                if (order.equalsIgnoreCase("desc")) {
+                    cmp = -cmp; 
+                }
+
+                return cmp;
+            }
+        });
+    }
+
+    private int compareSingleAttribute(entity.Facility a, entity.Facility b, String attribute) {
+        switch (attribute.toLowerCase()) {
+            case "id":       return a.getFacilityId().compareToIgnoreCase(b.getFacilityId());
+            case "name":     return a.getName().compareToIgnoreCase(b.getName());
+            case "type":     return a.getType().compareToIgnoreCase(b.getType());
+            case "location": return a.getLocation().compareToIgnoreCase(b.getLocation());
+            case "capacity": return Integer.compare(a.getMaxCapacity(), b.getMaxCapacity());
+            default:         return 0;
+        }
     }
     
     public String generateDistributionCSV() {
