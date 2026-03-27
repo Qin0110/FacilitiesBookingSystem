@@ -22,27 +22,23 @@ public class FacilityUI extends javax.swing.JPanel {
     private void loadTableData() {
         javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) facilityTable.getModel();
         model.setRowCount(0);
- 
+
         adt.ListInterface<entity.Facility> facilities = facilityManager.getAllFacilities();
- 
-        String currentOption = null;
-        String sortOption = null;
-        
+
+        String currentTypeOption = null;
         Object selected = typeCB.getSelectedItem();
         if (selected != null) {
             String selStr = selected.toString().trim();
             if (!selStr.isEmpty()) 
-                currentOption = selStr;
+                currentTypeOption = selStr;
         }
-        
-        sortOption = sortCB.getSelectedItem().toString().trim();
- 
+
         typeCB.removeAllItems();
         typeCB.addItem("ALL");
- 
+
         for (int i = 0; i < facilities.size(); i++) {
             entity.Facility f = facilities.get(i);
- 
+
             model.addRow(new Object[]{
                 f.getFacilityId(),
                 f.getName(),
@@ -51,7 +47,7 @@ public class FacilityUI extends javax.swing.JPanel {
                 f.getMinCapacity(),
                 f.getMaxCapacity()
             });
- 
+
             String type = f.getType();
             boolean exists = false;
             for (int j = 0; j < typeCB.getItemCount(); j++) {
@@ -62,33 +58,23 @@ public class FacilityUI extends javax.swing.JPanel {
             }
             if (!exists) typeCB.addItem(type);
         }
- 
-        if (currentOption == null) 
+
+        if (currentTypeOption == null) 
             typeCB.setSelectedItem("ALL");
         else                       
-            typeCB.setSelectedItem(currentOption);
-        
-        
-        if(sortOption == null)
-            sortCB.setSelectedItem("ID");
-        else
-            sortCB.setSelectedItem(sortOption);
+            typeCB.setSelectedItem(currentTypeOption);
+            
     }
  
     private void loadTableData(String id) {
         javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) facilityTable.getModel();
         model.setRowCount(0);
- 
+
         Object selected = typeCB.getSelectedItem();
         String type = (selected != null) ? selected.toString() : "ALL";
         
-        Object selectedSort = sortCB.getSelectedItem();
-        String sortBy = (selectedSort != null) ? selectedSort.toString() : "ID";
-        
-        facilityManager.sortFacilities(sortBy, "asc");
- 
         adt.ListInterface<entity.Facility> searchResults = facilityManager.searchFacility(id, type);
- 
+
         for (int i = 0; i < searchResults.size(); i++) {
             entity.Facility f = searchResults.get(i);
             model.addRow(new Object[]{
@@ -137,7 +123,7 @@ public class FacilityUI extends javax.swing.JPanel {
         jPanel3 = new javax.swing.JPanel();
         typeCB = new javax.swing.JComboBox<>();
         facilitySearchTF = new javax.swing.JTextField();
-        sortCB = new javax.swing.JComboBox<>();
+        jButton5 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
 
@@ -214,7 +200,7 @@ public class FacilityUI extends javax.swing.JPanel {
                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addContainerGap(151, Short.MAX_VALUE))
         );
 
         typeCB.addActionListener(new java.awt.event.ActionListener() {
@@ -240,10 +226,10 @@ public class FacilityUI extends javax.swing.JPanel {
             }
         });
 
-        sortCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ID", "Name", "Type", "Location", "Capacity" }));
-        sortCB.addActionListener(new java.awt.event.ActionListener() {
+        jButton5.setText("Sort By");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                sortCBActionPerformed(evt);
+                jButton5ActionPerformed(evt);
             }
         });
 
@@ -256,17 +242,17 @@ public class FacilityUI extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(facilitySearchTF, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(sortCB, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(sortCB)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(typeCB, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(facilitySearchTF))
+                    .addComponent(facilitySearchTF)
+                    .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -406,11 +392,6 @@ public class FacilityUI extends javax.swing.JPanel {
         loadTableData(id);
     }//GEN-LAST:event_typeCBActionPerformed
 
-    private void sortCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortCBActionPerformed
-        String id = facilitySearchTF.getText().trim();
-        loadTableData(id);
-    }//GEN-LAST:event_sortCBActionPerformed
-
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         String visualReport = facilityManager.generateDistributionReport();
 
@@ -451,6 +432,13 @@ public class FacilityUI extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        FacilitySortingDialog dialog = new FacilitySortingDialog(null, true, this.facilityManager);
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+        loadTableData();
+    }//GEN-LAST:event_jButton5ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField facilitySearchTF;
@@ -459,13 +447,13 @@ public class FacilityUI extends javax.swing.JPanel {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JComboBox<String> sortCB;
     private javax.swing.JComboBox<String> typeCB;
     // End of variables declaration//GEN-END:variables
 }
