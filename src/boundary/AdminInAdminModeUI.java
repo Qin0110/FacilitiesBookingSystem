@@ -105,6 +105,7 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
         positionComboBox = new javax.swing.JComboBox<>();
         sortByText = new javax.swing.JLabel();
         sortByComboBox = new javax.swing.JComboBox<>();
+        reportButton = new javax.swing.JButton();
 
         AddButton.setText("Add Admin");
         AddButton.addActionListener(new java.awt.event.ActionListener() {
@@ -167,7 +168,7 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
         jLabel1.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
         jLabel1.setText("ADMIN");
 
-        positionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ALL", "Facility Manager", "Facility Assistant" }));
+        positionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ALL", "Facility Manager", "Facility Assistant", "System Admin" }));
         positionComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 positionComboBoxActionPerformed(evt);
@@ -183,6 +184,13 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
             }
         });
 
+        reportButton.setText("Genarate Admin Report");
+        reportButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reportButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -192,7 +200,8 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(removeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(AddButton, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(reportButton, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
@@ -229,7 +238,9 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
                         .addGap(18, 18, 18)
                         .addComponent(removeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(reportButton, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(22, 22, 22))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -337,6 +348,61 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
         loadTableData(id);
     }//GEN-LAST:event_sortByComboBoxActionPerformed
 
+    private void reportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportButtonActionPerformed
+        // 1. Call your new Student Management method
+        String reportText = adminManager.generateAdminReport();
+
+        // 2. Setup the text area
+        javax.swing.JTextArea textArea = new javax.swing.JTextArea(reportText);
+        textArea.setEditable(false);
+        textArea.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 14)); 
+        textArea.setMargin(new java.awt.Insets(10, 10, 10, 10)); 
+
+        javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textArea);
+        scrollPane.setPreferredSize(new java.awt.Dimension(600, 500)); // Made slightly wider for the list
+
+        Object[] options = {"Close", "Save as TXT"};
+
+        int choice = javax.swing.JOptionPane.showOptionDialog(this, 
+            scrollPane, 
+            "Admin Summary Report", 
+            javax.swing.JOptionPane.YES_NO_OPTION, 
+            javax.swing.JOptionPane.PLAIN_MESSAGE, 
+            null, 
+            options, 
+            options[0]); 
+
+        // 3. Save logic
+        if (choice == 1) {
+            javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
+            fileChooser.setDialogTitle("Save Report as TXT");
+            fileChooser.setSelectedFile(new java.io.File("Admin_Report.txt"));
+
+            int userSelection = fileChooser.showSaveDialog(this);
+
+            if (userSelection == javax.swing.JFileChooser.APPROVE_OPTION) {
+                java.io.File fileToSave = fileChooser.getSelectedFile();
+
+                if (!fileToSave.getName().toLowerCase().endsWith(".txt")) {
+                    fileToSave = new java.io.File(fileToSave.getParentFile(), fileToSave.getName() + ".txt");
+                }
+
+                try (java.io.PrintWriter writer = new java.io.PrintWriter(fileToSave)) {
+                    writer.print(reportText);
+                    javax.swing.JOptionPane.showMessageDialog(this, 
+                        "Report saved successfully to:\n" + fileToSave.getAbsolutePath(), 
+                        "Save Successful", 
+                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                } catch (Exception e) {
+                    javax.swing.JOptionPane.showMessageDialog(this, 
+                        "Error saving file: " + e.getMessage(), 
+                        "Save Error", 
+                        javax.swing.JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }//GEN-LAST:event_reportButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton AddButton;
@@ -346,6 +412,7 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JComboBox<String> positionComboBox;
     private javax.swing.JButton removeButton;
+    private javax.swing.JButton reportButton;
     private javax.swing.JComboBox<String> sortByComboBox;
     private javax.swing.JLabel sortByText;
     private javax.swing.JButton updateButton;

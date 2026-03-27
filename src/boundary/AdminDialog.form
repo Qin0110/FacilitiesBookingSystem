@@ -357,14 +357,14 @@
             </Property>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
               <StringArray count="3">
-                <StringItem index="0" value="Data Science"/>
-                <StringItem index="1" value="Software Engineering"/>
-                <StringItem index="2" value="Software Developer"/>
+                <StringItem index="0" value="Facility Manager"/>
+                <StringItem index="1" value="Facility Assistant"/>
+                <StringItem index="2" value="System Admin"/>
               </StringArray>
             </Property>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                <TitledBorder title="Programme">
+                <TitledBorder title="Position">
                   <Border PropertyName="innerBorder" info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
                     <LineBorder>
                       <Color PropertyName="color" blue="7e" green="73" red="21" type="rgb"/>

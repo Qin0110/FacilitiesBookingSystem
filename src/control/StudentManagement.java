@@ -133,4 +133,48 @@ public class StudentManagement {
             return studentCollection.getStudentById(studentId);
     }
     
+    public String generateStudentReport() {
+        adt.ListInterface<entity.Student> allStudents = studentCollection.getAllStudent();
+
+        int totalStudents = allStudents.size();
+        
+        int dataScienceCount = 0;
+        int softwareEngCount = 0;
+        int softwareDevCount = 0;
+
+        for (int i = 0; i < totalStudents; i++) {
+            String prog = allStudents.get(i).getProgramme();
+            if (prog.equalsIgnoreCase("Data Science")) dataScienceCount++;
+            else if (prog.equalsIgnoreCase("Software Engineering")) softwareEngCount++;
+            else if (prog.equalsIgnoreCase("Software Developer")) softwareDevCount++;
+        }
+
+        StringBuilder report = new StringBuilder();
+        report.append("==================================================\n");
+        report.append("             STUDENT SUMMARY REPORT               \n");
+        report.append("==================================================\n\n");
+
+        report.append("--- OVERALL STATISTICS ---\n");
+        report.append("Total Students Registered : ").append(totalStudents).append("\n\n");
+
+        report.append("--- PROGRAMME BREAKDOWN ---\n");
+        report.append("Data Science              : ").append(dataScienceCount).append("\n");
+        report.append("Software Engineering      : ").append(softwareEngCount).append("\n");
+        report.append("Software Developer        : ").append(softwareDevCount).append("\n\n");
+
+        report.append("--- DETAILED STUDENT LIST ---\n");
+        report.append(String.format("%-15s %-25s %-25s\n", "STUDENT ID", "NAME", "PROGRAMME"));
+        report.append("-----------------------------------------------------------------\n");
+
+        for (int i = 0; i < totalStudents; i++) {
+            entity.Student s = allStudents.get(i);
+            report.append(String.format("%-15s %-25s %-25s\n", 
+                s.getStudentId(), s.getName(), s.getProgramme()));
+        }
+
+        report.append("\n=================== END OF REPORT ===================");
+
+        return report.toString();
+    }
+    
 }

@@ -147,4 +147,55 @@ public class AdminManagement {
         return null; 
     }
     
+    public String generateAdminReport() {
+        adt.ListInterface<entity.Admin> allAdmins = adminCollection.getAllAdmin();
+
+        int totalAdmins = allAdmins.size();
+
+        int managerCount = 0;
+        int assistantCount = 0;
+        int systemAdminCount = 0; 
+
+        // Count the positions
+        for (int i = 0; i < totalAdmins; i++) {
+            String pos = allAdmins.get(i).getPosition();
+
+            if (pos.equalsIgnoreCase("Facility Manager")) {
+                managerCount++;
+            } else if (pos.equalsIgnoreCase("Facility Assistant")) {
+                assistantCount++;
+            } else if (pos.equalsIgnoreCase("System Admin")) {
+                systemAdminCount++;
+            }
+        }
+
+        // Build the report text
+        StringBuilder report = new StringBuilder();
+        report.append("==================================================\n");
+        report.append("          FACILITY STAFF SUMMARY REPORT           \n");
+        report.append("==================================================\n\n");
+
+        report.append("--- OVERALL STATISTICS ---\n");
+        report.append("Total Staff in System     : ").append(totalAdmins).append("\n\n");
+
+        report.append("--- POSITION BREAKDOWN ---\n");
+        report.append(String.format("%-25s : %d\n", "Facility Manager", managerCount));
+        report.append(String.format("%-25s : %d\n", "Facility Assistant", assistantCount));
+        report.append(String.format("%-25s : %d\n\n", "System Admin", systemAdminCount)); // Optional
+
+        report.append("--- DETAILED STAFF LIST ---\n");
+        report.append(String.format("%-15s %-25s %-20s\n", "STAFF ID", "NAME", "POSITION"));
+        report.append("-----------------------------------------------------------------\n");
+
+        for (int i = 0; i < totalAdmins; i++) {
+            entity.Admin a = allAdmins.get(i);
+            report.append(String.format("%-15s %-25s %-20s\n", 
+                a.getAdminId(), a.getName(), a.getPosition()));
+        }
+
+        report.append("\n=================== END OF REPORT ===================");
+
+        return report.toString();
+    }
+    
 }

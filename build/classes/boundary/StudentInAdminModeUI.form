@@ -45,6 +45,7 @@
                       <Component id="removeButton" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
                       <Component id="AddButton" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
                       <Component id="updateButton" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
+                      <Component id="reportButton" min="-2" pref="200" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
@@ -89,6 +90,8 @@
                           <Component id="removeButton" min="-2" pref="36" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="updateButton" min="-2" pref="36" max="-2" attributes="0"/>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Component id="reportButton" min="-2" pref="36" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
@@ -230,6 +233,14 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Sort By:"/>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="reportButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Generate Student Report"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="reportButtonActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

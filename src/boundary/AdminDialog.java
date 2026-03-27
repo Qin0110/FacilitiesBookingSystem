@@ -212,8 +212,8 @@ public class AdminDialog extends javax.swing.JDialog {
         });
 
         positionComboBox.setBackground(new java.awt.Color(232, 244, 248));
-        positionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Data Science", "Software Engineering", "Software Developer" }));
-        positionComboBox.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(33, 115, 126)), "Programme"));
+        positionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Facility Manager", "Facility Assistant", "System Admin" }));
+        positionComboBox.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(33, 115, 126)), "Position"));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
