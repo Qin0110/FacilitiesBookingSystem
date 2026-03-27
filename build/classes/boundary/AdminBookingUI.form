@@ -326,7 +326,7 @@
               <StringArray count="4">
                 <StringItem index="0" value="Booking ID"/>
                 <StringItem index="1" value="Student ID"/>
-                <StringItem index="2" value="Date"/>
+                <StringItem index="2" value="Session"/>
                 <StringItem index="3" value="Status"/>
               </StringArray>
             </Property>

@@ -241,7 +241,7 @@ public class AdminBookingUI extends javax.swing.JPanel {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Booking History");
 
-        SortCriteriaComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Booking ID", "Student ID", "Date", "Status" }));
+        SortCriteriaComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Booking ID", "Student ID", "Session", "Status" }));
         SortCriteriaComboBox1.setPreferredSize(new java.awt.Dimension(100, 25));
         SortCriteriaComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

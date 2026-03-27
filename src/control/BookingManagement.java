@@ -169,48 +169,32 @@ public class BookingManagement {
             sortedList.add(listToSort.get(i));
         }
 
-        int n = sortedList.size();
-        
-        if (n <= 1) {
-            return sortedList;
-        } 
-        for (int i = 1; i < n; i++) {
-            entity.Booking currentItem = sortedList.get(i);
-            int j = i - 1;
-
-            while (j >= 0) {
-                entity.Booking itemToCompare = sortedList.get(j);
+        adt.Comparator<entity.Booking> bookingComparator = new adt.Comparator<entity.Booking>() {
+            @Override
+            public int compare(entity.Booking a, entity.Booking b) {
+                int cmp = 0;
                 
-                int cmp = compareBy(itemToCompare, currentItem, criteria);
-                
-                if (!ascending) cmp = -cmp;
-
-                if (cmp > 0) {
-                    sortedList.set(j + 1, itemToCompare);
-                    j--;
-                } else {
-                    break; 
+                switch (criteria.toUpperCase()) {
+                    case "BOOKING ID":
+                        cmp = a.getBookingId().compareToIgnoreCase(b.getBookingId());
+                        break;
+                    case "STUDENT ID":
+                        cmp = a.getStudentId().compareToIgnoreCase(b.getStudentId());
+                        break;
+                    case "STATUS":
+                        cmp = a.getStatus().compareToIgnoreCase(b.getStatus());
+                        break;
+                    case "SESSION":
+                        cmp = a.getScheduleSession().compareToIgnoreCase(b.getScheduleSession());
+                        break;
+                    default:
+                        cmp = a.getBookingId().compareToIgnoreCase(b.getBookingId());
                 }
+                return ascending ? cmp : -cmp;
             }
-            sortedList.set(j + 1, currentItem);
-        }
+        };
+        sortedList.sort(bookingComparator);
         return sortedList;
-    }
-
-
-    private int compareBy(entity.Booking a, entity.Booking b, String attribute) {
-        switch (attribute.toUpperCase()) {
-            case "BOOKING ID":
-                return a.getBookingId().compareToIgnoreCase(b.getBookingId());
-            case "STUDENT ID":
-                return a.getStudentId().compareToIgnoreCase(b.getStudentId());
-            case "STATUS":
-                return a.getStatus().compareToIgnoreCase(b.getStatus());
-            case "DATE":
-                return a.getScheduleSession().compareToIgnoreCase(b.getScheduleSession());
-            default:
-                return 0; 
-        }
     }
     
     public boolean validateMember(String studentId, String studentName) {
@@ -354,7 +338,7 @@ public class BookingManagement {
                 }
             }
         }
-        //temporary sorting (wait 
+
         int numFacilities = facilityNames.size();
         
         for (int i = 1; i < numFacilities; i++) {
