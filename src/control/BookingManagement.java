@@ -315,4 +315,90 @@ public class BookingManagement {
         }
         return count;
     }
+
+    public String generateBookingReport() {
+        adt.ListInterface<entity.Booking> allBookings = bookingCollection.getAllBookings();
+        
+        int totalBookings = allBookings.size();
+        int pendingCount = 0, confirmedCount = 0, inProgressCount = 0;
+        int completedCount = 0, cancelledCount = 0, notAttendedCount = 0;
+        
+        adt.ListInterface<String> facilityNames = new adt.SingleLinkedList<>();
+        adt.ListInterface<Integer> facilityCounts = new adt.SingleLinkedList<>();
+        
+        for (int i = 0; i < totalBookings; i++) {
+            entity.Booking b = allBookings.get(i);
+            
+            String status = b.getStatus();
+            if (status.equalsIgnoreCase("Pending")) pendingCount++;
+            else if (status.equalsIgnoreCase("Confirmed")) confirmedCount++;
+            else if (status.equalsIgnoreCase("In Progress")) inProgressCount++;
+            else if (status.equalsIgnoreCase("Completed")) completedCount++;
+            else if (status.equalsIgnoreCase("Cancelled")) cancelledCount++;
+            else if (status.equalsIgnoreCase("Not Attended")) notAttendedCount++;
+            
+            if (b.getSchedule() != null && b.getSchedule().getFacility() != null) {
+                String fName = b.getSchedule().getFacility().getName();
+                
+                boolean found = false;
+                for (int j = 0; j < facilityNames.size(); j++) {
+                    if (facilityNames.get(j).equalsIgnoreCase(fName)) {
+                        facilityCounts.set(j, facilityCounts.get(j) + 1);
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    facilityNames.add(fName);
+                    facilityCounts.add(1);
+                }
+            }
+        }
+        //temporary sorting (wait 
+        int numFacilities = facilityNames.size();
+        
+        for (int i = 1; i < numFacilities; i++) {
+            int currentCount = facilityCounts.get(i);
+            String currentName = facilityNames.get(i);
+            
+            int j = i - 1;
+            while (j >= 0 && facilityCounts.get(j) < currentCount) {
+                facilityCounts.set(j + 1, facilityCounts.get(j));
+                facilityNames.set(j + 1, facilityNames.get(j));
+                j--;
+            }
+            facilityCounts.set(j + 1, currentCount);
+            facilityNames.set(j + 1, currentName);
+        }
+        
+        StringBuilder report = new StringBuilder();
+        report.append("=====================================================\n");
+        report.append("               BOOKING SUMMARY REPORT\n");
+        report.append("=====================================================\n\n");
+        
+        report.append(String.format("Total Bookings in System : %d\n\n", totalBookings));
+        
+        report.append("--- BOOKING STATUS BREAKDOWN ---\n");
+        report.append(String.format("Completed\t:    %d\n", completedCount));
+        report.append(String.format("In Progress\t:    %d\n", inProgressCount));
+        report.append(String.format("Confirmed\t:    %d\n", confirmedCount));
+        report.append(String.format("Pending\t\t:    %d\n", pendingCount));
+        report.append(String.format("Cancelled\t:    %d\n", cancelledCount));
+        report.append(String.format("Not Attended\t:    %d\n\n", notAttendedCount));
+        
+        report.append("--- FACILITY POPULARITY (Total Bookings) ---\n");
+        if (facilityNames.isEmpty()) {
+            report.append("No facilities booked yet.\n");
+        } else {
+            for (int i = 0; i < facilityNames.size(); i++) {
+                report.append(String.format("%-25s : %d bookings\n", facilityNames.get(i), facilityCounts.get(i)));
+            }
+        }
+        
+        report.append("\n=====================================================\n");
+        report.append("\t\t    End of Report\n");
+        
+        return report.toString();
+    }
+    
 }

@@ -90,7 +90,7 @@ public class AdminBookingUI extends javax.swing.JPanel {
         TxtField = new javax.swing.JTextField();
         SearchBooking1 = new javax.swing.JButton();
         SearchComboBox = new javax.swing.JComboBox<>();
-        jButton1 = new javax.swing.JButton();
+        BookingReportButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         AdminBookingTable = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
@@ -145,8 +145,13 @@ public class AdminBookingUI extends javax.swing.JPanel {
 
         SearchComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "Booking ID", "Student ID", "Facility Name", "Date/Session", "Status" }));
 
-        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jButton1.setText("Generate Report");
+        BookingReportButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        BookingReportButton.setText("Generate Report");
+        BookingReportButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BookingReportButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -155,7 +160,7 @@ public class AdminBookingUI extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(BookingReportButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(TxtField, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -179,7 +184,7 @@ public class AdminBookingUI extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(TxtField, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 263, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(BookingReportButton, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -343,15 +348,70 @@ public class AdminBookingUI extends javax.swing.JPanel {
         loadBookingTable(TxtField.getText().trim());
     }//GEN-LAST:event_SortOrderComboBoxActionPerformed
 
+    private void BookingReportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BookingReportButtonActionPerformed
+        String reportText = bookingManager.generateBookingReport();
+        
+        javax.swing.JTextArea textArea = new javax.swing.JTextArea(reportText);
+        textArea.setEditable(false);
+        textArea.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 14)); 
+        textArea.setMargin(new java.awt.Insets(10, 10, 10, 10)); 
+        
+        javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textArea);
+        scrollPane.setPreferredSize(new java.awt.Dimension(450, 500));
+        
+        Object[] options = {"Close", "Save as TXT"};
+        
+        int choice = javax.swing.JOptionPane.showOptionDialog(this, 
+            scrollPane, 
+            "Booking Summary Report", 
+            javax.swing.JOptionPane.YES_NO_OPTION, 
+            javax.swing.JOptionPane.PLAIN_MESSAGE, 
+            null, 
+            options, 
+            options[0]); 
+            
+        if (choice == 1) {
+            javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
+            fileChooser.setDialogTitle("Save Report as TXT");
+            
+            fileChooser.setSelectedFile(new java.io.File("Booking_Report.txt"));
+            
+            int userSelection = fileChooser.showSaveDialog(this);
+            
+            if (userSelection == javax.swing.JFileChooser.APPROVE_OPTION) {
+                java.io.File fileToSave = fileChooser.getSelectedFile();
+                
+                if (!fileToSave.getName().toLowerCase().endsWith(".txt")) {
+                    fileToSave = new java.io.File(fileToSave.getParentFile(), fileToSave.getName() + ".txt");
+                }
+                
+                try (java.io.PrintWriter writer = new java.io.PrintWriter(fileToSave)) {
+                    writer.print(reportText);
+                    
+                    javax.swing.JOptionPane.showMessageDialog(this, 
+                        "Report saved successfully to:\n" + fileToSave.getAbsolutePath(), 
+                        "Save Successful", 
+                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                        
+                } catch (Exception e) {
+                    javax.swing.JOptionPane.showMessageDialog(this, 
+                        "Error saving file: " + e.getMessage(), 
+                        "Save Error", 
+                        javax.swing.JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }//GEN-LAST:event_BookingReportButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable AdminBookingTable;
+    private javax.swing.JButton BookingReportButton;
     private javax.swing.JButton SearchBooking1;
     private javax.swing.JComboBox<String> SearchComboBox;
     private javax.swing.JComboBox<String> SortCriteriaComboBox1;
     private javax.swing.JComboBox<String> SortOrderComboBox;
     private javax.swing.JTextField TxtField;
-    private javax.swing.JButton jButton1;
     private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
