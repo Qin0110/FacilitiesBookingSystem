@@ -339,7 +339,7 @@ public class AdminDialog extends javax.swing.JDialog {
             // Handles string messages returned by the Manager (e.g., Duplicate ID)
             if (message.contains("INVALID_INPUT") || message.contains("Invalid") || message.contains("Error") ) {
                 // Show as an Error Dialog (Red X icon) and DO NOT call dispose()
-                javax.swing.JOptionPane.showMessageDialog(this, message, "Input Format Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                javax.swing.JOptionPane.showMessageDialog(this, message, "Input Error", javax.swing.JOptionPane.ERROR_MESSAGE);
             } else {
                 // Show as a Success Dialog (Blue 'i' icon) AND close the window
                 javax.swing.JOptionPane.showMessageDialog(this, message, "Success", javax.swing.JOptionPane.INFORMATION_MESSAGE);
