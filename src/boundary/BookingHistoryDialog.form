@@ -245,6 +245,9 @@
         <Component class="javax.swing.JTextField" name="facilityNameTF">
         </Component>
         <Component class="javax.swing.JTextField" name="adminTF">
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="adminTFActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="arrivalTimeTF">
         </Component>

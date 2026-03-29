@@ -10,8 +10,9 @@ public class AdminManagement {
     
     private ListInterface<Admin> adminList;
     AdminCollection adminCollection = new AdminCollection();
+    
     public AdminManagement() {
-        
+        this.adminList = adminCollection.getAllAdmin();
     }
 
     public String addNewAdmin(String id, String name, String position, String email, String phoneNumber) {

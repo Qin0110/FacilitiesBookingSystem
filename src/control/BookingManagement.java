@@ -11,15 +11,17 @@ public class BookingManagement {
     private BookingCollection bookingCollection;
     private StudentManagement studentManager;
     private ScheduleControl scheduleManager; // Assuming this acts like ScheduleControl
+    private AdminManagement adminManager;
     
     public BookingManagement(){
         this.bookingCollection = new BookingCollection(); 
     }
 
-    public BookingManagement(StudentManagement studentManager, ScheduleControl scheduleManager) {
+    public BookingManagement(StudentManagement studentManager, ScheduleControl scheduleManager, AdminManagement adminManager) {
         this.bookingCollection = new BookingCollection();
         this.studentManager = studentManager;
         this.scheduleManager = scheduleManager;
+        this.adminManager = adminManager;
     }
 
     /**
@@ -206,12 +208,25 @@ public class BookingManagement {
         return false; 
     }
     
-    public boolean checkInStudent(String bookingId) {
+    public boolean checkInStudent(String bookingId, String adminId) {
         Booking b = bookingCollection.getBookingById(bookingId); 
+
+        // 1. Check if the text box is empty
+        if (adminId == null || adminId.trim().isEmpty()) {
+            return false; 
+        }
         
-        if (b != null && b.getStatus().equals("Pending")) {
+        
+        // Check the admin valid or not 
+        if (adminManager.getAdminById(adminId) == null) {
+            return false; 
+        }
+        
+        
+        if (b != null && b.getStatus().equals("Pending") ) {
             b.setStatus("In Progress");
             b.setArrivalTime(java.time.LocalDateTime.now());
+            b.setApprovedBy(adminId);
             return true;
         }
         return false;

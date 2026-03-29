@@ -16,7 +16,7 @@ public class TARUMTBookingSystem {
         FacilityManagement facilityManager = new FacilityManagement();
 
         ScheduleControl scheduleManager = new ScheduleControl();
-        BookingManagement bookingManager = new BookingManagement(studentManager, scheduleManager);
+        BookingManagement bookingManager = new BookingManagement(studentManager, scheduleManager, adminManager);
 
         MainMenu mainMenu = new MainMenu(adminManager, studentManager, bookingManager, facilityManager, scheduleManager);
         mainMenu.setVisible(true);

@@ -26,6 +26,7 @@ public class StudentCollection implements Serializable {
             studentList.add(new Student("23WMR00008", "Lee Kai Wen", "Software Engineering", "lee008@student.tarc.edu.my", "017-6315008"));
             studentList.add(new Student("23WMR00009", "Ng Zi Xuan", "Software Engineering", "ng009@student.tarc.edu.my", "017-6315009"));
             studentList.add(new Student("23WMR00010", "Goh Yi Xuan", "Data Science", "goh010@student.tarc.edu.my", "017-6315010"));
+            
             studentList.add(new Student("23WMR00011", "Chia Wei Ling", "Software Engineering", "chia011@student.tarc.edu.my", "017-6315011"));
             studentList.add(new Student("23WMR00012", "Ong Hui Min", "Software Developer", "ong012@student.tarc.edu.my", "017-6315012"));
             studentList.add(new Student("23WMR00013", "Teo Jun Hao", "Software Engineering", "teo013@student.tarc.edu.my", "017-6315013"));
@@ -36,6 +37,39 @@ public class StudentCollection implements Serializable {
             studentList.add(new Student("23WMR00018", "Yap Jun Wei", "Software Engineering", "yap018@student.tarc.edu.my", "017-6315018"));
             studentList.add(new Student("23WMR00019", "Sim Wen Jie", "Data Science", "sim019@student.tarc.edu.my", "017-6315019"));
             studentList.add(new Student("23WMR00020", "Tan Jia Xin", "Data Science", "tan020@student.tarc.edu.my", "017-6315020"));
+            
+            studentList.add(new Student("23WMR00021", "Lim Wei Jie", "Software Engineering", "lim021@student.tarc.edu.my", "017-6315021"));
+            studentList.add(new Student("23WMR00022", "Tan Jia Hao", "Software Developer", "tan022@student.tarc.edu.my", "017-6315022"));
+            studentList.add(new Student("23WMR00023", "Ng Hui Wen", "Data Science", "ng023@student.tarc.edu.my", "017-6315023"));
+            studentList.add(new Student("23WMR00024", "Lee Zi Xuan", "Software Engineering", "lee024@student.tarc.edu.my", "017-6315024"));
+            studentList.add(new Student("23WMR00025", "Wong Kai Jie", "Software Developer", "wong025@student.tarc.edu.my", "017-6315025"));
+            studentList.add(new Student("23WMR00026", "Goh Jia Min", "Software Engineering", "goh026@student.tarc.edu.my", "017-6315026"));
+            studentList.add(new Student("23WMR00027", "Chong Wei Lun", "Data Science", "chong027@student.tarc.edu.my", "017-6315027"));
+            studentList.add(new Student("23WMR00028", "Ooi Jun Hao", "Software Engineering", "ooi028@student.tarc.edu.my", "017-6315028"));
+            studentList.add(new Student("23WMR00029", "Kok Yi Chen", "Software Developer", "kok029@student.tarc.edu.my", "017-6315029"));
+            studentList.add(new Student("23WMR00030", "Teh Pei Ying", "Software Engineering", "teh030@student.tarc.edu.my", "017-6315030"));
+
+            studentList.add(new Student("23WMR00031", "Lim Jia Xin", "Data Science", "lim031@student.tarc.edu.my", "017-6315031"));
+            studentList.add(new Student("23WMR00032", "Tan Wei Xuan", "Software Engineering", "tan032@student.tarc.edu.my", "017-6315032"));
+            studentList.add(new Student("23WMR00033", "Ng Jun Hao", "Software Developer", "ng033@student.tarc.edu.my", "017-6315033"));
+            studentList.add(new Student("23WMR00034", "Lee Hui Ting", "Software Engineering", "lee034@student.tarc.edu.my", "017-6315034"));
+            studentList.add(new Student("23WMR00035", "Wong Zi Hao", "Data Science", "wong035@student.tarc.edu.my", "017-6315035"));
+            studentList.add(new Student("23WMR00036", "Goh Wei Ling", "Software Engineering", "goh036@student.tarc.edu.my", "017-6315036"));
+            studentList.add(new Student("23WMR00037", "Chong Jia Hao", "Software Developer", "chong037@student.tarc.edu.my", "017-6315037"));
+            studentList.add(new Student("23WMR00038", "Ooi Zi Xuan", "Software Engineering", "ooi038@student.tarc.edu.my", "017-6315038"));
+            studentList.add(new Student("23WMR00039", "Kok Jun Yi", "Data Science", "kok039@student.tarc.edu.my", "017-6315039"));
+            studentList.add(new Student("23WMR00040", "Teh Wei Jie", "Software Engineering", "teh040@student.tarc.edu.my", "017-6315040"));
+
+            studentList.add(new Student("23WMR00041", "Lim Zi Wen", "Software Developer", "lim041@student.tarc.edu.my", "017-6315041"));
+            studentList.add(new Student("23WMR00042", "Tan Hui Min", "Software Engineering", "tan042@student.tarc.edu.my", "017-6315042"));
+            studentList.add(new Student("23WMR00043", "Ng Jia Hao", "Data Science", "ng043@student.tarc.edu.my", "017-6315043"));
+            studentList.add(new Student("23WMR00044", "Lee Wei Ting", "Software Engineering", "lee044@student.tarc.edu.my", "017-6315044"));
+            studentList.add(new Student("23WMR00045", "Wong Jun Hao", "Software Developer", "wong045@student.tarc.edu.my", "017-6315045"));
+            studentList.add(new Student("23WMR00046", "Goh Zi Xuan", "Software Engineering", "goh046@student.tarc.edu.my", "017-6315046"));
+            studentList.add(new Student("23WMR00047", "Chong Wei Jie", "Data Science", "chong047@student.tarc.edu.my", "017-6315047"));
+            studentList.add(new Student("23WMR00048", "Ooi Jia Min", "Software Engineering", "ooi048@student.tarc.edu.my", "017-6315048"));
+            studentList.add(new Student("23WMR00049", "Kok Hui Ling", "Software Developer", "kok049@student.tarc.edu.my", "017-6315049"));
+            studentList.add(new Student("23WMR00050", "Teh Jun Hao", "Software Engineering", "teh050@student.tarc.edu.my", "017-6315050"));
 
             saveData(); 
         }

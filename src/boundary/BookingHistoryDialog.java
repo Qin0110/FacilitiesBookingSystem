@@ -134,6 +134,12 @@ public class BookingHistoryDialog extends javax.swing.JDialog {
                 .addContainerGap(18, Short.MAX_VALUE))
         );
 
+        adminTF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                adminTFActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -349,15 +355,17 @@ public class BookingHistoryDialog extends javax.swing.JDialog {
 
     private void CheckInButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CheckInButtonActionPerformed
         String bookingId = bookingIDTF.getText();
-        if (bookingManager.checkInStudent(bookingId)) {
+        String adminId = adminTF.getText();
+        if (bookingManager.checkInStudent(bookingId,adminId)) {
             javax.swing.JOptionPane.showMessageDialog(this, "Success! Student has been checked in.");
             this.statusTF.setText("In Progress"); 
             this.arrivalTimeTF.setText(java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         } else {
             javax.swing.JOptionPane.showMessageDialog(this, 
                 "Check-In Failed.\n\n" +
-                "1. The booking status must be 'Pending' or 'Confirmed'.\n" +
-                "2. The current time must be within the valid check-in window (15 mins before/after start time).", 
+                "1. Make sure admin id enter correctly\n" +
+                "2. The booking status must be 'Pending' or 'Confirmed'.\n" +
+                "3. The current time must be within the valid check-in window (15 mins before/after start time)." ,
                 "Check-In Error", 
                 javax.swing.JOptionPane.ERROR_MESSAGE);
         }
@@ -377,6 +385,10 @@ public class BookingHistoryDialog extends javax.swing.JDialog {
                 javax.swing.JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_CheckOutButtonActionPerformed
+
+    private void adminTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminTFActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_adminTFActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
