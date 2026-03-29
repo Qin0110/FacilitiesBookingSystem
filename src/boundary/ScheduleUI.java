@@ -23,8 +23,9 @@ public class ScheduleUI extends javax.swing.JPanel {
     private ScheduleControl myControl;
     private ListInterface<Schedule> allSchedule;
     
+    private control.BookingManagement bookingManager;
     
-    public ScheduleUI(ScheduleControl sharedControl) {
+    public ScheduleUI(ScheduleControl sharedControl,control.BookingManagement bookingManager) {
         initComponents();
         
         // Setup table styling
@@ -38,6 +39,8 @@ public class ScheduleUI extends javax.swing.JPanel {
         // Initialize control and fetch data
         this.myControl = sharedControl;
         this.allSchedule = myControl.getAllSchedule();
+        
+        this.bookingManager = bookingManager;
         
         // 2. Populate the JComboBox with unique dates
         dateCB.removeAllItems(); // Remove NetBeans default "Item 1", "Item 2"
@@ -295,23 +298,60 @@ public class ScheduleUI extends javax.swing.JPanel {
         String facility = getFacilityForSelectedRow(selectedRow);
         String currentDate = (String) dateCB.getSelectedItem();
 
-        // Confirm deletion
-        int confirm = javax.swing.JOptionPane.showConfirmDialog(
-            null,
-            "Are you sure you want to permanently delete the ENTIRE schedule for " + facility + " on " + currentDate + "?\nAll sessions will be removed.",
-            "Confirm Delete Facility",
-            javax.swing.JOptionPane.YES_NO_OPTION,
-            javax.swing.JOptionPane.WARNING_MESSAGE
-        );
+        int targetIndex = findScheduleIndex(facility, currentDate);
+        if (targetIndex != -1) {
+            String facilityId = allSchedule.get(targetIndex).getFacility().getFacilityId();
+            adt.ListInterface<entity.ScheduleSession> sessions = allSchedule.get(targetIndex).getSessions();
+            
+            //Scan all sessions for this day and collect conflicting Booking IDs
+            adt.ListInterface<String> conflicts = new adt.SingleLinkedList<>();
+            for (int i = 0; i < sessions.size(); i++) {
+                String timeSlot = sessions.get(i).getSession();
+                String bookingId = bookingManager.getActiveBookingIdForSchedule(facilityId, currentDate, timeSlot);
+                if (bookingId != null) {
+                    conflicts.add(bookingId);
+                }
+            }
+            
+            // If found ANY conflicts, warn the admin before wiping the schedule
+            if (!conflicts.isEmpty()) {
+                int choice = javax.swing.JOptionPane.showConfirmDialog(this, 
+                    "Warning: This facility has " + conflicts.size() + " active student booking(s) on this date.\n\n" +
+                    "Deleting this schedule will permanently CANCEL ALL associated bookings.\n" +
+                    "Do you want to proceed?", 
+                    "Delete Booked Facility Schedule?", 
+                    javax.swing.JOptionPane.YES_NO_OPTION,
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+                    
+                if (choice == javax.swing.JOptionPane.YES_OPTION) {
+                    // Bulk cancel all the conflicting bookings using our ADT list
+                    for (int i = 0; i < conflicts.size(); i++) {
+                        bookingManager.cancelBooking(conflicts.get(i));
+                    }
+                    
+                    //delete the schedule
+                    if (myControl.deleteFacilititySchedule(targetIndex)) {
+                        javax.swing.JOptionPane.showMessageDialog(this, "Facility schedule deleted and all " + conflicts.size() + " related bookings cancelled.");
+                    }
+                    updateTableForDate(currentDate);
+                }
+                return; 
+            }
+            // Confirm deletion
+            int confirm = javax.swing.JOptionPane.showConfirmDialog(
+                null,
+                "Are you sure you want to permanently delete the ENTIRE schedule for " + facility + " on " + currentDate + "?\nAll sessions will be removed.",
+                "Confirm Delete Facility",
+                javax.swing.JOptionPane.YES_NO_OPTION,
+                javax.swing.JOptionPane.WARNING_MESSAGE
+            );
 
-        if (confirm == javax.swing.JOptionPane.YES_OPTION) {
-            int targetIndex = findScheduleIndex(facility, currentDate);
-            if (targetIndex != -1) {
+            if (confirm == javax.swing.JOptionPane.YES_OPTION) {
                 if(myControl.deleteFacilititySchedule(targetIndex))
                     javax.swing.JOptionPane.showMessageDialog(null, "The facility schedule was deleted.");
                 else
                     javax.swing.JOptionPane.showMessageDialog(null, "Failed to delete the facility schedule.");
-                updateTableForDate(currentDate); // Refresh table
+                updateTableForDate(currentDate); 
             }
         }
     }//GEN-LAST:event_deleteFacilityScheduleActionPerformed
@@ -326,23 +366,42 @@ public class ScheduleUI extends javax.swing.JPanel {
         String facility = getFacilityForSelectedRow(selectedRow);
         String timeSlot = (String) scheduleTable.getValueAt(selectedRow, 1);
         String currentDate = (String) dateCB.getSelectedItem();
+        
+        int targetIndex = findScheduleIndex(facility, currentDate);
+        if (targetIndex != -1) {
+            int timeIndex = findTimeIndex(targetIndex, timeSlot);
+            if (timeIndex != -1) {
+                String facilityId = allSchedule.get(targetIndex).getFacility().getFacilityId();
+                String conflictingBookingId = bookingManager.getActiveBookingIdForSchedule(facilityId, currentDate, timeSlot);
+                
+                if (conflictingBookingId != null) {
+                    int choice = javax.swing.JOptionPane.showConfirmDialog(this, 
+                        "Warning: This session is currently booked by a student (Booking ID: " + conflictingBookingId + ").\n\n" +
+                        "Deleting this session will permanently CANCEL the student's booking.\n" +
+                        "Do you want to proceed?", 
+                        "Delete Booked Session?", 
+                        javax.swing.JOptionPane.YES_NO_OPTION,
+                        javax.swing.JOptionPane.WARNING_MESSAGE);
+                        
+                    if (choice == javax.swing.JOptionPane.YES_OPTION) {
+                        bookingManager.cancelBooking(conflictingBookingId);
+                        myControl.deleteScheduleSession(targetIndex, timeIndex);
+                        updateTableForDate(currentDate);
+                        javax.swing.JOptionPane.showMessageDialog(this, "Session deleted and booking cancelled.");
+                    }
+                    return; 
+                }
+                int confirm = javax.swing.JOptionPane.showConfirmDialog(
+                    null,
+                    "Are you sure you want to permanently delete the " + timeSlot + " session for " + facility + "?",
+                    "Confirm Delete Session",
+                    javax.swing.JOptionPane.YES_NO_OPTION,
+                    javax.swing.JOptionPane.WARNING_MESSAGE
+                );
 
-        // Confirm deletion
-        int confirm = javax.swing.JOptionPane.showConfirmDialog(
-            null,
-            "Are you sure you want to permanently delete the " + timeSlot + " session for " + facility + "?",
-            "Confirm Delete Session",
-            javax.swing.JOptionPane.YES_NO_OPTION,
-            javax.swing.JOptionPane.WARNING_MESSAGE
-        );
-
-        if (confirm == javax.swing.JOptionPane.YES_OPTION) {
-            int targetIndex = findScheduleIndex(facility, currentDate);
-            if (targetIndex != -1) {
-                int timeIndex = findTimeIndex(targetIndex, timeSlot);
-                if (timeIndex != -1) {
+                if (confirm == javax.swing.JOptionPane.YES_OPTION) {
                     myControl.deleteScheduleSession(targetIndex, timeIndex);
-                    updateTableForDate(currentDate); // Refresh table
+                    updateTableForDate(currentDate); 
                 }
             }
         }
@@ -382,6 +441,39 @@ public class ScheduleUI extends javax.swing.JPanel {
                 // Since your list is 0-indexed, we need to find the specific time slot index
                 int timeIndex = findTimeIndex(targetIndex, timeSlot);
                 if (timeIndex != -1) {
+                    if (newStatus.equals(ScheduleSession.STATUS_AVAILABLE) || 
+                        newStatus.equals(ScheduleSession.STATUS_MAINTENANCE) || 
+                        newStatus.equals(ScheduleSession.STATUS_NOT_AVAILABLE)) {
+                        
+                        // Get the actual Facility ID from the Schedule object
+                        String facilityId = allSchedule.get(targetIndex).getFacility().getFacilityId();
+                        
+                        // Ask BookingManager if someone is using this slot
+                        String conflictingBookingId = bookingManager.getActiveBookingIdForSchedule(facilityId, currentDate, timeSlot);
+                        
+                        if (conflictingBookingId != null) {
+                            int choice = javax.swing.JOptionPane.showConfirmDialog(this, 
+                                "Warning: This slot is currently booked by a student (Booking ID: " + conflictingBookingId + ").\n\n" +
+                                "Forcing this slot to '" + newStatus + "' will permanently CANCEL the student's booking.\n" +
+                                "Do you want to proceed?", 
+                                "Cancel Student Booking?", 
+                                javax.swing.JOptionPane.YES_NO_OPTION,
+                                javax.swing.JOptionPane.WARNING_MESSAGE);
+                            
+                            if (choice == javax.swing.JOptionPane.YES_OPTION) {
+                                bookingManager.cancelBooking(conflictingBookingId);
+                                
+                                // OVERRIDE as in (bookingmanager) changes the schdule to avaialble 
+                                myControl.modifyScheduleStatus(targetIndex, timeIndex, newStatus);
+                                
+                                javax.swing.JOptionPane.showMessageDialog(this, "Success! Booking cancelled and schedule changed to " + newStatus + ".");
+                                updateTableForDate(currentDate); 
+                                return;
+                            } else {
+                                return; 
+                            }
+                        }
+                    }
                     myControl.modifyScheduleStatus(targetIndex, timeIndex, newStatus);
                     updateTableForDate(currentDate); // Refresh the table to show the new color!
                     javax.swing.JOptionPane.showMessageDialog(null, "Status updated successfully.");

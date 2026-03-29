@@ -133,6 +133,15 @@ public class StudentManagement {
             return studentCollection.getStudentById(studentId);
     }
     
+    public boolean validateMember(String studentId, String studentName) {
+        Student s = this.getStudentById(studentId);
+        
+        if (s != null && s.getName().equalsIgnoreCase(studentName.trim())) {
+            return true; 
+        }
+        return false; 
+    }
+    
     public String generateStudentReport() {
         adt.ListInterface<entity.Student> allStudents = studentCollection.getAllStudent();
 

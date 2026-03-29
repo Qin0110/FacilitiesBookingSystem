@@ -18,11 +18,13 @@ public class StudentUI extends javax.swing.JPanel {
     private BookingManagement bookingManager;
     private ScheduleControl scheduleManager;
     private FacilityManagement facilityManager;
+    private StudentManagement studentManager;
     
-    public StudentUI(BookingManagement bookingControl, ScheduleControl scheduleManager, FacilityManagement facilityManager) {
+    public StudentUI(BookingManagement bookingControl, ScheduleControl scheduleManager, FacilityManagement facilityManager, StudentManagement studentManager) {
         this.bookingManager = bookingControl;
         this.scheduleManager = scheduleManager;
         this.facilityManager = facilityManager;
+        this.studentManager = studentManager;
         initComponents();
         
     }
@@ -165,15 +167,15 @@ public class StudentUI extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void createBookingBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createBookingBTActionPerformed
-        BookingUI bookingUI = new BookingUI(bookingManager, scheduleManager, facilityManager);
+        BookingUI bookingUI = new BookingUI(bookingManager, scheduleManager, facilityManager, studentManager);
         
         showPanel(bookingUI);
     }//GEN-LAST:event_createBookingBTActionPerformed
 
     private void viewCancelBookingBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewCancelBookingBTActionPerformed
-        BookingHistoryAndCancel bookingHistoryAndCancel = new BookingHistoryAndCancel(bookingManager, scheduleManager);
+        BookingHistoryCancel bookingHistoryCancel = new BookingHistoryCancel(bookingManager, scheduleManager);
         
-        showPanel(bookingHistoryAndCancel);
+        showPanel(bookingHistoryCancel);
     }//GEN-LAST:event_viewCancelBookingBTActionPerformed
 
     private void logoutBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBTActionPerformed

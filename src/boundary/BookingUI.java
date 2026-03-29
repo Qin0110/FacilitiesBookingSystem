@@ -7,6 +7,7 @@ package boundary;
 import control.BookingManagement;
 import control.FacilityManagement;
 import control.ScheduleControl;
+import control.StudentManagement;
 import entity.Schedule;
 import entity.ScheduleSession;
 import adt.*;
@@ -20,15 +21,17 @@ public class BookingUI extends javax.swing.JPanel {
     private BookingManagement bookingManager;
     private ScheduleControl scheduleManager;
     private FacilityManagement facilityManager;
+    private StudentManagement studentManager;
     private ListInterface<Schedule> allSchedule;
     
-    public BookingUI(BookingManagement bookingManager, ScheduleControl scheduleManager, FacilityManagement facilityManager) {
+    public BookingUI(BookingManagement bookingManager, ScheduleControl scheduleManager, FacilityManagement facilityManager, StudentManagement studentManager) {
         initComponents();
        
       
         this.bookingManager = bookingManager;
         this.scheduleManager = scheduleManager;
         this.facilityManager = facilityManager;
+        this.studentManager = studentManager;
         GroupBorderRenderer renderer = new GroupBorderRenderer(3, false); 
         for (int i = 0; i < ScheduleTable.getColumnCount(); i++) {
             ScheduleTable.getColumnModel().getColumn(i).setCellRenderer(renderer);
@@ -387,7 +390,7 @@ public class BookingUI extends javax.swing.JPanel {
                     String memberName = javax.swing.JOptionPane.showInputDialog(this, "Enter member " + i + " Full Name:");
                     if (memberName == null || memberName.trim().isEmpty()) return;
 
-                    boolean isValid = bookingManager.validateMember(memberId, memberName);
+                    boolean isValid = studentManager.validateMember(memberId, memberName);
 
                     if (!isValid) {
                         javax.swing.JOptionPane.showMessageDialog(this,

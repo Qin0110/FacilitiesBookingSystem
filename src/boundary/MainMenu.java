@@ -28,7 +28,7 @@ public class MainMenu extends javax.swing.JFrame {
   
         setLocationRelativeTo(null);
         
-        this.studentUI = new StudentUI(bookingManager, scheduleManager, facilityManager);
+        this.studentUI = new StudentUI(bookingManager, scheduleManager, facilityManager, studentManager);
         this.adminUI = new AdminUI(adminManager, studentManager, bookingManager, facilityManager, scheduleManager);
         
         this.studentManager = studentManager;
@@ -205,7 +205,7 @@ public class MainMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_adminBTActionPerformed
 
     private void studentBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_studentBTActionPerformed
-        StudentUI studentUI = new StudentUI(bookingManager, scheduleManager, facilityManager);
+        StudentUI studentUI = new StudentUI(bookingManager, scheduleManager, facilityManager, studentManager);
         this.setContentPane(studentUI);
         this.revalidate();
         this.repaint();

@@ -12,10 +12,6 @@ public class BookingManagement {
     private StudentManagement studentManager;
     private ScheduleControl scheduleManager; // Assuming this acts like ScheduleControl
     private AdminManagement adminManager;
-    
-    public BookingManagement(){
-        this.bookingCollection = new BookingCollection(); 
-    }
 
     public BookingManagement(StudentManagement studentManager, ScheduleControl scheduleManager, AdminManagement adminManager) {
         this.bookingCollection = new BookingCollection();
@@ -82,7 +78,36 @@ public class BookingManagement {
             return "FULL";
         }
     }
+    
+    public boolean cancelBooking(String bookingId) {
+        entity.Booking targetBooking = bookingCollection.getBookingById(bookingId);
 
+        if (targetBooking != null && (targetBooking.getStatus().equals("Confirmed") || targetBooking.getStatus().equals("Pending"))) {
+            targetBooking.setStatus("Cancelled");
+            bookingCollection.updateBookingStatus(bookingId, "Cancelled");
+
+            try {
+                String facilityId = targetBooking.getSchedule().getFacility().getFacilityId();
+
+                // Extract the date and time from the session string 
+                String[] parts = targetBooking.getScheduleSession().split(" ");
+                String date = parts[0];
+                String timeSession = parts[1] + " " + parts[2] + " " + parts[3]; // Reconstructs "10:00 - 12:00"
+
+                // Find the exact schedule slot and changess it back to Available
+                int[] indices = findScheduleIndices(facilityId, date, timeSession);
+                if (indices != null) {
+                    scheduleManager.modifyScheduleStatus(indices[0], indices[1], "Available");
+                }
+            } catch (Exception e) {
+                System.out.println("Error auto-syncing schedule: " + e.getMessage());
+            }
+
+            return true;
+        }
+        return false;
+    }
+    
     public boolean cancelBooking(String studentId, String bookingId, String facilityId, String date, String timeSession) {
         Booking targetBooking = bookingCollection.getBookingById(bookingId);
         if (targetBooking != null && 
@@ -99,14 +124,14 @@ public class BookingManagement {
         return false; 
     }
 
-    // Updated to remove scheduleId requirement since bookingId should be unique
-    public Booking getBookingById(String bookingId){
-        return bookingCollection.getBookingById(bookingId);
-    }
-    
     // For admin
     public boolean removeBooking(String bookingId) {
         return bookingCollection.remove(bookingId);
+    }
+    
+    // Updated to remove scheduleId requirement since bookingId should be unique
+    public Booking getBookingById(String bookingId){
+        return bookingCollection.getBookingById(bookingId);
     }
     
     public ListInterface<Booking> getAllBookings() {
@@ -199,29 +224,16 @@ public class BookingManagement {
         return sortedList;
     }
     
-    public boolean validateMember(String studentId, String studentName) {
-        Student s = studentManager.getStudentById(studentId);
-        
-        if (s != null && s.getName().equalsIgnoreCase(studentName.trim())) {
-            return true; 
-        }
-        return false; 
-    }
-    
     public boolean checkInStudent(String bookingId, String adminId) {
         Booking b = bookingCollection.getBookingById(bookingId); 
 
-        // 1. Check if the text box is empty
         if (adminId == null || adminId.trim().isEmpty()) {
             return false; 
         }
-        
-        
-        // Check the admin valid or not 
+              
         if (adminManager.getAdminById(adminId) == null) {
             return false; 
         }
-        
         
         if (b != null && b.getStatus().equals("Pending") ) {
             b.setStatus("In Progress");
@@ -313,6 +325,26 @@ public class BookingManagement {
             }
         }
         return count;
+    }
+    
+    public String getActiveBookingIdForSchedule(String facilityId, String date, String timeSession) {
+        adt.ListInterface<entity.Booking> allBookings = bookingCollection.getAllBookings();
+        
+        for (int i = 0; i < allBookings.size(); i++) {
+            entity.Booking b = allBookings.get(i);
+            String status = b.getStatus();
+            
+            if (status.equals("Confirmed") || status.equals("Pending")) {
+                if (b.getSchedule() != null && 
+                    b.getSchedule().getFacility().getFacilityId().equals(facilityId) &&
+                    b.getScheduleSession().contains(date) &&
+                    b.getScheduleSession().contains(timeSession)) {
+                    
+                    return b.getBookingId(); 
+                }
+            }
+        }
+        return null; 
     }
 
     public String generateBookingReport() {
