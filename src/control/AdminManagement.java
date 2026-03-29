@@ -38,7 +38,7 @@ public class AdminManagement {
         // If no duplicates are found, create and save the admin
         try {
             Admin newAdmin = new Admin(id, name, position, email, phoneNumber);
-            adminCollection.add(newAdmin);
+            adminCollection.addAdmin(newAdmin);
              
             return "Admin added successfully!"; 
         } catch (IllegalArgumentException e) {
@@ -51,7 +51,7 @@ public class AdminManagement {
     }
 
     public boolean removeAdmin(String adminId) {
-        return adminCollection.remove(adminId);
+        return adminCollection.removeAdmin(adminId);
     }
 
     public String updateAdmin(String id, String name, String position, String email, String phone) {
@@ -79,7 +79,7 @@ public class AdminManagement {
         // Update the admin
         try {
             Admin updatedAdmin = new Admin(id, name, position, email, phone);
-            adminCollection.set(updatedAdmin); 
+            adminCollection.updateAdminInfo(updatedAdmin); 
             
             return updatedAdmin.getName() + " with Admin ID " + 
                    updatedAdmin.getId() + " has been successfully updated!";
@@ -87,14 +87,6 @@ public class AdminManagement {
             return "Error: " + e.getMessage();
         }
     }
-
-    // ===============================
-    // Search Admin By ID
-    // ===============================
-//    public ListInterface<Admin> searchAdmin(String id) {
-//        return adminCollection.getAdminById(id);
-//    }
-    
         
     public ListInterface<Admin> searchAdminForTable(String id,String position, String sortBy) {
         ListInterface<Admin> searchResults = new SingleLinkedList<>();

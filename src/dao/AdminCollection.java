@@ -39,7 +39,7 @@ public class AdminCollection implements Serializable {
         DATFile.saveToFile(FILE_NAME, adminList);
     }
  
-    public boolean add(Admin admin) {
+    public boolean addAdmin(Admin admin) {
         if (isAdminExists(admin.getAdminId())) 
             return false;
         
@@ -70,7 +70,7 @@ public class AdminCollection implements Serializable {
         return getAdminById(adminId) != null;
     }
  
-    public boolean remove(String adminId) {
+    public boolean removeAdmin(String adminId) {
         for (int i = 0; i < adminList.size(); i++) {
             if (adminList.get(i).getAdminId().equalsIgnoreCase(adminId)) {
                 adminList.remove(i);
@@ -83,7 +83,7 @@ public class AdminCollection implements Serializable {
     }
  
     //Update the info
-    public boolean set(Admin element) {  
+    public boolean updateAdminInfo(Admin element) {  
          for (int i = 0; i < adminList.size(); i++) {
             if (adminList.get(i).getAdminId().equalsIgnoreCase(element.getAdminId())) {
                 adminList.set(i, element);
@@ -95,7 +95,4 @@ public class AdminCollection implements Serializable {
         return false;
     }
  
-    public int getTotalNumberAdmin() {
-        return adminList.size();
-    }
 }

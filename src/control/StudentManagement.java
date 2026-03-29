@@ -10,9 +10,7 @@ public class StudentManagement {
     
     private ListInterface<Student> studentList;
     StudentCollection studentCollection = new StudentCollection();
-    public StudentManagement() {
-        
-    }
+    public StudentManagement() {}
     
     public String addNewStudent(String id, String name, String programme, String email, String phoneNumber) {
  
@@ -36,7 +34,7 @@ public class StudentManagement {
          // If no duplicates are found, create and save the student
          try {
              Student newStudent = new Student(id, name, programme, email, phoneNumber);
-             studentCollection.add(newStudent);
+             studentCollection.addStudent(newStudent);
              return "Student added successfully!";
          } catch (IllegalArgumentException e) {
              return "ERROR: " + e.getMessage(); // Catches format errors from Entity layer
@@ -48,7 +46,7 @@ public class StudentManagement {
     }
 
     public boolean removeStudent(String studentId) {
-        return studentCollection.remove(studentId);
+        return studentCollection.removeStudent(studentId);
     }
 
     public String updateStudent(String id, String name, String programme, String email, String phone) {
@@ -76,7 +74,7 @@ public class StudentManagement {
         // update the student
         try {
             Student updatedStudent = new Student(id, name, programme, email, phone);
-            studentCollection.set(updatedStudent); 
+            studentCollection.updateStudentInfo(updatedStudent); 
             return updatedStudent.getName() + " with Student ID " + 
                    updatedStudent.getId() + " has been successfully updated!";
         } catch (IllegalArgumentException e) {

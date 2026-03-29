@@ -83,7 +83,7 @@ public class StudentCollection implements Serializable {
         DATFile.saveToFile(FILE_NAME, studentList);
     }
  
-    public boolean add(Student student) {
+    public boolean addStudent(Student student) {
         if (isStudentExists(student.getStudentId())) 
             return false;
         
@@ -114,7 +114,7 @@ public class StudentCollection implements Serializable {
         return getStudentById(studentId) != null;
     }
  
-    public boolean remove(String studentId) {
+    public boolean removeStudent(String studentId) {
         for (int i = 0; i < studentList.size(); i++) {
             if (studentList.get(i).getStudentId().equalsIgnoreCase(studentId)) {
                 studentList.remove(i);
@@ -127,7 +127,7 @@ public class StudentCollection implements Serializable {
     }
  
     //Update the info
-    public boolean set(Student element) {  
+    public boolean updateStudentInfo(Student element) {  
          for (int i = 0; i < studentList.size(); i++) {
             if (studentList.get(i).getStudentId().equalsIgnoreCase(element.getStudentId())) {
                 studentList.set(i, element);
@@ -139,7 +139,4 @@ public class StudentCollection implements Serializable {
         return false;
     }
  
-    public int getTotalNumberStudent() {
-        return studentList.size();
-    }
 }
