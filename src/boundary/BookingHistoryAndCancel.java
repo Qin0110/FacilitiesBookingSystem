@@ -67,7 +67,6 @@ public class BookingHistoryAndCancel extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         BookingTable = new javax.swing.JTable();
         CancelBookingButton = new javax.swing.JButton();
-        BackButton = new javax.swing.JButton();
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -138,13 +137,6 @@ public class BookingHistoryAndCancel extends javax.swing.JPanel {
             }
         });
 
-        BackButton.setText("Back");
-        BackButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BackButtonActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -153,8 +145,6 @@ public class BookingHistoryAndCancel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(BackButton)
-                        .addGap(18, 18, 18)
                         .addComponent(CancelBookingButton))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(19, 19, 19)
@@ -175,9 +165,7 @@ public class BookingHistoryAndCancel extends javax.swing.JPanel {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(35, 35, 35)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(CancelBookingButton)
-                    .addComponent(BackButton))
+                .addComponent(CancelBookingButton)
                 .addGap(29, 29, 29))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -243,20 +231,8 @@ public class BookingHistoryAndCancel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_CancelBookingButtonActionPerformed
 
-    private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
-        //        StudentUI studentUI = new StudentUI(bookingManager, scheduleManager);
-        //
-        //        java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
-        //        if (window instanceof javax.swing.JFrame frame) {
-            //            frame.setContentPane(studentUI);
-            //            frame.revalidate();
-            //            frame.repaint();
-            //        }
-    }//GEN-LAST:event_BackButtonActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton BackButton;
     private javax.swing.JTable BookingTable;
     private javax.swing.JButton CancelBookingButton;
     private javax.swing.JButton SearchBooking;

@@ -147,7 +147,6 @@ public class BookingUI extends javax.swing.JPanel {
         SessionField = new javax.swing.JTextField();
         dateCB = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
-        CancelButton = new javax.swing.JButton();
         BookButton = new javax.swing.JButton();
 
         jScrollPane1.setBorder(null);
@@ -264,13 +263,6 @@ public class BookingUI extends javax.swing.JPanel {
         jLabel2.setMaximumSize(new java.awt.Dimension(270, 120));
         jLabel2.setMinimumSize(new java.awt.Dimension(270, 120));
 
-        CancelButton.setText("Cancel");
-        CancelButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CancelButtonActionPerformed(evt);
-            }
-        });
-
         BookButton.setText("Book Facility");
         BookButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -291,10 +283,7 @@ public class BookingUI extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 511, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(CancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(BookButton)))))
+                            .addComponent(BookButton))))
                 .addGap(0, 30, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -307,24 +296,11 @@ public class BookingUI extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(33, 33, 33)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(CancelButton)
-                            .addComponent(BookButton)))
+                        .addComponent(BookButton))
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void CancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelButtonActionPerformed
-        StudentUI studentUI = new StudentUI(bookingManager, scheduleManager, facilityManager);
-
-        java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
-        if (window instanceof javax.swing.JFrame frame) {
-            frame.setContentPane(studentUI);
-            frame.revalidate();
-            frame.repaint();
-        }
-    }//GEN-LAST:event_CancelButtonActionPerformed
 
     private void BookButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BookButtonActionPerformed
         String studentId = StudentIdTxtField.getText().trim().toUpperCase();
@@ -463,7 +439,7 @@ public class BookingUI extends javax.swing.JPanel {
         String session = ScheduleTable.getValueAt(row, 2).toString();
         String status = ScheduleTable.getValueAt(row, 3).toString(); // Grab the status
         
-        if (status.equals("Expired") || status.equals("Booked") || status.equals("Unavailable")) {
+        if (status.equals("Expired") || status.equals("Booked") || status.equals("Not Available") || status.equals("Maintenance")) {
             ScheduleTable.clearSelection(); 
             FacilityName.setText("");       
             SessionField.setText("");
@@ -493,7 +469,6 @@ public class BookingUI extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BookButton;
-    private javax.swing.JButton CancelButton;
     private javax.swing.JTextField FacilityName;
     private javax.swing.JTable ScheduleTable;
     private javax.swing.JTextField SessionField;

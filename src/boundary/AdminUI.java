@@ -53,7 +53,6 @@ public class AdminUI extends javax.swing.JPanel {
         studentManagementBT = new javax.swing.JButton();
         scheduleManagementBT = new javax.swing.JButton();
         BookingBT = new javax.swing.JButton();
-        reportBT = new javax.swing.JButton();
         logoutBT = new javax.swing.JButton();
         adminManagementBT = new javax.swing.JButton();
         mainContentPanel = new javax.swing.JPanel();
@@ -91,13 +90,6 @@ public class AdminUI extends javax.swing.JPanel {
             }
         });
 
-        reportBT.setText("Generate System Reports");
-        reportBT.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                reportBTActionPerformed(evt);
-            }
-        });
-
         logoutBT.setText("Logout ");
         logoutBT.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -127,10 +119,9 @@ public class AdminUI extends javax.swing.JPanel {
                             .addComponent(scheduleManagementBT, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap(10, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(logoutBT, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(reportBT, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(BookingBT, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(BookingBT, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(logoutBT, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
@@ -147,10 +138,8 @@ public class AdminUI extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addComponent(BookingBT, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(reportBT, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
                 .addComponent(logoutBT, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(333, Short.MAX_VALUE))
+                .addContainerGap(387, Short.MAX_VALUE))
         );
 
         mainContentPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -211,10 +200,6 @@ public class AdminUI extends javax.swing.JPanel {
         showPanel(adminBookingUI);
     }//GEN-LAST:event_BookingBTActionPerformed
 
-    private void reportBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportBTActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_reportBTActionPerformed
-
     private void logoutBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBTActionPerformed
         java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
 
@@ -240,7 +225,6 @@ public class AdminUI extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JButton logoutBT;
     private javax.swing.JPanel mainContentPanel;
-    private javax.swing.JButton reportBT;
     private javax.swing.JButton scheduleManagementBT;
     private javax.swing.JButton studentManagementBT;
     // End of variables declaration//GEN-END:variables
