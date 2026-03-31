@@ -25,42 +25,32 @@ public class StudentInAdminModeUI extends javax.swing.JPanel {
         loadTableData();
     }
     
-    private void loadTableData(){
-        //declare reference, =..... is like casting
-        //e.g. Object obj = "hello"  -- here type is string but point to object
-        //     String str = (String) obj  --change the object to string
-        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) studentTable.getModel();
-        model.setRowCount(0);
-        
-        adt.ListInterface<entity.Student> student = studentManager.getAllStudents();
-        
-        for (int i = 0 ; i < student.size() ; i++ ){
-            entity.Student s = student.get(i);
-            model.addRow(new Object[]{
-                s.getStudentId(),
-                s.getName(),
-                s.getProgramme(),
-                s.getEmail(),
-                s.getPhoneNumber()
-            });
-        }
-    }
-    
-    private void loadTableData(String id){
+    private void loadTableData() {
         javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) studentTable.getModel();
         model.setRowCount(0);
 
-        // Get Programme Filter
+        // 1. Get Search Text 
+        String idOrName = studentSearchTextField.getText().trim();
+        if (idOrName.equals("Search by ID or Name")) {
+            idOrName = ""; 
+        }
+
+        // 2. Get Programme Filter
         Object selectedProgramme = ProgrammeComboBox.getSelectedItem();
         String programme = (selectedProgramme != null) ? selectedProgramme.toString() : "ALL";
 
-        // Get Sort Selection
+        // 3. Get Sort Selection
         Object selectedSort = sortByComboBox.getSelectedItem();
         String sortBy = (selectedSort != null) ? selectedSort.toString() : "";
+        
+        // 4. Get Ascending/Descending Selection
+        Object selectedDirection = sortByAscDscComboBox.getSelectedItem();
+        String sortDirection = (selectedDirection != null) ? selectedDirection.toString() : "Ascending";
 
-        // Pass BOTH to the manager
-        adt.ListInterface<entity.Student> searchResults = studentManager.searchStudentForTable(id, programme, sortBy);
+        // 5. Pass ALL states to the manager at once
+        adt.ListInterface<entity.Student> searchResults = studentManager.searchStudentForTable(idOrName, programme, sortBy, sortDirection);
 
+        // 6. Populate the table
         for (int i = 0 ; i < searchResults.size() ; i++ ){
             entity.Student s = searchResults.get(i);
             model.addRow(new Object[]{
@@ -72,15 +62,14 @@ public class StudentInAdminModeUI extends javax.swing.JPanel {
             });
         }
 
-        // Optional: Only show the "Not found" popup if they actually typed something to search
-        if (searchResults.size() == 0) {
+        // 7. Show popup if typed a search keyword and found nothing
+        if (searchResults.size() == 0 && !idOrName.isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(this, 
-                "No student information found containing ID: " + id, 
+                "No student information found containing ID or Name: " + idOrName, 
                 "Search Results", 
                 javax.swing.JOptionPane.INFORMATION_MESSAGE);
         }
     }
-
 
 
     /**
@@ -104,6 +93,7 @@ public class StudentInAdminModeUI extends javax.swing.JPanel {
         ProgrammeComboBox = new javax.swing.JComboBox<>();
         sortByText = new javax.swing.JLabel();
         reportButton = new javax.swing.JButton();
+        sortByAscDscComboBox = new javax.swing.JComboBox<>();
 
         AddButton.setText("Add Student");
         AddButton.addActionListener(new java.awt.event.ActionListener() {
@@ -147,6 +137,7 @@ public class StudentInAdminModeUI extends javax.swing.JPanel {
         });
         jScrollPane1.setViewportView(studentTable);
 
+        studentSearchTextField.setToolTipText("Search by ID or Name");
         studentSearchTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 studentSearchTextFieldActionPerformed(evt);
@@ -184,6 +175,13 @@ public class StudentInAdminModeUI extends javax.swing.JPanel {
             }
         });
 
+        sortByAscDscComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ascending", "Descending" }));
+        sortByAscDscComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sortByAscDscComboBoxActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -195,23 +193,26 @@ public class StudentInAdminModeUI extends javax.swing.JPanel {
                     .addComponent(AddButton, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(reportButton, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(27, 27, 27)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 639, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addContainerGap())
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addComponent(ProgrammeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(41, 41, 41)
+                        .addComponent(ProgrammeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(studentSearchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                        .addComponent(studentSearchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(sortByText)
-                        .addGap(24, 24, 24)
-                        .addComponent(sortByComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(sortByComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(sortByAscDscComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(33, 33, 33)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 639, Short.MAX_VALUE)))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -219,11 +220,13 @@ public class StudentInAdminModeUI extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(studentSearchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(sortByComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ProgrammeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(sortByText, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(studentSearchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(sortByComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(sortByText, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(sortByAscDscComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(ProgrammeComboBox, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -334,23 +337,15 @@ public class StudentInAdminModeUI extends javax.swing.JPanel {
     }//GEN-LAST:event_studentSearchTextFieldActionPerformed
 
     private void studentSearchTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_studentSearchTextFieldKeyReleased
-        String id = studentSearchTextField.getText().trim();
-
-        loadTableData(id);
+        loadTableData();
     }//GEN-LAST:event_studentSearchTextFieldKeyReleased
 
     private void sortByComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortByComboBoxActionPerformed
-    // Get whatever is currently typed in the search bar
-    String id = studentSearchTextField.getText().trim();
-    
-    // Refresh the table and apply the new sort
-    loadTableData(id);
+        loadTableData();
     }//GEN-LAST:event_sortByComboBoxActionPerformed
 
     private void ProgrammeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ProgrammeComboBoxActionPerformed
-       // Get whatever is currently typed in the search bar and refresh the table
-       String id = studentSearchTextField.getText().trim();
-       loadTableData(id);
+       loadTableData();
     }//GEN-LAST:event_ProgrammeComboBoxActionPerformed
 
     private void reportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportButtonActionPerformed
@@ -408,6 +403,10 @@ public class StudentInAdminModeUI extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_reportButtonActionPerformed
 
+    private void sortByAscDscComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortByAscDscComboBoxActionPerformed
+        loadTableData();
+    }//GEN-LAST:event_sortByAscDscComboBoxActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton AddButton;
@@ -417,6 +416,7 @@ public class StudentInAdminModeUI extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton removeButton;
     private javax.swing.JButton reportButton;
+    private javax.swing.JComboBox<String> sortByAscDscComboBox;
     private javax.swing.JComboBox<String> sortByComboBox;
     private javax.swing.JLabel sortByText;
     private javax.swing.JTextField studentSearchTextField;

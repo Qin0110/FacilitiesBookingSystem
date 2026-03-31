@@ -1,3 +1,4 @@
+//Ng Wei Hao
 package control;
 import adt.SingleLinkedList;
 import adt.ListInterface;
@@ -88,15 +89,15 @@ public class AdminManagement {
         }
     }
         
-    public ListInterface<Admin> searchAdminForTable(String id,String position, String sortBy) {
+    public ListInterface<Admin> searchAdminForTable(String idOrName,String position, String sortBy, String sortDirection) {
         ListInterface<Admin> searchResults = new SingleLinkedList<>();
         ListInterface<Admin> allAdmin = adminCollection.getAllAdmin();
  
         for (int i = 0; i < allAdmin.size(); i++) {
             Admin admin = allAdmin.get(i);
  
-            boolean matchesId   = admin.getAdminId().toLowerCase().contains(id.toLowerCase())
-                                || admin.getName().toLowerCase().contains(id.toLowerCase());
+            boolean matchesId   = admin.getAdminId().toLowerCase().contains(idOrName.toLowerCase())
+                                || admin.getName().toLowerCase().contains(idOrName.toLowerCase());
             boolean matchesType = (position == null || position.equals("ALL") || admin.getPosition().equals(position));
  
             if (matchesId && matchesType) {
@@ -106,23 +107,36 @@ public class AdminManagement {
         
         // Sort the filtered list based on the combo box selection
         if (sortBy != null && !sortBy.trim().isEmpty()) {
+            
+            // Check if we want descending order
+            boolean isAscending = sortDirection.equals("Ascending");
+            
             searchResults.sort(new adt.Comparator<entity.Admin>() {
                 @Override
                 public int compare(entity.Admin a1, entity.Admin a2) {
+                    int result = 0; // Store the comparison result here first
                     switch (sortBy) {
                         case "Admin ID":
-                            return a1.getAdminId().compareToIgnoreCase(a2.getAdminId());
+                            result = a1.getAdminId().compareToIgnoreCase(a2.getAdminId());
+                            break;
                         case "Name":
-                            return a1.getName().compareToIgnoreCase(a2.getName());
+                            result = a1.getName().compareToIgnoreCase(a2.getName());
+                            break;
                         case "Position":
-                            return a1.getPosition().compareToIgnoreCase(a2.getPosition());
+                            result = a1.getPosition().compareToIgnoreCase(a2.getPosition());
+                            break;
                         case "Email":
-                            return a1.getEmail().compareToIgnoreCase(a2.getEmail());
+                            result = a1.getEmail().compareToIgnoreCase(a2.getEmail());
+                            break;
                         case "Phone Number":
-                            return a1.getPhoneNumber().compareToIgnoreCase(a2.getPhoneNumber());
+                            result = a1.getPhoneNumber().compareToIgnoreCase(a2.getPhoneNumber());
+                            break;
                         default:
-                            return 0; // No sorting
+                            result = 0; // Fallback just in case
+                            break;
                     }
+                    // If descending, we just reverse the integer result (multiply by -1)
+                    return isAscending ? result : (result * -1);
                 }
             });
         }

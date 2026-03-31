@@ -27,42 +27,32 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
         loadTableData();
     }
     
-    private void loadTableData(){
-        //declare reference, =..... is like casting
-        //e.g. Object obj = "hello"  -- here type is string but point to object
-        //     String str = (String) obj  --change the object to string
-        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) adminTable.getModel();
-        model.setRowCount(0);
-        
-        adt.ListInterface<entity.Admin> admin = adminManager.getAllAdmins();
-        
-        for (int i = 0 ; i < admin.size() ; i++ ){
-            entity.Admin s = admin.get(i);
-            model.addRow(new Object[]{
-                s.getAdminId(),
-                s.getName(),
-                s.getPosition(),
-                s.getEmail(),
-                s.getPhoneNumber()
-            });
-        }
-    }
-    
-    private void loadTableData(String id){
+     private void loadTableData() {
         javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) adminTable.getModel();
         model.setRowCount(0);
 
-        // Get Position Filter
+        // 1. Get Search Text 
+        String idOrName = adminSearchTextField.getText().trim();
+        if (idOrName.equals("Search by ID or Name")) { 
+            idOrName = ""; 
+        }
+
+        // 2. Get Position Filter
         Object selectedPosition = positionComboBox.getSelectedItem();
         String position = (selectedPosition != null) ? selectedPosition.toString() : "ALL";
 
-        // Get Sort Selection (Assuming your Admin UI also has a sortByComboBox)
+        // 3. Get Sort Selection 
         Object selectedSort = sortByComboBox.getSelectedItem();
         String sortBy = (selectedSort != null) ? selectedSort.toString() : "";
+        
+        // 4. Get Ascending/Descending Selection
+        Object selectedDirection = sortByAscDscComboBox.getSelectedItem();
+        String sortDirection = (selectedDirection != null) ? selectedDirection.toString() : "Ascending";
+        
+        // 5. Pass ALL states to the manager at once
+        adt.ListInterface<entity.Admin> searchResults = adminManager.searchAdminForTable(idOrName, position, sortBy, sortDirection);
 
-        // Pass BOTH the position filter and the sort selection to the manager
-        adt.ListInterface<entity.Admin> searchResults = adminManager.searchAdminForTable(id, position, sortBy);
-
+        // 6. Populate the table
         for (int i = 0 ; i < searchResults.size() ; i++ ){
             entity.Admin s = searchResults.get(i);
             model.addRow(new Object[]{
@@ -74,17 +64,14 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
             });
         }
 
-        if (searchResults.size() == 0) {
+        // 7. Show popup if typed a search keyword and found nothing
+        if (searchResults.size() == 0 && !idOrName.isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(this, 
-                "No admin information found containing ID: " + id, 
+                "No admin information found containing ID or Name: " + idOrName, 
                 "Search Results", 
                 javax.swing.JOptionPane.INFORMATION_MESSAGE);
         }
-        
-        
     }
-    
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -106,6 +93,7 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
         sortByText = new javax.swing.JLabel();
         sortByComboBox = new javax.swing.JComboBox<>();
         reportButton = new javax.swing.JButton();
+        sortByAscDscComboBox = new javax.swing.JComboBox<>();
 
         AddButton.setText("Add Admin");
         AddButton.addActionListener(new java.awt.event.ActionListener() {
@@ -168,7 +156,7 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
         jLabel1.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
         jLabel1.setText("ADMIN");
 
-        positionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ALL", "Facility Manager", "Facility Assistant", "System Admin" }));
+        positionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ALL", "Facility Manager", "Facility Assistant" }));
         positionComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 positionComboBoxActionPerformed(evt);
@@ -191,6 +179,13 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
             }
         });
 
+        sortByAscDscComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ascending", "Descending" }));
+        sortByAscDscComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sortByAscDscComboBoxActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -205,20 +200,24 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(12, 12, 12)
-                        .addComponent(jScrollPane1))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 665, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(jLabel1)
-                        .addGap(0, 547, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(positionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(adminSearchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(sortByText)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(sortByComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(15, 15, 15)
+                                .addComponent(jLabel1))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(positionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(adminSearchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(sortByText)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(sortByComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(sortByAscDscComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -226,13 +225,22 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(6, 6, 6)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(adminSearchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(positionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(sortByText, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(sortByComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(adminSearchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(positionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(sortByText, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(sortByComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(4, 4, 4)
+                        .addComponent(sortByAscDscComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(4, 4, 4)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addComponent(AddButton, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -241,10 +249,7 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
                         .addGap(18, 18, 18)
                         .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(reportButton, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(reportButton, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(22, 22, 22))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -327,14 +332,11 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
     }//GEN-LAST:event_adminSearchTextFieldActionPerformed
 
     private void adminSearchTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_adminSearchTextFieldKeyReleased
-        String id = adminSearchTextField.getText().trim();
-
-        loadTableData(id);
+        loadTableData();
     }//GEN-LAST:event_adminSearchTextFieldKeyReleased
 
     private void positionComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_positionComboBoxActionPerformed
-        String id = adminSearchTextField.getText().trim();
-        loadTableData(id);
+        loadTableData();
     }//GEN-LAST:event_positionComboBoxActionPerformed
 
     private void adminSearchTextFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_adminSearchTextFieldKeyTyped
@@ -345,13 +347,9 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
     }//GEN-LAST:event_adminSearchTextFieldKeyTyped
 
     private void sortByComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortByComboBoxActionPerformed
-        // Get whatever is currently typed in the search bar
-        String id = adminSearchTextField.getText().trim();
-
-        // Refresh the table and apply the new sort
-        loadTableData(id);
+        loadTableData();
     }//GEN-LAST:event_sortByComboBoxActionPerformed
-
+    
     private void reportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportButtonActionPerformed
         // 1. Call your new Student Management method
         String reportText = adminManager.generateAdminReport();
@@ -407,6 +405,10 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_reportButtonActionPerformed
 
+    private void sortByAscDscComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortByAscDscComboBoxActionPerformed
+        loadTableData();
+    }//GEN-LAST:event_sortByAscDscComboBoxActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton AddButton;
@@ -417,6 +419,7 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
     private javax.swing.JComboBox<String> positionComboBox;
     private javax.swing.JButton removeButton;
     private javax.swing.JButton reportButton;
+    private javax.swing.JComboBox<String> sortByAscDscComboBox;
     private javax.swing.JComboBox<String> sortByComboBox;
     private javax.swing.JLabel sortByText;
     private javax.swing.JButton updateButton;

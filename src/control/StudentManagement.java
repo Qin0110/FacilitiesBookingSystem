@@ -1,3 +1,4 @@
+//Ng Wei Hao 
 package control;
 import adt.SingleLinkedList;
 import adt.ListInterface;
@@ -86,15 +87,15 @@ public class StudentManagement {
 //        return studentCollection.getStudentById(id);
 //    }
     
-    public ListInterface<Student> searchStudentForTable(String id,String programme, String sortBy) {
+    public ListInterface<Student> searchStudentForTable(String idOrName,String programme, String sortBy, String sortDirection) {
         ListInterface<Student> searchResults = new SingleLinkedList<>();
         ListInterface<Student> allStudent = studentCollection.getAllStudent();
  
         for (int i = 0; i < allStudent.size(); i++) {
             Student student = allStudent.get(i);
  
-            boolean matchesId   = student.getStudentId().toLowerCase().contains(id.toLowerCase())
-                                || student.getName().toLowerCase().contains(id.toLowerCase());
+            boolean matchesId   = student.getStudentId().toLowerCase().contains(idOrName.toLowerCase())
+                                || student.getName().toLowerCase().contains(idOrName.toLowerCase());
             boolean matchesType = (programme == null || programme.equals("ALL") || student.getProgramme().equals(programme));
  
             if (matchesId && matchesType) {
@@ -103,23 +104,34 @@ public class StudentManagement {
         }
         // Sort the filtered list based on the combo box selection
         if (sortBy != null && !sortBy.trim().isEmpty()) {
+            
+            // Check if we want descending order
+            boolean isAscending = sortDirection.equals("Ascending");
+            
             searchResults.sort(new adt.Comparator<entity.Student>() {
                 @Override
                 public int compare(entity.Student s1, entity.Student s2) {
+                    int result = 0; // Store the comparison result here first
                     switch (sortBy) {
                         case "Student ID":
-                            return s1.getStudentId().compareToIgnoreCase(s2.getStudentId());
+                            result = s1.getStudentId().compareToIgnoreCase(s2.getStudentId());
+                            break;
                         case "Name":
-                            return s1.getName().compareToIgnoreCase(s2.getName());
+                            result = s1.getName().compareToIgnoreCase(s2.getName());
+                            break;
                         case "Programme":
-                            return s1.getProgramme().compareToIgnoreCase(s2.getProgramme());
+                            result = s1.getProgramme().compareToIgnoreCase(s2.getProgramme());
+                            break;
                         case "Email":
-                            return s1.getEmail().compareToIgnoreCase(s2.getEmail());
+                            result = s1.getEmail().compareToIgnoreCase(s2.getEmail());
+                            break;
                         case "Phone Number":
-                            return s1.getPhoneNumber().compareToIgnoreCase(s2.getPhoneNumber());
-                        default:
-                            return 0; // No sorting if it doesn't match
+                            result = s1.getPhoneNumber().compareToIgnoreCase(s2.getPhoneNumber());
+                            break;
                     }
+                    
+                    // If descending, we just reverse the integer result (multiply by -1)
+                    return isAscending ? result : (result * -1);
                 }
             });
         }
