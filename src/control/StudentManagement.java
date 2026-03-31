@@ -9,21 +9,23 @@ import dao.StudentCollection;
 
 public class StudentManagement {
     
-    private ListInterface<Student> studentList;
     StudentCollection studentCollection = new StudentCollection();
     public StudentManagement() {}
     
-    public String addNewStudent(String id, String name, String programme, String email, String phoneNumber) {
- 
+    public String addNewStudent(String name, String programme, String email, String phoneNumber) {
+         // Automatically generate the next ID
+         String id = generateNextStudentId();
+         // returns null if limit is reached
+         if (id == null) {
+            return "Error: Maximum student limit (9999) reached! Cannot add more students.";
+         }
+         
          ListInterface<Student> studentList = this.getAllStudents(); 
 
          // Loop through the list to check for duplicates
          for (int i = 0; i < studentList.size(); i++) {
              Student existingStudent = studentList.get(i);
-
-             if (existingStudent.getId().equalsIgnoreCase(id)) {
-                 return "Error: This Student ID already exists!"; 
-             }
+             
              if (existingStudent.getEmail().equalsIgnoreCase(email)) {
                  return "Error: This Email is already registered!"; 
              }
@@ -36,10 +38,43 @@ public class StudentManagement {
          try {
              Student newStudent = new Student(id, name, programme, email, phoneNumber);
              studentCollection.addStudent(newStudent);
-             return "Student added successfully!";
+             return "Student added successfully! ID: " + id;
          } catch (IllegalArgumentException e) {
-             return "ERROR: " + e.getMessage(); // Catches format errors from Entity layer
+             // Catches format errors from Entity layer
+             return "Error: " + e.getMessage(); 
          }
+    }
+    
+    public String generateNextStudentId() {
+        ListInterface<Student> studentList = studentCollection.getAllStudent();
+        String prefix = "25WMR";
+
+        //Limit Check (09999 is the max)
+        if (studentList.size() >= 9999) {
+            return null; 
+        }
+
+        if (studentList.isEmpty()) {
+            return prefix + "00001";
+        }
+
+        int highestNum = 0;
+
+        for (int i = 0; i < studentList.size(); i++) {
+            String currentId = studentList.get(i).getStudentId();
+            try {
+                // Extract numeric part after "25WMR" (length is 5)
+                int currentNum = Integer.parseInt(currentId.substring(5));
+                if (currentNum > highestNum) {
+                    highestNum = currentNum;
+                }
+            } catch (Exception e) { /* Skip invalid formats */ }
+        }
+
+        if (highestNum >= 9999) return null;
+
+        // Generate ID with leading zeros 
+        return prefix + String.format("%05d", highestNum + 1);
     }
 
     public ListInterface<Student> getAllStudents() {
@@ -59,11 +94,11 @@ public class StudentManagement {
             Student existingStudent = studentList.get(i);
 
             //  Skip the student info currently updating
-            if (existingStudent.getId().equalsIgnoreCase(id)) {
+            if (existingStudent.getStudentId().equalsIgnoreCase(id)) {
                 continue; 
             }
 
-            // checking OTHER students' records, id no need check since it cannot edit
+            // checking other student records, id no need check since it cannot edit
             if (existingStudent.getEmail().equalsIgnoreCase(email)) {
                 return "Error: This Email is already registered to another student!"; 
             }
@@ -77,15 +112,11 @@ public class StudentManagement {
             Student updatedStudent = new Student(id, name, programme, email, phone);
             studentCollection.updateStudentInfo(updatedStudent); 
             return updatedStudent.getName() + " with Student ID " + 
-                   updatedStudent.getId() + " has been successfully updated!";
+                   updatedStudent.getStudentId() + " has been successfully updated!";
         } catch (IllegalArgumentException e) {
             return "Error: " + e.getMessage();
         }
     }
-
-//    public ListInterface<Student> searchStudent(String id) {
-//        return studentCollection.getStudentById(id);
-//    }
     
     public ListInterface<Student> searchStudentForTable(String idOrName,String programme, String sortBy, String sortDirection) {
         ListInterface<Student> searchResults = new SingleLinkedList<>();
@@ -96,7 +127,7 @@ public class StudentManagement {
  
             boolean matchesId   = student.getStudentId().toLowerCase().contains(idOrName.toLowerCase())
                                 || student.getName().toLowerCase().contains(idOrName.toLowerCase());
-            boolean matchesType = (programme == null || programme.equals("ALL") || student.getProgramme().equals(programme));
+            boolean matchesType = (programme == null || programme.equalsIgnoreCase("ALL") || student.getProgramme().equalsIgnoreCase(programme));
  
             if (matchesId && matchesType) {
                 searchResults.add(student);
@@ -105,13 +136,13 @@ public class StudentManagement {
         // Sort the filtered list based on the combo box selection
         if (sortBy != null && !sortBy.trim().isEmpty()) {
             
-            // Check if we want descending order
+            // Check want ascending or descending order
             boolean isAscending = sortDirection.equals("Ascending");
             
             searchResults.sort(new adt.Comparator<entity.Student>() {
                 @Override
                 public int compare(entity.Student s1, entity.Student s2) {
-                    int result = 0; // Store the comparison result here first
+                    int result = 0; 
                     switch (sortBy) {
                         case "Student ID":
                             result = s1.getStudentId().compareToIgnoreCase(s2.getStudentId());
@@ -130,7 +161,7 @@ public class StudentManagement {
                             break;
                     }
                     
-                    // If descending, we just reverse the integer result (multiply by -1)
+                    // If descending, just reverse result (multiply by -1)
                     return isAscending ? result : (result * -1);
                 }
             });

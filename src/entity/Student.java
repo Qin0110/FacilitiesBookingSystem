@@ -25,8 +25,8 @@ public class Student extends User {
     @Override
     public void setId(String id) {
         // 1. Check the strict Student ID format
-        if (id == null || !id.matches("^[0-9]{2}WMR[0-9]{5}$")) {
-            throw new IllegalArgumentException("Invalid Student ID. Example: XXWMRXXXXX");
+        if (id == null || !id.matches("^25WMR[0-9]{5}$")) {
+            throw new IllegalArgumentException("Invalid Student ID. Example: 25WMR00001");
         }
         // 2. Hand it up to the User class to save
         super.setId(id);

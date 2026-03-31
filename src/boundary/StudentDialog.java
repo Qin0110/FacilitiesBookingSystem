@@ -26,6 +26,19 @@ public class StudentDialog extends javax.swing.JDialog {
         cancelButton.setVisible(false);
         saveButton.setVisible(true);
         
+        idTextField.setEditable(false);
+        idTextField.setFocusable(false);
+
+        // 2. Pre-fill the Student ID
+        String nextId = studentManager.generateNextStudentId();
+        if (nextId != null) {
+            idTextField.setText(nextId);
+        } else {
+            idTextField.setText("RECORDS FULL");
+            idTextField.setForeground(java.awt.Color.RED);
+            saveButton.setEnabled(false);
+        }
+        
         // Ensure ID is editable when creating a new student
 //        idTextField.setEditable(true);
     }
@@ -342,7 +355,7 @@ public class StudentDialog extends javax.swing.JDialog {
         String email = emailTextField.getText().trim();
         String phoneNumber = phoneNumberTextField.getText().trim();
 
-        if (id.isEmpty() || name.isEmpty() || email.isEmpty() || phoneNumber.isEmpty()) {
+        if (name.isEmpty() || email.isEmpty() || phoneNumber.isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(this,
                 "Please fill in all text fields!", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
             return;
@@ -354,7 +367,7 @@ public class StudentDialog extends javax.swing.JDialog {
             if (isUpdateMode) {
                 message = studentManager.updateStudent(id, name, programme, email, phoneNumber);
             } else {
-                message = studentManager.addNewStudent(id, name, programme, email, phoneNumber);
+                message = studentManager.addNewStudent(name, programme, email, phoneNumber);
             }
             
            // Handles string messages returned by the Manager (e.g., Duplicate ID)

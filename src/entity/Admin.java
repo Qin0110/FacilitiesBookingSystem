@@ -24,8 +24,8 @@ public class Admin extends User {
     
     @Override
     public void setId(String id) {
-        if (id == null || !id.matches("^A[0-9]{3}$")) {
-            throw new IllegalArgumentException("Invalid Admin ID. Example: A001");
+        if (id == null || !id.matches("^A[0-9]{4}$")) {
+            throw new IllegalArgumentException("Invalid Admin ID. Example: A1001");
         }
         super.setId(id);
     }

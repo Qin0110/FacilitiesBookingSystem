@@ -20,10 +20,8 @@ public class AdminInAdminModeUI extends javax.swing.JPanel {
     public AdminInAdminModeUI(AdminManagement adminManager) {
         initComponents();
         this.adminManager = adminManager;
-        jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder());
         
-        adminTable.setShowGrid(false);
-        adminTable.setIntercellSpacing(new java.awt.Dimension(0, 0));
+        
         loadTableData();
     }
     

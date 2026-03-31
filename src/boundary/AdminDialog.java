@@ -30,7 +30,19 @@ public class AdminDialog extends javax.swing.JDialog {
         cancelButton.setVisible(false);
         saveButton.setVisible(true);
         
-        
+        // 1. Lock the ID field so users can't change the auto-generated ID
+        idTextField.setEditable(false);
+        idTextField.setFocusable(false);
+
+        // 2. Fetch and display the next ID
+        String nextId = adminManager.generateNextId();
+        if (nextId != null) {
+            idTextField.setText(nextId);
+        } else {
+            idTextField.setText("SYSTEM FULL");
+            idTextField.setForeground(java.awt.Color.RED);
+            saveButton.setEnabled(false); 
+        }
     }
     /**
      * Constructor for VIEWING/UPDATING an existing admin
@@ -64,6 +76,18 @@ public class AdminDialog extends javax.swing.JDialog {
         emailTextField.setEnabled(false);
         phoneNumberTextField.setEnabled(false);
        
+    }
+    
+    private void refreshIdDisplay() {
+        String nextId = adminManager.generateNextId();
+        if (nextId != null) {
+            idTextField.setText(nextId);
+            idTextField.setForeground(java.awt.Color.BLACK);
+        } else {
+            idTextField.setText("SYSTEM FULL");
+            idTextField.setForeground(java.awt.Color.RED);
+            saveButton.setEnabled(false); // Disable save button[cite: 1]
+        }
     }
 
     /**
@@ -179,6 +203,7 @@ public class AdminDialog extends javax.swing.JDialog {
 
         profile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/profilePhoto.png"))); // NOI18N
 
+        idTextField.setEditable(false);
         idTextField.setBackground(new java.awt.Color(232, 244, 248));
         idTextField.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(33, 115, 126)), "ID"));
         idTextField.addActionListener(new java.awt.event.ActionListener() {
@@ -315,13 +340,16 @@ public class AdminDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+        // 1. Collect data from fields
+        // Note: We still get 'id' because updateAdmin needs it
         String id = idTextField.getText().trim();
         String name = nameTextField.getText().trim();
         String position = positionComboBox.getSelectedItem().toString();
         String email = emailTextField.getText().trim();
         String phoneNumber = phoneNumberTextField.getText().trim();
 
-        if (id.isEmpty() || name.isEmpty() || email.isEmpty() || phoneNumber.isEmpty()) {
+        // 2. Validation
+        if (name.isEmpty() || email.isEmpty() || phoneNumber.isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(this,
                 "Please fill in all text fields!", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
             return;
@@ -331,23 +359,23 @@ public class AdminDialog extends javax.swing.JDialog {
             String message;
 
             if (isUpdateMode) {
+                // UPDATE: Needs the ID to find the record to change
                 message = adminManager.updateAdmin(id, name, position, email, phoneNumber);
             } else {
-                message = adminManager.addNewAdmin(id, name, position, email, phoneNumber);
+                // NEW: ID is now generated automatically inside the manager
+                // We only pass 4 parameters now (removed 'id')
+                message = adminManager.addNewAdmin(name, position, email, phoneNumber);
             }
 
-            // Handles string messages returned by the Manager (e.g., Duplicate ID)
-            if (message.contains("INVALID_INPUT") || message.contains("Invalid") || message.contains("Error") ) {
-                // Show as an Error Dialog (Red X icon) and DO NOT call dispose()
+            // 3. Handle result messages
+            if (message.contains("Error") || message.contains("Invalid") || message.contains("INVALID_INPUT")) {
                 javax.swing.JOptionPane.showMessageDialog(this, message, "Input Error", javax.swing.JOptionPane.ERROR_MESSAGE);
             } else {
-                // Show as a Success Dialog (Blue 'i' icon) AND close the window
                 javax.swing.JOptionPane.showMessageDialog(this, message, "Success", javax.swing.JOptionPane.INFORMATION_MESSAGE);
-                this.dispose(); // Close dialog on success
+                this.dispose(); // Close window on success
             }
 
         } catch (Exception e) {
-            // Handles actual system crashes (like .dat file reading errors)
             javax.swing.JOptionPane.showMessageDialog(this,
                 "System Error: " + e.getMessage(), "Critical Error", javax.swing.JOptionPane.ERROR_MESSAGE);
         }

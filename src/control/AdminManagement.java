@@ -9,25 +9,25 @@ import dao.AdminCollection;
 
 public class AdminManagement {
     
-    private ListInterface<Admin> adminList;
     AdminCollection adminCollection = new AdminCollection();
     
     public AdminManagement() {
-        this.adminList = adminCollection.getAllAdmin();
     }
 
-    public String addNewAdmin(String id, String name, String position, String email, String phoneNumber) {
-
+    public String addNewAdmin(String name, String position, String email, String phoneNumber) {
+        String id = generateNextId();
+        // Check if system is full
+        if (id == null) {
+            return "Error: Maximum staff limit (99) reached!";
+        }
+        
         ListInterface<Admin> adminList = this.getAllAdmins(); 
-
+        
         // Loop to check for duplicates
         for (int i = 0; i < adminList.size(); i++) { 
         
             Admin existingAdmin = adminList.get(i);
 
-            if (existingAdmin.getId().equalsIgnoreCase(id)) {
-                return "Error: This Admin ID already exists!"; 
-            }
             if (existingAdmin.getEmail().equalsIgnoreCase(email)) {
                 return "Error: This Email is already registered to another Admin!"; 
             }
@@ -41,10 +41,30 @@ public class AdminManagement {
             Admin newAdmin = new Admin(id, name, position, email, phoneNumber);
             adminCollection.addAdmin(newAdmin);
              
-            return "Admin added successfully!"; 
+            return "Admin added successfully! ID: " + id;
         } catch (IllegalArgumentException e) {
-            return "Error: " + e.getMessage(); 
+            // Catches format errors from Entity layer
+            return "Error: " + e.getMessage();  
         }
+    }
+    
+    public String generateNextId() {
+        ListInterface<Admin> adminList = adminCollection.getAllAdmin();
+        
+        if (adminList.size() >= 99) { return null; } // Limit to 99
+
+        if (adminList.isEmpty()) { return "A1001"; }
+
+        int highestNum = 1000;
+        for (int i = 0; i < adminList.size(); i++) {
+            String currentId = adminList.get(i).getAdminId();
+            try {
+                int currentNum = Integer.parseInt(currentId.substring(1));
+                if (currentNum > highestNum) { highestNum = currentNum; }
+            } catch (Exception e) { /* Skip invalid formats */ }
+        }
+
+        return (highestNum >= 1099) ? null : "A" + (highestNum + 1);
     }
 
     public ListInterface<Admin> getAllAdmins() {
@@ -64,11 +84,11 @@ public class AdminManagement {
             Admin existingAdmin = adminList.get(i);
 
             // Skip the admin info currently updating
-            if (existingAdmin.getId().equalsIgnoreCase(id)) {
+            if (existingAdmin.getAdminId().equalsIgnoreCase(id)) {
                 continue; 
             }
 
-            // Checking OTHER admins' records (ID does not need checking since it cannot be edited)
+            // Checking other admin records (ID does not need checking since it cannot be edited)
             if (existingAdmin.getEmail().equalsIgnoreCase(email)) {
                 return "Error: This Email is already registered to another Admin!"; 
             }
@@ -83,7 +103,7 @@ public class AdminManagement {
             adminCollection.updateAdminInfo(updatedAdmin); 
             
             return updatedAdmin.getName() + " with Admin ID " + 
-                   updatedAdmin.getId() + " has been successfully updated!";
+                   updatedAdmin.getAdminId  () + " has been successfully updated!";
         } catch (IllegalArgumentException e) {
             return "Error: " + e.getMessage();
         }
@@ -98,7 +118,7 @@ public class AdminManagement {
  
             boolean matchesId   = admin.getAdminId().toLowerCase().contains(idOrName.toLowerCase())
                                 || admin.getName().toLowerCase().contains(idOrName.toLowerCase());
-            boolean matchesType = (position == null || position.equals("ALL") || admin.getPosition().equals(position));
+            boolean matchesType = (position == null || position.equalsIgnoreCase("ALL") || admin.getPosition().equalsIgnoreCase(position));
  
             if (matchesId && matchesType) {
                 searchResults.add(admin);
@@ -108,13 +128,13 @@ public class AdminManagement {
         // Sort the filtered list based on the combo box selection
         if (sortBy != null && !sortBy.trim().isEmpty()) {
             
-            // Check if we want descending order
+            // Check want ascending or descending order
             boolean isAscending = sortDirection.equals("Ascending");
             
             searchResults.sort(new adt.Comparator<entity.Admin>() {
                 @Override
                 public int compare(entity.Admin a1, entity.Admin a2) {
-                    int result = 0; // Store the comparison result here first
+                    int result = 0; 
                     switch (sortBy) {
                         case "Admin ID":
                             result = a1.getAdminId().compareToIgnoreCase(a2.getAdminId());
@@ -135,7 +155,7 @@ public class AdminManagement {
                             result = 0; // Fallback just in case
                             break;
                     }
-                    // If descending, we just reverse the integer result (multiply by -1)
+                    // If descending, just reverse result (multiply by -1)
                     return isAscending ? result : (result * -1);
                 }
             });
@@ -145,13 +165,7 @@ public class AdminManagement {
     }
     
     public Admin getAdminById(String adminId) {
-        for (int i = 0; i < adminList.size(); i++) {
-            Admin admin = adminList.get(i);
-            if (admin.getAdminId().equals(adminId)) {
-                return admin; 
-            }
-        }
-        return null; 
+        return adminCollection.getAdminById(adminId);
     }
     
     public String generateAdminReport() {
