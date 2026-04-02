@@ -1,3 +1,8 @@
+/**
+ * @author Ng Wei Hao
+ */
+
+
 package entity;
 
 public class Admin extends User {

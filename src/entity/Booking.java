@@ -1,3 +1,6 @@
+/**
+ * @author Mak Xuan Er
+ */
 
 package entity;
 import java.io.Serializable;

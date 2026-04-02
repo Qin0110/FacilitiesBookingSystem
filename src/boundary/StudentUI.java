@@ -1,17 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
+/**
+ * @author Ng Wei Hao
  */
+
 package boundary;
 import control.BookingManagement;
 import control.StudentManagement; 
 import control.FacilityManagement;
 import control.ScheduleControl;
 import control.AdminManagement;
-/**
- *
- * @author Lenovo
- */
+
 public class StudentUI extends javax.swing.JPanel {
     
     

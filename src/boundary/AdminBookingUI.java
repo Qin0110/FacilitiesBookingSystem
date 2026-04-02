@@ -1,3 +1,7 @@
+/**
+ * @author Mak Xuan Er
+ */
+
 package boundary;
 import control.BookingManagement;
 import control.FacilityManagement;
@@ -5,9 +9,6 @@ import control.ScheduleControl;
 
 public class AdminBookingUI extends javax.swing.JPanel {
 
-    /**
-     * Creates new form AdminBookingUI
-     */
     
     private BookingManagement bookingManager;
     

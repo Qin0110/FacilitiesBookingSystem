@@ -1,7 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
+/**
+ * @author Mak Xuan Er
  */
+
 package boundary;
 
 import control.BookingManagement;
@@ -9,10 +9,7 @@ import control.ScheduleControl;
 import adt.*;
 import entity.Booking;
 
-/**
- *
- * @author user
- */
+
 public class BookingHistoryCancel extends javax.swing.JPanel {
 
     private BookingManagement bookingManager;

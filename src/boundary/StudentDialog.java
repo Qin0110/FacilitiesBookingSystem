@@ -1,3 +1,6 @@
+/**
+ * @author Ng Wei Hao
+ */
 
 package boundary;
 import control.StudentManagement;

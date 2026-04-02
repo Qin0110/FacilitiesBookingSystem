@@ -1,4 +1,7 @@
-//Ng Wei Hao
+/**
+ * @author Ng Wei Hao
+ */
+
 package control;
 import adt.SingleLinkedList;
 import adt.ListInterface;

@@ -1,3 +1,8 @@
+/**
+ * @author Ng Wei Hao
+ */
+
+
 package entity;
 
 import java.io.Serializable;
