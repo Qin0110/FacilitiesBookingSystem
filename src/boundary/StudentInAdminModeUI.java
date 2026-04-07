@@ -346,58 +346,14 @@ public class StudentInAdminModeUI extends javax.swing.JPanel {
     }//GEN-LAST:event_ProgrammeComboBoxActionPerformed
 
     private void reportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportButtonActionPerformed
-        // 1. Call your new Student Management method
-        String reportText = studentManager.generateStudentReport();
-
-        // 2. Setup the text area
-        javax.swing.JTextArea textArea = new javax.swing.JTextArea(reportText);
-        textArea.setEditable(false);
-        textArea.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 14)); 
-        textArea.setMargin(new java.awt.Insets(10, 10, 10, 10)); 
-
-        javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textArea);
-        scrollPane.setPreferredSize(new java.awt.Dimension(600, 500)); // Made slightly wider for the list
-
-        Object[] options = {"Close", "Save as TXT"};
-
-        int choice = javax.swing.JOptionPane.showOptionDialog(this, 
-            scrollPane, 
-            "Student Summary Report", 
-            javax.swing.JOptionPane.YES_NO_OPTION, 
-            javax.swing.JOptionPane.PLAIN_MESSAGE, 
-            null, 
-            options, 
-            options[0]); 
-
-        // 3. Save logic
-        if (choice == 1) {
-            javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
-            fileChooser.setDialogTitle("Save Report as TXT");
-            fileChooser.setSelectedFile(new java.io.File("Student_Report.txt"));
-
-            int userSelection = fileChooser.showSaveDialog(this);
-
-            if (userSelection == javax.swing.JFileChooser.APPROVE_OPTION) {
-                java.io.File fileToSave = fileChooser.getSelectedFile();
-
-                if (!fileToSave.getName().toLowerCase().endsWith(".txt")) {
-                    fileToSave = new java.io.File(fileToSave.getParentFile(), fileToSave.getName() + ".txt");
-                }
-
-                try (java.io.PrintWriter writer = new java.io.PrintWriter(fileToSave)) {
-                    writer.print(reportText);
-                    javax.swing.JOptionPane.showMessageDialog(this, 
-                        "Report saved successfully to:\n" + fileToSave.getAbsolutePath(), 
-                        "Save Successful", 
-                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
-                } catch (Exception e) {
-                    javax.swing.JOptionPane.showMessageDialog(this, 
-                        "Error saving file: " + e.getMessage(), 
-                        "Save Error", 
-                        javax.swing.JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        }
+       // 1. Create the selection dialog (passing 'null' centers it to the screen)
+        ReportStudentSelectionDialog selectionDialog = new ReportStudentSelectionDialog(null, true);
+        
+        // 2. Center it beautifully on the user's screen
+        selectionDialog.setLocationRelativeTo(null); 
+        
+        // 3. Show the dialog!
+        selectionDialog.setVisible(true);
     }//GEN-LAST:event_reportButtonActionPerformed
 
     private void sortByAscDscComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortByAscDscComboBoxActionPerformed
