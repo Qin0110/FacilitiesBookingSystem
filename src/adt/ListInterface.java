@@ -1,5 +1,4 @@
 package adt;
-// Referring to lecture note for interface method initialization
 
 public interface ListInterface<T> {
     public boolean add(T element);

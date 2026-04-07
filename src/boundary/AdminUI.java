@@ -177,7 +177,7 @@ public class AdminUI extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void facilityManagmenetBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_facilityManagmenetBTActionPerformed
-        FacilityUI facilityUI = new FacilityUI(this.facilityManager);
+        FacilityUI facilityUI = new FacilityUI(facilityManager, bookingManager);
         showPanel(facilityUI);
     }//GEN-LAST:event_facilityManagmenetBTActionPerformed
 

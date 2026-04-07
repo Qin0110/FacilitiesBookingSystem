@@ -130,109 +130,143 @@ public class FacilityManagement {
 
     private int compareSingleAttribute(entity.Facility a, entity.Facility b, String attribute) {
         switch (attribute.toLowerCase()) {
-            case "id":       return a.getFacilityId().compareToIgnoreCase(b.getFacilityId());
-            case "name":     return a.getName().compareToIgnoreCase(b.getName());
-            case "type":     return a.getType().compareToIgnoreCase(b.getType());
-            case "location": return a.getLocation().compareToIgnoreCase(b.getLocation());
-            case "capacity": return Integer.compare(a.getMaxCapacity(), b.getMaxCapacity());
-            default:         return 0;
+            case "id":       
+                return a.getFacilityId().compareToIgnoreCase(b.getFacilityId());
+            case "name":     
+                return a.getName().compareToIgnoreCase(b.getName());
+            case "type":     
+                return a.getType().compareToIgnoreCase(b.getType());
+            case "location": 
+                return a.getLocation().compareToIgnoreCase(b.getLocation());
+            case "capacity": 
+                return Integer.compare(a.getMaxCapacity(), b.getMaxCapacity());
+            default:         
+                return 0;
         }
     }
     
-    public String generateDistributionCSV() {
-        adt.ListInterface<entity.Facility> list = facilityCollection.getAllFacilities();
-        adt.ListInterface<String> uniqueTypes = new adt.SingleLinkedList<>();
-
-        for (int i = 0; i < list.size(); i++) {
-            String type = list.get(i).getType();
-            boolean exists = false;
-            for (int j = 0; j < uniqueTypes.size(); j++) {
-                if (uniqueTypes.get(j).equalsIgnoreCase(type)) {
-                    exists = true; break;
-                }
+   private String extractMonthYear(String dateStr) {
+        String[] parts = dateStr.split("-");
+        if (parts.length >= 3) {
+            int month = Integer.parseInt(parts[1]);
+            String year = parts[2];
+            String[] monthNames = {"", "JAN", "FEB", "MAR", "APR", "MAY", "JUN", 
+                                   "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
+            if (month >= 1 && month <= 12) {
+                return monthNames[month] + " " + year; // Returns "MAR 2026"
             }
-            if (!exists) uniqueTypes.add(type);
         }
-
-        StringBuilder csv = new StringBuilder();
-        csv.append("Facility Type,Total Quantity,Combined Capacity\n");
-
-        for (int i = 0; i < uniqueTypes.size(); i++) {
-            String currentType = uniqueTypes.get(i);
-            int count = 0;
-            int totalCapacity = 0;
-
-            for (int j = 0; j < list.size(); j++) {
-                entity.Facility f = list.get(j);
-                if (f.getType().equalsIgnoreCase(currentType)) {
-                    count++;
-                    totalCapacity += f.getMaxCapacity();
-                }
-            }
-            
-            csv.append(currentType).append(",")
-               .append(count).append(",")
-               .append(totalCapacity).append("\n");
-        }
-
-        return csv.toString();
+ 
+        return "UNKNOWN MONTH";
     }
+  
     
-    public String generateDistributionReport() {
-        adt.ListInterface<Facility> list = facilityCollection.getAllFacilities();
-        adt.ListInterface<String> uniqueTypes = new adt.SingleLinkedList<>();
-
-        for (int i = 0; i < list.size(); i++) {
-            String type = list.get(i).getType();
-            boolean exists = false;
-
-            for (int j = 0; j < uniqueTypes.size(); j++) {
-                if (uniqueTypes.get(j).equalsIgnoreCase(type)) {
-                    exists = true;
-                    break;
-                }
-            }
-            if (!exists) {
-                uniqueTypes.add(type);
-            }
-        }
-
+    public String generateFacilityPopularityReport(adt.ListInterface<entity.Booking> allBookings) {
         StringBuilder report = new StringBuilder();
         report.append("=====================================================\n");
-        report.append("               FACILITY DISTRIBUTION REPORT\n");
+        report.append("       MONTHLY FACILITY POPULARITY REPORT\n");
         report.append("=====================================================\n\n");
+        report.append(String.format("Total Bookings Analyzed : %d\n\n", allBookings.size()));
 
-        int grandTotalFacilities = 0;
-        int grandTotalCapacity = 0;
+        if (allBookings.isEmpty()) {
+            report.append("No bookings have been made yet.\n");
+            return report.toString();
+        }
 
-        for (int i = 0; i < uniqueTypes.size(); i++) {
-            String currentType = uniqueTypes.get(i);
-            int count = 0;
-            int totalCapacity = 0;
+        // =========================================================
+        // 1. FIND ALL UNIQUE MONTHS IN THE SYSTEM
+        // =========================================================
+        adt.ListInterface<String> uniqueMonths = new adt.SingleLinkedList<>();
+        for (int i = 0; i < allBookings.size(); i++) {
+            entity.Booking b = allBookings.get(i);
+            
+            // Grab the date portion of the session (e.g., "27-03-2026")
+            String dateStr = b.getScheduleSession().split(" ")[0]; 
+            String monthYear = extractMonthYear(dateStr);
 
-            for (int j = 0; j < list.size(); j++) {
-                Facility f = list.get(j);
-                if (f.getType().equalsIgnoreCase(currentType)) {
-                    count++;
-                    totalCapacity += f.getMaxCapacity();
+            boolean found = false;
+            for (int j = 0; j < uniqueMonths.size(); j++) {
+                if (uniqueMonths.get(j).equals(monthYear)) {
+                    found = true; break;
+                }
+            }
+            if (!found) {
+                uniqueMonths.add(monthYear);
+            }
+        }
+
+        // =========================================================
+        // 2. GENERATE STATS FOR EACH MONTH INDIVIDUALLY
+        // =========================================================
+        for (int m = 0; m < uniqueMonths.size(); m++) {
+            String targetMonth = uniqueMonths.get(m);
+            report.append(String.format("--- %s ---\n", targetMonth));
+
+            adt.ListInterface<String> facilityTypes = new adt.SingleLinkedList<>();
+            adt.ListInterface<Integer> typeCounts = new adt.SingleLinkedList<>();
+            int monthlyTotal = 0;
+
+            // Group and count ONLY for the current target month
+            for (int i = 0; i < allBookings.size(); i++) {
+                entity.Booking b = allBookings.get(i);
+                String dateStr = b.getScheduleSession().split(" ")[0];
+                String bMonthYear = extractMonthYear(dateStr);
+
+                // If the booking matches the month we are currently analyzing...
+                if (bMonthYear.equals(targetMonth) && b.getSchedule() != null && b.getSchedule().getFacility() != null) {
+                    String type = b.getSchedule().getFacility().getType();
+                    monthlyTotal++;
+                    boolean found = false;
+
+                    for (int j = 0; j < facilityTypes.size(); j++) {
+                        if (facilityTypes.get(j).equalsIgnoreCase(type)) {
+                            typeCounts.set(j, typeCounts.get(j) + 1);
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found) {
+                        facilityTypes.add(type);
+                        typeCounts.add(1);
+                    }
                 }
             }
 
-            report.append(String.format("Facility Type : %s\n", currentType.toUpperCase()));
-            report.append(String.format("  -> Total Quantity    : %d facilities\n", count));
-            report.append(String.format("  -> Combined Capacity : %d people\n", totalCapacity));
-            report.append("-----------------------------------------------------\n");
+            // Sort the data for this specific month (Highest to lowest)
+            for (int i = 1; i < facilityTypes.size(); i++) {
+                int currentCount = typeCounts.get(i);
+                String currentType = facilityTypes.get(i);
 
-            grandTotalFacilities += count;
-            grandTotalCapacity += totalCapacity;
+                int j = i - 1;
+                while (j >= 0 && typeCounts.get(j) < currentCount) {
+                    typeCounts.set(j + 1, typeCounts.get(j));
+                    facilityTypes.set(j + 1, facilityTypes.get(j));
+                    j--;
+                }
+                typeCounts.set(j + 1, currentCount);
+                facilityTypes.set(j + 1, currentType);
+            }
+
+            // Append this month's results to the overall report
+            if (facilityTypes.isEmpty()) {
+                report.append("  No facility data for this month.\n");
+            } else {
+                for (int i = 0; i < facilityTypes.size(); i++) {
+                    report.append(String.format("  %-28s : %d bookings\n",
+                            facilityTypes.get(i),
+                            typeCounts.get(i)));
+                }
+            }
+            report.append(String.format("  [Total %s Bookings: %d]\n\n", targetMonth, monthlyTotal));
         }
 
-        report.append(String.format("\nGRAND TOTAL FACILITIES : %d\n", grandTotalFacilities));
-        report.append(String.format("GRAND TOTAL CAPACITY   : %d people\n", grandTotalCapacity));
         report.append("=====================================================\n");
-        report.append("          End of Report - Generated Successfully\n");
+        report.append("                   End of Report\n");
 
         return report.toString();
     }
+    
+    
 }
  

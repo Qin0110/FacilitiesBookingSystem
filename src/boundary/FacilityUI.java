@@ -4,17 +4,20 @@
 package boundary;
 
 import control.FacilityManagement;
+import control.BookingManagement;
 
 public class FacilityUI extends javax.swing.JPanel {
     
     private FacilityManagement facilityManager;
+    private control.BookingManagement bookingManager;
     
    
  
-    public FacilityUI(FacilityManagement facilityManager) {
+    public FacilityUI(FacilityManagement facilityManager, BookingManagement bookingManager) {
         initComponents();
         
         this.facilityManager = facilityManager;
+        this.bookingManager = bookingManager; 
         loadTableData();
     }
     
@@ -392,9 +395,10 @@ public class FacilityUI extends javax.swing.JPanel {
     }//GEN-LAST:event_typeCBActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        String visualReport = facilityManager.generateDistributionReport();
+        adt.ListInterface<entity.Booking> currentBookings = this.bookingManager.getAllBookings();
+        
+        String visualReport = facilityManager.generateFacilityPopularityReport(currentBookings);
 
-        // 2. Build the visual pane
         javax.swing.JTextArea textArea = new javax.swing.JTextArea(visualReport);
         textArea.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 14));
         textArea.setEditable(false);
@@ -403,31 +407,21 @@ public class FacilityUI extends javax.swing.JPanel {
         javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textArea);
         scrollPane.setPreferredSize(new java.awt.Dimension(450, 450));
 
-        // 3. Create the custom buttons for the popup
-        Object[] options = {"Close", "Save as .TXT (Visual)", "Download .CSV (Excel)"};
+        Object[] options = {"Close", "Save as .TXT (Visual)"}; // Removed CSV for now since the report isn't CSV formatted
 
-        // 4. Show the dialog!
         int choice = javax.swing.JOptionPane.showOptionDialog(
                 this, 
                 scrollPane, 
                 "Facility Distribution Report", 
-                javax.swing.JOptionPane.YES_NO_CANCEL_OPTION, 
+                javax.swing.JOptionPane.YES_NO_OPTION, 
                 javax.swing.JOptionPane.PLAIN_MESSAGE, 
                 null, 
                 options, 
-                options[0] // Default button is "Close"
+                options[0] 
         );
 
-        // 5. Handle the user's click
         if (choice == 1) { 
-            // They clicked "Save as .TXT"
-            saveToFile("Facility_Distribution_Report.txt", visualReport, "Save Visual Report");
-            
-        } else if (choice == 2) { 
-            // They clicked "Download .CSV"
-            // We call the CSV backend method we made earlier!
-            String csvData = facilityManager.generateDistributionCSV(); 
-            saveToFile("Facility_Data.csv", csvData, "Download CSV Data");
+            saveToFile("Facility_Popularity_Report.txt", visualReport, "Save Visual Report");
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
