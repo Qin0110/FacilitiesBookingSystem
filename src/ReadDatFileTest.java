@@ -1,17 +1,17 @@
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
-import adt.ListInterface;
-import entity.Facility; // Change to Student or Booking if needed
+import adt.*;
+import entity.*; // Change to Student or Booking if needed
 
 public class ReadDatFileTest {
     public static void main(String[] args) {
         try {
             // 1. Open the file
-            FileInputStream fileIn = new FileInputStream("facilities.dat");
+            FileInputStream fileIn = new FileInputStream("src/Data/bookings.dat");
             ObjectInputStream objectIn = new ObjectInputStream(fileIn);
             
             // 2. Read the binary data back into your custom List
-            ListInterface<Facility> recoveredList = (ListInterface<Facility>) objectIn.readObject();
+            ListInterface<Booking> recoveredList = (ListInterface<Booking>) objectIn.readObject();
             
             objectIn.close();
             fileIn.close();
