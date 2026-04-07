@@ -352,18 +352,32 @@ public class BookingManagement {
         return null; 
     }
 
-    public String generateBookingReport() {
+    public String generateBookingReport(java.time.LocalDate startDate, java.time.LocalDate endDate, String timeframeLabel) {
         adt.ListInterface<entity.Booking> allBookings = bookingCollection.getAllBookings();
+        java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy");
         
-        int totalBookings = allBookings.size();
+        int totalBookings = 0;
         int pendingCount = 0, confirmedCount = 0, inProgressCount = 0;
         int completedCount = 0, cancelledCount = 0, notAttendedCount = 0;
         
         adt.ListInterface<String> facilityNames = new adt.SingleLinkedList<>();
         adt.ListInterface<Integer> facilityCounts = new adt.SingleLinkedList<>();
         
-        for (int i = 0; i < totalBookings; i++) {
+        for (int i = 0; i < allBookings.size(); i++) {
             entity.Booking b = allBookings.get(i);
+            
+            try {
+                String dateString = b.getScheduleSession().split(" ")[0]; 
+                java.time.LocalDate bookingDate = java.time.LocalDate.parse(dateString, formatter);
+                
+                if (startDate != null && bookingDate.isBefore(startDate)) continue; 
+                if (endDate != null && bookingDate.isAfter(endDate)) continue; 
+                
+            } catch (Exception e) {
+                continue; 
+            }
+
+            totalBookings++;
             
             String status = b.getStatus();
             if (status.equalsIgnoreCase("Pending")) pendingCount++;
@@ -375,7 +389,6 @@ public class BookingManagement {
             
             if (b.getSchedule() != null && b.getSchedule().getFacility() != null) {
                 String fName = b.getSchedule().getFacility().getName();
-                
                 boolean found = false;
                 for (int j = 0; j < facilityNames.size(); j++) {
                     if (facilityNames.get(j).equalsIgnoreCase(fName)) {
@@ -391,12 +404,9 @@ public class BookingManagement {
             }
         }
 
-        int numFacilities = facilityNames.size();
-        
-        for (int i = 1; i < numFacilities; i++) {
+        for (int i = 1; i < facilityNames.size(); i++) {
             int currentCount = facilityCounts.get(i);
             String currentName = facilityNames.get(i);
-            
             int j = i - 1;
             while (j >= 0 && facilityCounts.get(j) < currentCount) {
                 facilityCounts.set(j + 1, facilityCounts.get(j));
@@ -406,34 +416,30 @@ public class BookingManagement {
             facilityCounts.set(j + 1, currentCount);
             facilityNames.set(j + 1, currentName);
         }
-        
+
         StringBuilder report = new StringBuilder();
         report.append("=====================================================\n");
         report.append("               BOOKING SUMMARY REPORT\n");
-        report.append("=====================================================\n\n");
+        report.append("=====================================================\n");
+        report.append(" Timeframe: ").append(timeframeLabel).append("\n\n");
         
-        report.append(String.format("Total Bookings in System : %d\n\n", totalBookings));
+        report.append(String.format(" Total Bookings   : %d\n\n", totalBookings));
+        report.append(" --- BOOKING STATUS BREAKDOWN ---\n");
+        report.append(String.format(" Completed        : %d\n", completedCount));
+        report.append(String.format(" Cancelled        : %d\n", cancelledCount));
+        report.append(String.format(" Not Attended     : %d\n", notAttendedCount));
+        report.append(String.format(" Confirmed        : %d\n", confirmedCount));
+        report.append(String.format(" Pending          : %d\n", pendingCount));
+        report.append(String.format(" In Progress      : %d\n\n", inProgressCount));
         
-        report.append("--- BOOKING STATUS BREAKDOWN ---\n");
-        report.append(String.format("Completed\t:    %d\n", completedCount));
-        report.append(String.format("In Progress\t:    %d\n", inProgressCount));
-        report.append(String.format("Confirmed\t:    %d\n", confirmedCount));
-        report.append(String.format("Pending\t\t:    %d\n", pendingCount));
-        report.append(String.format("Cancelled\t:    %d\n", cancelledCount));
-        report.append(String.format("Not Attended\t:    %d\n\n", notAttendedCount));
-        
-        report.append("--- FACILITY POPULARITY (Total Bookings) ---\n");
-        if (facilityNames.isEmpty()) {
-            report.append("No facilities booked yet.\n");
-        } else {
+        report.append(" --- FACILITY POPULARITY ---\n");
+        if (facilityNames.isEmpty()) report.append(" No facilities booked in this period.\n");
+        else {
             for (int i = 0; i < facilityNames.size(); i++) {
-                report.append(String.format("%-25s : %d bookings\n", facilityNames.get(i), facilityCounts.get(i)));
+                report.append(String.format(" %-25s : %d bookings\n", facilityNames.get(i), facilityCounts.get(i)));
             }
         }
-        
         report.append("\n=====================================================\n");
-        report.append("\t\t    End of Report\n");
-        
         return report.toString();
     }
     

@@ -350,56 +350,80 @@ public class AdminBookingUI extends javax.swing.JPanel {
     }//GEN-LAST:event_SortOrderComboBoxActionPerformed
 
     private void BookingReportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BookingReportButtonActionPerformed
-        String reportText = bookingManager.generateBookingReport();
+
+        java.time.LocalDate now = java.time.LocalDate.now();
+        java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("MMMM yyyy");
+        
+        int monthsToShow = 4; 
+        
+        String[] options = new String[monthsToShow + 2];
+        options[0] = "Weekly Report (Last 7 Days)";
+        
+        for (int i = 0; i < monthsToShow; i++) {
+            java.time.LocalDate targetMonth = now.minusMonths(i);
+            options[i + 1] = "Monthly Report (" + targetMonth.format(formatter) + ")";
+        }
+        options[options.length - 1] = "All-Time Report";
+        
+        String choice = (String) javax.swing.JOptionPane.showInputDialog(
+            this, "Select Report Timeframe:", "Generate System Report",
+            javax.swing.JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+
+        if (choice == null) return;
+        java.time.LocalDate startDate = null;
+        java.time.LocalDate endDate = null;
+        String timeframeLabel = choice;
+        
+        if (choice.equals(options[0])) { 
+            endDate = now;
+            startDate = endDate.minusDays(7);
+            timeframeLabel = "Weekly (" + startDate.toString() + " to " + endDate.toString() + ")";
+        } 
+        else if (choice.equals(options[options.length - 1])) { 
+        } 
+        else { 
+            String extractedDate = choice.replace("Monthly Report (", "").replace(")", "");
+            String[] dateParts = extractedDate.split(" ");
+            String monthName = dateParts[0]; 
+            int year = Integer.parseInt(dateParts[1]); 
+            
+            int monthValue = java.time.Month.valueOf(monthName.toUpperCase()).getValue();
+            startDate = java.time.LocalDate.of(year, monthValue, 1);
+            endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+        }
+        String reportText = bookingManager.generateBookingReport(startDate, endDate, timeframeLabel);
         
         javax.swing.JTextArea textArea = new javax.swing.JTextArea(reportText);
         textArea.setEditable(false);
         textArea.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 14)); 
-        textArea.setMargin(new java.awt.Insets(10, 10, 10, 10)); 
+        textArea.setMargin(new java.awt.Insets(10, 10, 10, 10));
         
         javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textArea);
         scrollPane.setPreferredSize(new java.awt.Dimension(450, 500));
+
+        Object[] dialogButtons = {"OK", "Save to .txt"};
         
-        Object[] options = {"Close", "Save as TXT"};
-        
-        int choice = javax.swing.JOptionPane.showOptionDialog(this, 
+        int result = javax.swing.JOptionPane.showOptionDialog(
+            this, 
             scrollPane, 
-            "Booking Summary Report", 
-            javax.swing.JOptionPane.YES_NO_OPTION, 
+            "Booking Summary", 
+            javax.swing.JOptionPane.DEFAULT_OPTION, 
             javax.swing.JOptionPane.PLAIN_MESSAGE, 
             null, 
-            options, 
-            options[0]); 
-            
-        if (choice == 1) {
-            javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
-            fileChooser.setDialogTitle("Save Report as TXT");
-            
-            fileChooser.setSelectedFile(new java.io.File("Booking_Report.txt"));
-            
-            int userSelection = fileChooser.showSaveDialog(this);
-            
-            if (userSelection == javax.swing.JFileChooser.APPROVE_OPTION) {
-                java.io.File fileToSave = fileChooser.getSelectedFile();
-                
-                if (!fileToSave.getName().toLowerCase().endsWith(".txt")) {
-                    fileToSave = new java.io.File(fileToSave.getParentFile(), fileToSave.getName() + ".txt");
-                }
-                
-                try (java.io.PrintWriter writer = new java.io.PrintWriter(fileToSave)) {
-                    writer.print(reportText);
-                    
-                    javax.swing.JOptionPane.showMessageDialog(this, 
-                        "Report saved successfully to:\n" + fileToSave.getAbsolutePath(), 
-                        "Save Successful", 
-                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
-                        
-                } catch (Exception e) {
-                    javax.swing.JOptionPane.showMessageDialog(this, 
-                        "Error saving file: " + e.getMessage(), 
-                        "Save Error", 
-                        javax.swing.JOptionPane.ERROR_MESSAGE);
-                }
+            dialogButtons, 
+            dialogButtons[0] 
+        );
+        
+        if (result == 1) {
+            try {
+                String safeFilename = timeframeLabel.replaceAll("[^a-zA-Z0-9 ]", "_") + "_Report.txt";
+                java.io.File reportFile = new java.io.File(safeFilename);
+                java.io.FileWriter writer = new java.io.FileWriter(reportFile);
+                writer.write(reportText);
+                writer.close();
+                javax.swing.JOptionPane.showMessageDialog(this, "Success! Report saved as:\n" + reportFile.getAbsolutePath());
+            } catch (Exception e) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Error saving file: " + e.getMessage());
             }
         }
     }//GEN-LAST:event_BookingReportButtonActionPerformed
