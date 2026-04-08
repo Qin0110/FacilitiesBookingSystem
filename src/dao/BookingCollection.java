@@ -109,7 +109,31 @@ public class BookingCollection implements Serializable {
     
     private void addDefaultBooking(ListInterface<Schedule> schedules, String bId, String sId, int facIdx, String sessionStr, String status, String adminId) {
         Schedule targetSched = schedules.get(facIdx % schedules.size()); 
-        Booking b = new Booking(bId, sId, targetSched, 0, null, null);
+        
+        java.time.LocalDateTime arrival = null;
+        java.time.LocalDateTime leaving = null;
+
+        if (status.equals("Completed") || status.equals("In Progress")) {
+            try {
+                String[] parts = sessionStr.split(" ");
+                String date = parts[0];
+                String startTimeStr = parts[1];
+                String endTimeStr = parts[3];
+                
+                java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+                java.time.LocalDateTime sessionStart = java.time.LocalDateTime.parse(date + " " + startTimeStr, formatter);
+                java.time.LocalDateTime sessionEnd = java.time.LocalDateTime.parse(date + " " + endTimeStr, formatter);
+                
+                arrival = sessionStart.minusMinutes(5); // Arrived 5 mins early
+                if (status.equals("Completed")) {
+                    leaving = sessionEnd.plusMinutes(5); // Left 5 mins after it ended
+                }
+            } catch (Exception e) {
+                System.out.println("Error parsing dummy dates.");
+            }
+        }
+        
+        Booking b = new Booking(bId, sId, targetSched, 0, arrival, leaving);
         b.setScheduleSession(sessionStr);
         b.setStatus(status);
         if (adminId != null) {
