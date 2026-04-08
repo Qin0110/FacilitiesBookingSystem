@@ -120,8 +120,10 @@ public class FacilityUI extends javax.swing.JPanel {
         jPanel2 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        popularityReportBT = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        utilisationReportBT = new javax.swing.JButton();
+        operationalEfficiencyReportBT = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         typeCB = new javax.swing.JComboBox<>();
         facilitySearchTF = new javax.swing.JTextField();
@@ -166,10 +168,10 @@ public class FacilityUI extends javax.swing.JPanel {
             }
         });
 
-        jButton4.setText("Generate Report");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        popularityReportBT.setText("Facility Popularity Report");
+        popularityReportBT.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                popularityReportBTActionPerformed(evt);
             }
         });
 
@@ -180,6 +182,20 @@ public class FacilityUI extends javax.swing.JPanel {
             }
         });
 
+        utilisationReportBT.setText("Facility Utilisation Report");
+        utilisationReportBT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                utilisationReportBTActionPerformed(evt);
+            }
+        });
+
+        operationalEfficiencyReportBT.setText("Operational Efficiency Report");
+        operationalEfficiencyReportBT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                operationalEfficiencyReportBTActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -187,9 +203,11 @@ public class FacilityUI extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addComponent(jButton4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(popularityReportBT, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(utilisationReportBT, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(operationalEfficiencyReportBT, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -201,8 +219,12 @@ public class FacilityUI extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(151, Short.MAX_VALUE))
+                .addComponent(popularityReportBT, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(utilisationReportBT, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(operationalEfficiencyReportBT, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(43, Short.MAX_VALUE))
         );
 
         typeCB.addActionListener(new java.awt.event.ActionListener() {
@@ -394,10 +416,33 @@ public class FacilityUI extends javax.swing.JPanel {
         loadTableData(id);
     }//GEN-LAST:event_typeCBActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        adt.ListInterface<entity.Booking> currentBookings = this.bookingManager.getAllBookings();
+    private void popularityReportBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_popularityReportBTActionPerformed
+     adt.ListInterface<entity.Booking> currentBookings = this.bookingManager.getAllBookings();
+        adt.ListInterface<String> yearsList = facilityManager.getAvailableYears(currentBookings);
         
-        String visualReport = facilityManager.generateFacilityPopularityReport(currentBookings);
+        if (yearsList.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "No bookings available to analyze.");
+            return;
+        }
+
+        java.awt.Window parentWindow = javax.swing.SwingUtilities.getWindowAncestor(this);
+        
+        // 1. Open the Dialog
+        FacilityReportDateSelection dialog = new FacilityReportDateSelection((java.awt.Frame) parentWindow, true, yearsList);
+        dialog.setVisible(true); 
+
+        // 2. Check if the user clicked "Cancel" or closed the window
+        if (!dialog.isConfirmed()) {
+            return;
+        }
+
+        // 3. Extract the exact Day, Month, and Year they selected
+        String day = dialog.getSelectedDay();
+        String month = dialog.getSelectedMonth();
+        String year = dialog.getSelectedYear();
+
+        // 4. Generate the report using those specific variables
+        String visualReport = facilityManager.generateFacilityPopularityReport(currentBookings, day, month, year);
 
         javax.swing.JTextArea textArea = new javax.swing.JTextArea(visualReport);
         textArea.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 14));
@@ -407,7 +452,7 @@ public class FacilityUI extends javax.swing.JPanel {
         javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textArea);
         scrollPane.setPreferredSize(new java.awt.Dimension(450, 450));
 
-        Object[] options = {"Close", "Save as .TXT (Visual)"}; // Removed CSV for now since the report isn't CSV formatted
+        Object[] options = {"Close", "Save as .TXT (Visual)"}; 
 
         int choice = javax.swing.JOptionPane.showOptionDialog(
                 this, 
@@ -421,9 +466,13 @@ public class FacilityUI extends javax.swing.JPanel {
         );
 
         if (choice == 1) { 
-            saveToFile("Facility_Popularity_Report.txt", visualReport, "Save Visual Report");
+            // Create a safe file name based on what they picked
+            String filename = "Facility_Popularity_Report";
+            if (year != null && !year.equals("None")) filename += "_" + year;
+            if (month != null && !month.equals("None")) filename += "_" + month;
+            saveToFile(filename + ".txt", visualReport, "Save Visual Report");
         }
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }//GEN-LAST:event_popularityReportBTActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         FacilitySortingDialog dialog = new FacilitySortingDialog(null, true, this.facilityManager);
@@ -432,6 +481,121 @@ public class FacilityUI extends javax.swing.JPanel {
         loadTableData();
     }//GEN-LAST:event_jButton5ActionPerformed
 
+    private void utilisationReportBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_utilisationReportBTActionPerformed
+        adt.ListInterface<entity.Booking> currentBookings = this.bookingManager.getAllBookings();
+        adt.ListInterface<String> yearsList = facilityManager.getAvailableYears(currentBookings);
+        
+        if (yearsList.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "No bookings available to analyze.");
+            return;
+        }
+
+        java.awt.Window parentWindow = javax.swing.SwingUtilities.getWindowAncestor(this);
+        
+        FacilityReportDateSelection dialog = new FacilityReportDateSelection((java.awt.Frame) parentWindow, true, yearsList);
+        dialog.setVisible(true); 
+
+        if (!dialog.isConfirmed()) {
+            return;
+        }
+
+        String day = dialog.getSelectedDay();
+        String month = dialog.getSelectedMonth();
+        String year = dialog.getSelectedYear();
+
+        // Call the newly named method
+        String utilizationReport = facilityManager.generateFacilityUtilizationReport(currentBookings, day, month, year);
+
+        javax.swing.JTextArea textArea = new javax.swing.JTextArea(utilizationReport);
+        textArea.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 14));
+        textArea.setEditable(false);
+        textArea.setBackground(new java.awt.Color(240, 240, 240));
+
+        // Adjust dimensions for a cleaner fit
+        javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textArea);
+        scrollPane.setPreferredSize(new java.awt.Dimension(500, 450)); 
+
+        Object[] options = {"Close", "Save as .TXT (Visual)"}; 
+
+        int choice = javax.swing.JOptionPane.showOptionDialog(
+                this, 
+                scrollPane, 
+                "Facility Utilization Report", 
+                javax.swing.JOptionPane.YES_NO_OPTION, 
+                javax.swing.JOptionPane.PLAIN_MESSAGE, 
+                null, 
+                options, 
+                options[0] 
+        );
+
+        if (choice == 1) { 
+            String filename = "Facility_Utilization_Report";
+            if (!year.equals("None")) filename += "_" + year;
+            if (!month.equals("None")) filename += "_" + month;
+            saveToFile(filename + ".txt", utilizationReport, "Save Utilization Report");
+        }
+    }//GEN-LAST:event_utilisationReportBTActionPerformed
+
+    private void operationalEfficiencyReportBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_operationalEfficiencyReportBTActionPerformed
+        adt.ListInterface<entity.Booking> currentBookings = this.bookingManager.getAllBookings();
+        adt.ListInterface<String> yearsList = facilityManager.getAvailableYears(currentBookings);
+        
+        if (yearsList.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "No bookings available to analyze.");
+            return;
+        }
+
+        java.awt.Window parentWindow = javax.swing.SwingUtilities.getWindowAncestor(this);
+        
+        // 2. Open the Date Selection Dialog
+        FacilityReportDateSelection dialog = new FacilityReportDateSelection((java.awt.Frame) parentWindow, true, yearsList);
+        dialog.setVisible(true); 
+
+        // 3. If they cancelled or closed the window with the X, abort.
+        if (!dialog.isConfirmed()) {
+            return;
+        }
+
+        // 4. Extract choices (Notice we don't need 'Day' for this specific report)
+        String month = dialog.getSelectedMonth();
+        String year = dialog.getSelectedYear();
+
+        // 5. Generate the report WITH the date filters!
+        String efficiencyReport = facilityManager.generateOperationalEfficiencyReport(currentBookings, month, year);
+
+        // 6. Build the UI Pane
+        javax.swing.JTextArea textArea = new javax.swing.JTextArea(efficiencyReport);
+        textArea.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 14));
+        textArea.setEditable(false);
+        textArea.setBackground(new java.awt.Color(240, 240, 240));
+
+        // Set to 750 width to accommodate the extra columns and warnings!
+        javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textArea);
+        scrollPane.setPreferredSize(new java.awt.Dimension(750, 450)); 
+
+        Object[] options = {"Close", "Save as .TXT (Visual)"}; 
+
+        // 7. Show the report popup
+        int choice = javax.swing.JOptionPane.showOptionDialog(
+                this, 
+                scrollPane, 
+                "Operational Efficiency & Waste Report", 
+                javax.swing.JOptionPane.YES_NO_OPTION, 
+                javax.swing.JOptionPane.PLAIN_MESSAGE, 
+                null, 
+                options, 
+                options[0] 
+        );
+
+        // 8. Save the file with a dynamic filename
+        if (choice == 1) { 
+            String filename = "Operational_Efficiency_Report";
+            if (!year.equals("None")) filename += "_" + year;
+            if (!month.equals("None")) filename += "_" + month;
+            saveToFile(filename + ".txt", efficiencyReport, "Save Efficiency Report");
+        }
+    }//GEN-LAST:event_operationalEfficiencyReportBTActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField facilitySearchTF;
@@ -439,7 +603,6 @@ public class FacilityUI extends javax.swing.JPanel {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
@@ -447,6 +610,9 @@ public class FacilityUI extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton operationalEfficiencyReportBT;
+    private javax.swing.JButton popularityReportBT;
     private javax.swing.JComboBox<String> typeCB;
+    private javax.swing.JButton utilisationReportBT;
     // End of variables declaration//GEN-END:variables
 }
