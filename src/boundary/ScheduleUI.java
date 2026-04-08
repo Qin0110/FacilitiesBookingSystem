@@ -14,10 +14,6 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author User
- */
 public class ScheduleUI extends javax.swing.JPanel {
 
     private ScheduleControl myControl;
@@ -43,13 +39,10 @@ public class ScheduleUI extends javax.swing.JPanel {
             scheduleTable.getColumnModel().getColumn(i).setCellRenderer(renderer);
         }        
         
-        // 2. Populate the JComboBox with unique dates
-        dateCB.removeAllItems(); // Remove NetBeans default "Item 1", "Item 2"
-                
+        dateCB.removeAllItems(); 
         for (int i = 0; i < allSchedule.size(); i++) {
             String dateString = allSchedule.get(i).getDate();
             
-            // Check if the date is already in the dropdown to avoid duplicates
             boolean exists = false;
             for (int j = 0; j < dateCB.getItemCount(); j++) {
                 if (dateCB.getItemAt(j).equals(dateString)) {
@@ -62,9 +55,19 @@ public class ScheduleUI extends javax.swing.JPanel {
             }
         }
         
-        // 3. Load the table with the first date initially
-        if (dateCB.getItemCount() > 0) {
-            updateTableForDate((String) dateCB.getItemAt(0));
+        java.time.LocalDate today = java.time.LocalDate.now();
+        java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        String todayString = today.format(formatter);
+        
+        dateCB.setSelectedItem(todayString);
+        
+      
+        if (dateCB.getSelectedIndex() == -1 && dateCB.getItemCount() > 0) {
+            dateCB.setSelectedIndex(0);
+        }
+        
+        if (dateCB.getSelectedItem() != null) {
+            updateTableForDate((String) dateCB.getSelectedItem());
         }
     }
     
@@ -94,12 +97,11 @@ public class ScheduleUI extends javax.swing.JPanel {
     
     private void displaySearchResults(ListInterface<Schedule> searchResults, String targetDate) {
         DefaultTableModel model = (DefaultTableModel) scheduleTable.getModel();
-        model.setRowCount(0); // Clear the current rows
+        model.setRowCount(0);
         
         for (int i = 0; i < searchResults.size(); i++) {
             Schedule currentSchedule = searchResults.get(i);
             
-            // Double check it matches the date just to be perfectly safe
             if (currentSchedule.getDate().equals(targetDate)) {
                 String facilityName = currentSchedule.getFacility().getName();
                 ListInterface<ScheduleSession> sessions = currentSchedule.getSessions();
@@ -108,7 +110,7 @@ public class ScheduleUI extends javax.swing.JPanel {
                     ScheduleSession currentSession = sessions.get(j);
                     
                     model.addRow(new Object[]{facilityName, currentSession.getSession(), currentSession.getAvailability()});
-                    facilityName = ""; // Clear so it only shows on the first row of the group
+                    facilityName = ""; 
                 }
             }
         }
@@ -124,7 +126,7 @@ public class ScheduleUI extends javax.swing.JPanel {
         return "";
     }
 
-    // Finds the main schedule object index based on name AND date
+
     private int findScheduleIndex(String facilityName, String date) {
         for (int i = 0; i < allSchedule.size(); i++) {
             Schedule s = allSchedule.get(i);
@@ -132,10 +134,10 @@ public class ScheduleUI extends javax.swing.JPanel {
                 return i;
             }
         }
-        return -1; // Not found
+        return -1;
     }
 
-    // Finds the specific time slot index within a schedule
+
     private int findTimeIndex(int scheduleIndex, String timeString) {
         ListInterface<ScheduleSession> sessions = allSchedule.get(scheduleIndex).getSessions();
         for (int i = 0; i < sessions.size(); i++) {
@@ -143,7 +145,7 @@ public class ScheduleUI extends javax.swing.JPanel {
                 return i;
             }
         }
-        return -1; // Not found
+        return -1;
     }
 
 
@@ -354,7 +356,7 @@ public class ScheduleUI extends javax.swing.JPanel {
                 }
             }
             
-            // If found ANY conflicts, warn the admin before wiping the schedule
+          
             if (!conflicts.isEmpty()) {
                 int choice = javax.swing.JOptionPane.showConfirmDialog(this, 
                     "Warning: This facility has " + conflicts.size() + " active student booking(s) on this date.\n\n" +
@@ -365,12 +367,10 @@ public class ScheduleUI extends javax.swing.JPanel {
                     javax.swing.JOptionPane.WARNING_MESSAGE);
                     
                 if (choice == javax.swing.JOptionPane.YES_OPTION) {
-                    // Bulk cancel all the conflicting bookings using our ADT list
                     for (int i = 0; i < conflicts.size(); i++) {
                         bookingManager.cancelBooking(conflicts.get(i));
                     }
-                    
-                    //delete the schedule
+
                     if (myControl.deleteFacilititySchedule(targetIndex)) {
                         javax.swing.JOptionPane.showMessageDialog(this, "Facility schedule deleted and all " + conflicts.size() + " related bookings cancelled.");
                     }
@@ -378,7 +378,6 @@ public class ScheduleUI extends javax.swing.JPanel {
                 }
                 return; 
             }
-            // Confirm deletion
             int confirm = javax.swing.JOptionPane.showConfirmDialog(
                 null,
                 "Are you sure you want to permanently delete the ENTIRE schedule for " + facility + " on " + currentDate + "?\nAll sessions will be removed.",
@@ -455,13 +454,11 @@ public class ScheduleUI extends javax.swing.JPanel {
             return;
         }
 
-        // 1. Get the data from the selected row
         String facility = getFacilityForSelectedRow(selectedRow);
         String timeSlot = (String) scheduleTable.getValueAt(selectedRow, 1);
         String currentStatus = (String) scheduleTable.getValueAt(selectedRow, 2);
         String currentDate = (String) dateCB.getSelectedItem();
 
-        // 2. Pop-up to ask for the new status
         String[] options = {ScheduleSession.STATUS_AVAILABLE, ScheduleSession.STATUS_BOOKED, ScheduleSession.STATUS_MAINTENANCE, ScheduleSession.STATUS_NOT_AVAILABLE};
         String newStatus = (String) javax.swing.JOptionPane.showInputDialog(
             null,
@@ -473,7 +470,6 @@ public class ScheduleUI extends javax.swing.JPanel {
             currentStatus
         );
 
-        // 3. If they picked a new status, update the data
         if (newStatus != null && !newStatus.equals(currentStatus)) {
             // Find the schedule index based on facility and date
             int targetIndex = findScheduleIndex(facility, currentDate);
@@ -485,10 +481,8 @@ public class ScheduleUI extends javax.swing.JPanel {
                         newStatus.equals(ScheduleSession.STATUS_MAINTENANCE) || 
                         newStatus.equals(ScheduleSession.STATUS_NOT_AVAILABLE)) {
                         
-                        // Get the actual Facility ID from the Schedule object
                         String facilityId = allSchedule.get(targetIndex).getFacility().getFacilityId();
                         
-                        // Ask BookingManager if someone is using this slot
                         String conflictingBookingId = bookingManager.getActiveBookingIdForSchedule(facilityId, currentDate, timeSlot);
                         
                         if (conflictingBookingId != null) {
@@ -503,7 +497,6 @@ public class ScheduleUI extends javax.swing.JPanel {
                             if (choice == javax.swing.JOptionPane.YES_OPTION) {
                                 bookingManager.cancelBooking(conflictingBookingId);
                                 
-                                // OVERRIDE as in (bookingmanager) changes the schdule to avaialble 
                                 myControl.modifyScheduleStatus(targetIndex, timeIndex, newStatus);
                                 
                                 javax.swing.JOptionPane.showMessageDialog(this, "Success! Booking cancelled and schedule changed to " + newStatus + ".");

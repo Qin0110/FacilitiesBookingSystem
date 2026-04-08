@@ -25,6 +25,37 @@ public class BookingCollection implements Serializable {
             
             if (schedules != null && !schedules.isEmpty()) {
                 System.out.println("Generating 65 default past bookings...");
+                
+                // --- AUGUST 2025 ---
+                addDefaultBooking(schedules, "B070", "25WMR00001", 0, "05-08-2025 09:00 - 10:00", "Completed", "A1001");
+                addDefaultBooking(schedules, "B071", "25WMR00002", 1, "12-08-2025 11:00 - 12:00", "Completed", "A1002");
+                addDefaultBooking(schedules, "B072", "25WMR00003", 2, "18-08-2025 14:00 - 15:00", "Not Attended", null);
+                addDefaultBooking(schedules, "B073", "25WMR00004", 3, "25-08-2025 16:00 - 17:00", "Completed", "A1003");
+
+                // --- SEPTEMBER 2025 ---
+                addDefaultBooking(schedules, "B074", "25WMR00005", 4, "02-09-2025 08:00 - 09:00", "Completed", "A1004");
+                addDefaultBooking(schedules, "B075", "25WMR00006", 5, "09-09-2025 10:00 - 11:00", "Completed", "A1005");
+                addDefaultBooking(schedules, "B076", "25WMR00007", 0, "16-09-2025 13:00 - 14:00", "Not Attended", null);
+                addDefaultBooking(schedules, "B077", "25WMR00008", 1, "23-09-2025 15:00 - 16:00", "Completed", "A1006");
+                addDefaultBooking(schedules, "B078", "25WMR00009", 2, "30-09-2025 17:00 - 18:00", "Completed", "A1007");
+
+                // --- OCTOBER 2025 ---
+                addDefaultBooking(schedules, "B079", "25WMR00010", 3, "07-10-2025 09:00 - 10:00", "Completed", "A1008");
+                addDefaultBooking(schedules, "B080", "25WMR00011", 4, "14-10-2025 12:00 - 13:00", "Completed", "A1009");
+                addDefaultBooking(schedules, "B081", "25WMR00012", 5, "21-10-2025 14:00 - 15:00", "Not Attended", null);
+                addDefaultBooking(schedules, "B082", "25WMR00013", 0, "28-10-2025 16:00 - 17:00", "Completed", "A1001");
+
+                // --- NOVEMBER 2025 ---
+                addDefaultBooking(schedules, "B083", "25WMR00014", 1, "04-11-2025 08:00 - 09:00", "Completed", "A1002");
+                addDefaultBooking(schedules, "B084", "25WMR00015", 2, "11-11-2025 10:00 - 11:00", "Completed", "A1003");
+                addDefaultBooking(schedules, "B085", "25WMR00016", 3, "18-11-2025 13:00 - 14:00", "Not Attended", null);
+                addDefaultBooking(schedules, "B086", "25WMR00017", 4, "25-11-2025 15:00 - 16:00", "Completed", "A1004");
+
+                // --- DECEMBER 2025 ---
+                addDefaultBooking(schedules, "B087", "25WMR00018", 5, "02-12-2025 09:00 - 10:00", "Completed", "A1005");
+                addDefaultBooking(schedules, "B088", "25WMR00019", 0, "09-12-2025 11:00 - 12:00", "Completed", "A1006");
+                addDefaultBooking(schedules, "B089", "25WMR00020", 1, "16-12-2025 14:00 - 15:00", "Not Attended", null);
+                addDefaultBooking(schedules, "B090", "25WMR00021", 2, "23-12-2025 16:00 - 17:00", "Completed", "A1007");
 
                 // --- JANUARY 2026 (20 Records) ---
                 addDefaultBooking(schedules, "B100", "25WMR00001", 0, "05-01-2026 08:00 - 09:00", "Completed", "A1001");

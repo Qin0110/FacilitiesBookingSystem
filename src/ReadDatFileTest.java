@@ -7,11 +7,11 @@ public class ReadDatFileTest {
     public static void main(String[] args) {
         try {
             // 1. Open the file
-            FileInputStream fileIn = new FileInputStream("src/Data/bookings.dat");
+            FileInputStream fileIn = new FileInputStream("src/Data/schedules.dat");
             ObjectInputStream objectIn = new ObjectInputStream(fileIn);
             
             // 2. Read the binary data back into your custom List
-            ListInterface<Booking> recoveredList = (ListInterface<Booking>) objectIn.readObject();
+            ListInterface<Schedule> recoveredList = (ListInterface<Schedule>) objectIn.readObject();
             
             objectIn.close();
             fileIn.close();
