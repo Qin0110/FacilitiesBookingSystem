@@ -177,6 +177,8 @@ public class ScheduleControl implements Serializable{
         boolean indicator = false;
         try {
             indicator = schedule.get(facilityIndex).getSessions().remove(timeIndex);
+            this.sortSchedules();
+            this.sortSessionsByTime();
             scheduleDAO.saveSchedules(this.schedule);
         } catch(Exception e){
             System.out.println("Failed to delete schedule session via index number. Error: " + e);
@@ -190,10 +192,12 @@ public class ScheduleControl implements Serializable{
             for (int i = 0; i < schedule.size(); i++) {
                 if (schedule.get(i).getFacility().equals(facility)) {
                     indicator = schedule.get(i).getSessions().remove(timeIndex);
-                    scheduleDAO.saveSchedules(this.schedule);
                     break;
                 }
             }
+            this.sortSchedules();
+            this.sortSessionsByTime();
+            scheduleDAO.saveSchedules(this.schedule);
         } catch(Exception e){
             System.out.println("Failed to delete schedule session via facility name. Error: " + e);
         }
@@ -204,6 +208,8 @@ public class ScheduleControl implements Serializable{
     public void modifyScheduleStatus(int index, int time_index, String status){
         try {
             schedule.get(index).getSessions().get(time_index).setAvailability(status);
+            this.sortSchedules();
+            this.sortSessionsByTime();
             scheduleDAO.saveSchedules(this.schedule);
         } catch (Exception e){
             System.out.println("Failed to modify. Error: " + e);
@@ -234,6 +240,68 @@ public class ScheduleControl implements Serializable{
         return filteredList;
     }
     
+    
+    public void sortSchedules() {
+        if (schedule == null || schedule.size() <= 1) {
+            return;
+        }
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
+        this.schedule.sort(new adt.Comparator<Schedule>() {
+            @Override
+            public int compare(Schedule s1, Schedule s2) {
+                LocalDate date1 = LocalDate.parse(s1.getDate(), formatter);
+                LocalDate date2 = LocalDate.parse(s2.getDate(), formatter);
+                
+                int dateComparison = date1.compareTo(date2);
+                
+                if (dateComparison != 0) {
+                    return dateComparison;
+                } 
+             
+                else {
+                    return s1.getFacility().getName().compareToIgnoreCase(s2.getFacility().getName());
+                }
+            }
+        });
+    }
+    
+    public void sortByFacilityAndStatus(){
+        this.sortSchedules();
+        for (int i = 0; i < this.schedule.size(); i++) {
+            this.schedule.get(i).getSessions().sort(new Comparator<ScheduleSession>(){
+                @Override
+                public int compare(ScheduleSession session1, ScheduleSession session2){
+                    int statusCompare = session1.getAvailability().compareToIgnoreCase(session2.getAvailability());
+                    if (statusCompare != 0) {
+                        return statusCompare;
+                    }
+                    return session1.getSession().compareToIgnoreCase(session2.getSession());
+                }
+            });
+        }
+    }
+    
+    public void sortSessionsByTime() {
+        for (int i = 0; i < this.schedule.size(); i++) {
+            this.schedule.get(i).getSessions().sort(new Comparator<ScheduleSession>(){
+                @Override
+                public int compare(ScheduleSession s1, ScheduleSession s2){
+                    return s1.getSession().compareToIgnoreCase(s2.getSession());
+                }
+            });
+        }
+    }
+    
+    public ListInterface<Schedule> search(String facilityName, String date){
+        ListInterface<Schedule> retrievedData = new SingleLinkedList<>();
+        for (int i = 0; i < this.schedule.size(); i++) {
+            if (this.schedule.get(i).getFacility().getName().toLowerCase().contains(facilityName.toLowerCase()) && 
+                    this.schedule.get(i).getDate().equals(date)) {
+                retrievedData.add(this.schedule.get(i));
+            }
+        }
+        return retrievedData;
+    }
 }
