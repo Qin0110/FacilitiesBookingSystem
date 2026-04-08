@@ -360,6 +360,8 @@ public class BookingManagement {
         int pendingCount = 0, confirmedCount = 0, inProgressCount = 0;
         int completedCount = 0, cancelledCount = 0, notAttendedCount = 0;
         
+        int morningCount = 0, afternoonCount = 0, eveningCount = 0;
+        
         adt.ListInterface<String> facilityNames = new adt.SingleLinkedList<>();
         adt.ListInterface<Integer> facilityCounts = new adt.SingleLinkedList<>();
         
@@ -370,8 +372,17 @@ public class BookingManagement {
                 String dateString = b.getScheduleSession().split(" ")[0]; 
                 java.time.LocalDate bookingDate = java.time.LocalDate.parse(dateString, formatter);
                 
+                // Time Filter Logic
                 if (startDate != null && bookingDate.isBefore(startDate)) continue; 
                 if (endDate != null && bookingDate.isAfter(endDate)) continue; 
+                
+                // --- PEAK USAGE MATH ---
+                String startTimeStr = b.getScheduleSession().split(" ")[1]; // Gets "08:00"
+                int startHour = Integer.parseInt(startTimeStr.split(":")[0]); // Extracts the '8'
+                
+                if (startHour >= 8 && startHour < 12) morningCount++;
+                else if (startHour >= 12 && startHour < 17) afternoonCount++;
+                else if (startHour >= 17) eveningCount++;
                 
             } catch (Exception e) {
                 continue; 
@@ -416,6 +427,10 @@ public class BookingManagement {
             facilityCounts.set(j + 1, currentCount);
             facilityNames.set(j + 1, currentName);
         }
+        
+        double compRate = totalBookings == 0 ? 0 : (completedCount * 100.0) / totalBookings;
+        double cancRate = totalBookings == 0 ? 0 : (cancelledCount * 100.0) / totalBookings;
+        double noShowRate = totalBookings == 0 ? 0 : (notAttendedCount * 100.0) / totalBookings;
 
         StringBuilder report = new StringBuilder();
         report.append("=====================================================\n");
@@ -424,23 +439,34 @@ public class BookingManagement {
         report.append(" Timeframe: ").append(timeframeLabel).append("\n\n");
         
         report.append(String.format(" Total Bookings   : %d\n\n", totalBookings));
-        report.append(" --- BOOKING STATUS BREAKDOWN ---\n");
-        report.append(String.format(" Completed        : %d\n", completedCount));
-        report.append(String.format(" Cancelled        : %d\n", cancelledCount));
-        report.append(String.format(" Not Attended     : %d\n", notAttendedCount));
-        report.append(String.format(" Confirmed        : %d\n", confirmedCount));
-        report.append(String.format(" Pending          : %d\n", pendingCount));
-        report.append(String.format(" In Progress      : %d\n\n", inProgressCount));
         
-        report.append(" --- FACILITY POPULARITY ---\n");
+        report.append(" -------------- SYSTEM HEALTH METRICS ---------------\n");
+        report.append(String.format(" Completion Rate  : %.1f%% (%d bookings)\n", compRate, completedCount));
+        report.append(String.format(" Cancellation Rate: %.1f%% (%d bookings)\n", cancRate, cancelledCount));
+        report.append(String.format(" No-Show Rate     : %.1f%% (%d bookings)\n\n", noShowRate, notAttendedCount));
+
+        report.append(" ----------------- PEAK USAGE TIMES -----------------\n");
+        report.append(String.format(" Morning   (8am - 12pm) : %d bookings\n", morningCount));
+        report.append(String.format(" Afternoon (12pm - 5pm) : %d bookings\n", afternoonCount));
+        report.append(String.format(" Evening   (5pm - 10pm) : %d bookings\n\n", eveningCount));
+        
+        report.append(" --------------- FACILITY POPULARITY ----------------\n");
         if (facilityNames.isEmpty()) report.append(" No facilities booked in this period.\n");
         else {
             for (int i = 0; i < facilityNames.size(); i++) {
                 report.append(String.format(" %-25s : %d bookings\n", facilityNames.get(i), facilityCounts.get(i)));
             }
         }
+        
+        report.append("\n ------------- BOOKING STATUS BREAKDOWN -------------\n");
+        report.append(String.format(" Completed        : %d\n", completedCount));
+        report.append(String.format(" Cancelled        : %d\n", cancelledCount));
+        report.append(String.format(" Not Attended     : %d\n", notAttendedCount));
+        report.append(String.format(" Confirmed        : %d\n", confirmedCount));
+        report.append(String.format(" Pending          : %d\n", pendingCount));
+        report.append(String.format(" In Progress      : %d\n\n", inProgressCount));
         report.append("\n=====================================================\n");
+        report.append("                    End of Report\n");
         return report.toString();
     }
-    
 }
