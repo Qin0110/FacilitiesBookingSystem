@@ -12,7 +12,6 @@ public class Booking implements Serializable {
     
     private String bookingId;
     private String studentId;    
-//    private String scheduleId;
     private String approvedBy;   
     private Schedule schedule;
     
@@ -82,7 +81,18 @@ public class Booking implements Serializable {
     public void setApprovedBy(String adminId) { 
         this.approvedBy = adminId; 
     }
-
+    
+    
+    public void setScheduleSession(String sessionStr) {
+        try {
+            String[] parts = sessionStr.split(" ");
+            this.bookingDate = parts[0]; 
+            this.bookingSession = parts[1] + " " + parts[2] + " " + parts[3];
+        } catch (Exception e) {
+            System.out.println("Error parsing session string in setter.");
+        }
+    }
+    
 
     @Override
     public boolean equals(Object obj) {
