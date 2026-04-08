@@ -304,4 +304,59 @@ public class ScheduleControl implements Serializable{
         }
         return retrievedData;
     }
+    
+    /**
+     * Generates a monthly report of facility usage, grouping similar facilities 
+     * (e.g., "Swimming Pool 1" and "Swimming Pool 2" become "Swimming Pool").
+     * @param targetYear The year to report on
+     * @return A formatted String containing the usage report
+     */
+    public String annualReport(int targetYear) {
+        StringBuilder report = new StringBuilder();
+        ListInterface<String> facilityCategory = new SingleLinkedList<>();
+        ListInterface<String> monthsContains = new SingleLinkedList<>();
+        
+        for (int i = 0; i < this.schedule.size(); i++) {
+            boolean facilityExist = false;
+            boolean monthExist = false;
+            String categoryName = this.schedule.get(i).getFacility().getName().replaceAll("\\s*\\d+$", "").trim();
+            String currentMonth = LocalDate.parse(this.schedule.get(i).getDate(), Schedule.DATE_FORMATTER).getMonth().toString();
+            if (facilityCategory == null) {
+                facilityCategory.add(categoryName);
+            } else {
+                for (int j = 0; j < facilityCategory.size(); j++) {
+                    if (categoryName.equals(facilityCategory.get(j))) {
+                        facilityExist = true;
+                        break;
+                    }
+                }
+            }
+            if (monthsContains == null) {
+                monthsContains.add(currentMonth);
+            } else {
+                for (int j = 0; j < monthsContains.size(); j++) {
+                    if (currentMonth.equals(monthsContains.get(j))) {
+                        monthExist = true;
+                        break;
+                    }
+                }
+            }
+            if (!monthExist) {
+                monthsContains.add(currentMonth);
+            }
+            if (!facilityExist) {
+                facilityCategory.add(categoryName);
+            }
+        }
+        
+        report.append("\nFacility found: \n");
+        for (int i = 0; i < facilityCategory.size(); i++) {
+            report.append(facilityCategory.get(i) + "\n");
+        }
+        report.append("\nMonths found: \n");
+        for (int i = 0; i < monthsContains.size(); i++) {
+            report.append(monthsContains.get(i) + "\n");
+        }
+        return report.toString();
+    }
 }
