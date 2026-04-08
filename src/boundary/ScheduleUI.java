@@ -27,21 +27,20 @@ public class ScheduleUI extends javax.swing.JPanel {
     
     public ScheduleUI(ScheduleControl sharedControl,control.BookingManagement bookingManager) {
         initComponents();
-        this.myControl = sharedControl;
-        this.allSchedule = myControl.getAllSchedule();
         
-        this.bookingManager = bookingManager;
-        
-        sortingComboBox.removeAllItems();
-        sortingComboBox.addItem("Default (Chronological)");
-        sortingComboBox.addItem("By Facility & Status");
-        
+        // Setup table styling
         scheduleTable.setShowGrid(true);
         scheduleTable.setGridColor(Color.LIGHT_GRAY);
         GroupBorderRenderer renderer = new GroupBorderRenderer(2, true);       
         for (int i = 0; i < scheduleTable.getColumnCount(); i++) {
             scheduleTable.getColumnModel().getColumn(i).setCellRenderer(renderer);
-        }        
+        }
+        
+        // Initialize control and fetch data
+        this.myControl = sharedControl;
+        this.allSchedule = myControl.getAllSchedule();
+        
+        this.bookingManager = bookingManager;
         
         // 2. Populate the JComboBox with unique dates
         dateCB.removeAllItems(); // Remove NetBeans default "Item 1", "Item 2"
@@ -69,7 +68,6 @@ public class ScheduleUI extends javax.swing.JPanel {
     }
     
     private void updateTableForDate(String targetDate) {
-        this.allSchedule = myControl.getAllSchedule();
         DefaultTableModel model = (DefaultTableModel) scheduleTable.getModel();
         model.setRowCount(0); // Clear the current rows
         
@@ -82,28 +80,6 @@ public class ScheduleUI extends javax.swing.JPanel {
                 ListInterface<ScheduleSession> sessions = currentSchedule.getSessions();
                 
                 // Note: I changed this to j = 0 so it doesn't skip your 08:00 session!
-                for (int j = 0; j < sessions.size(); j++) { 
-                    ScheduleSession currentSession = sessions.get(j);
-                    
-                    model.addRow(new Object[]{facilityName, currentSession.getSession(), currentSession.getAvailability()});
-                    facilityName = ""; // Clear so it only shows on the first row of the group
-                }
-            }
-        }
-    }
-    
-    private void displaySearchResults(ListInterface<Schedule> searchResults, String targetDate) {
-        DefaultTableModel model = (DefaultTableModel) scheduleTable.getModel();
-        model.setRowCount(0); // Clear the current rows
-        
-        for (int i = 0; i < searchResults.size(); i++) {
-            Schedule currentSchedule = searchResults.get(i);
-            
-            // Double check it matches the date just to be perfectly safe
-            if (currentSchedule.getDate().equals(targetDate)) {
-                String facilityName = currentSchedule.getFacility().getName();
-                ListInterface<ScheduleSession> sessions = currentSchedule.getSessions();
-                
                 for (int j = 0; j < sessions.size(); j++) { 
                     ScheduleSession currentSession = sessions.get(j);
                     
@@ -157,9 +133,6 @@ public class ScheduleUI extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         scheduleTable = new javax.swing.JTable();
         dateCB = new javax.swing.JComboBox<>();
-        sortingComboBox = new javax.swing.JComboBox<>();
-        searchTextField = new javax.swing.JTextField();
-        searchButton = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         deleteFacilitySchedule = new javax.swing.JButton();
         deleteScheduleSession = new javax.swing.JButton();
@@ -193,53 +166,23 @@ public class ScheduleUI extends javax.swing.JPanel {
             }
         });
 
-        sortingComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        sortingComboBox.setSelectedIndex(-1);
-        sortingComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                sortingComboBoxActionPerformed(evt);
-            }
-        });
-
-        searchTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                searchTextFieldActionPerformed(evt);
-            }
-        });
-
-        searchButton.setText("Search");
-        searchButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                searchButtonActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap(15, Short.MAX_VALUE)
+                .addComponent(dateCB, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(407, 407, 407))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(dateCB, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(30, 30, 30)
-                        .addComponent(searchButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(sortingComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addComponent(jScrollPane1)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(dateCB, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
-                    .addComponent(sortingComboBox)
-                    .addComponent(searchButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(searchTextField))
+                .addComponent(dateCB, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE)
                 .addContainerGap())
@@ -311,7 +254,7 @@ public class ScheduleUI extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(12, Short.MAX_VALUE)
+                .addContainerGap(11, Short.MAX_VALUE)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
@@ -479,6 +422,7 @@ public class ScheduleUI extends javax.swing.JPanel {
             int targetIndex = findScheduleIndex(facility, currentDate);
 
             if (targetIndex != -1) {
+                // Since your list is 0-indexed, we need to find the specific time slot index
                 int timeIndex = findTimeIndex(targetIndex, timeSlot);
                 if (timeIndex != -1) {
                     if (newStatus.equals(ScheduleSession.STATUS_AVAILABLE) || 
@@ -522,55 +466,6 @@ public class ScheduleUI extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_modifyScheduleSessionActionPerformed
 
-    private void sortingComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortingComboBoxActionPerformed
-        if (myControl == null) return; 
-        
-        int selectedIndex = sortingComboBox.getSelectedIndex();
-        if (selectedIndex == -1) return;
-        
-        switch (selectedIndex) {
-            case 0:
-                myControl.sortSchedules(); 
-                myControl.sortSessionsByTime();
-                break;
-            case 1:
-                myControl.sortByFacilityAndStatus();
-                break;
-        }
-
-        String currentDate = (String) dateCB.getSelectedItem();
-        if (currentDate != null) {
-            updateTableForDate(currentDate);
-        }
-    }//GEN-LAST:event_sortingComboBoxActionPerformed
-
-    private void searchTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_searchTextFieldActionPerformed
-
-    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
-        String query = searchTextField.getText().trim();
-        String currentDate = (String) dateCB.getSelectedItem();
-        
-        if (query.isEmpty()) {
-            if (currentDate != null) updateTableForDate(currentDate);
-            return;
-        }
-        
-        if (currentDate != null) {
-            ListInterface<Schedule> results = myControl.search(query, currentDate);
-            
-            if (results.isEmpty()) {
-                javax.swing.JOptionPane.showMessageDialog(this, 
-                    "No facilities found matching '" + query + "'.\nMake sure the spelling is correct!", 
-                    "Not Found", 
-                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                displaySearchResults(results, currentDate);
-            }
-        }
-    }//GEN-LAST:event_searchButtonActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> dateCB;
@@ -582,9 +477,6 @@ public class ScheduleUI extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton modifyScheduleSession;
     private javax.swing.JTable scheduleTable;
-    private javax.swing.JButton searchButton;
-    private javax.swing.JTextField searchTextField;
-    private javax.swing.JComboBox<String> sortingComboBox;
     // End of variables declaration//GEN-END:variables
 }
 
