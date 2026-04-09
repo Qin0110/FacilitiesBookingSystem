@@ -354,7 +354,7 @@ public class AdminBookingUI extends javax.swing.JPanel {
         java.time.LocalDate now = java.time.LocalDate.now();
         java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("MMMM yyyy");
         
-        int monthsToShow = 4; 
+        int monthsToShow = 6; 
         
         String[] options = new String[monthsToShow + 2];
         options[0] = "Weekly Report (Last 7 Days)";
