@@ -15,6 +15,8 @@ public class FacilityDialog extends javax.swing.JDialog {
      public FacilityDialog(java.awt.Frame parent, boolean modal, FacilityManagement facilityManager) {
         super(parent, modal);
         initComponents();
+        this.setResizable(false);
+
         this.facilityManager = facilityManager;
         updateMaxCapacity();
         saveBT.setText("Save");

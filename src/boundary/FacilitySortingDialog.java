@@ -14,6 +14,10 @@ public class FacilitySortingDialog extends javax.swing.JDialog {
     public FacilitySortingDialog(java.awt.Frame parent, boolean modal, FacilityManagement facilityManager) {
         super(parent, modal);
         initComponents();
+        setTitle("Sorting By");
+        this.setResizable(false);
+
+
         
         this.facilityManager = facilityManager;
         

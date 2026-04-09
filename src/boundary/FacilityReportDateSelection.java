@@ -7,7 +7,7 @@ public class FacilityReportDateSelection extends javax.swing.JDialog {
     private String selectedMonth = "None";
     private String selectedYear = "None";
     private boolean confirmed = false;
-
+    private final String[] monthNames = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
 
     public FacilityReportDateSelection(java.awt.Frame parent, boolean modal, adt.ListInterface<String> availableYears) {
         super(parent, modal);
@@ -22,19 +22,15 @@ public class FacilityReportDateSelection extends javax.swing.JDialog {
 
         monthCB.removeAllItems();
         monthCB.addItem("None");
-        for (int i = 1; i <= 12; i++) {
-            monthCB.addItem(String.format("%02d", i));
+        for (String m : monthNames) {
+            monthCB.addItem(m);
         }
-
-        dayCB.removeAllItems();
-        dayCB.addItem("None");
-        for (int i = 1; i <= 31; i++) {
-            dayCB.addItem(String.format("%02d", i));
-        }
+        updateDays();
 
         this.setTitle("Select Report Timeframe");
         this.setLocationRelativeTo(parent);
     }
+    
 
     public boolean isConfirmed() { 
         return confirmed; 
@@ -50,6 +46,46 @@ public class FacilityReportDateSelection extends javax.swing.JDialog {
     
     public String getSelectedYear() {
         return selectedYear; 
+    }
+    
+    private void updateDays() {
+        String selectedM = (String) monthCB.getSelectedItem();
+        String selectedY = (String) yearCB.getSelectedItem();
+        
+        String currentDay = (String) dayCB.getSelectedItem();
+        
+        dayCB.removeAllItems();
+        dayCB.addItem("None");
+        
+        int maxDays = 31; 
+        
+        if (selectedM != null && !selectedM.equals("None")) {
+            if (selectedM.equals("FEB")) {
+                maxDays = 28;
+                if (selectedY != null && !selectedY.equals("None")) {
+                 
+                    int y = Integer.parseInt(selectedY);
+                    if ((y % 4 == 0 && y % 100 != 0) || (y % 400 == 0)) {
+                        maxDays = 29;
+                    }
+                }
+            } else if (selectedM.equals("APR") || selectedM.equals("JUN") || 
+                       selectedM.equals("SEP") || selectedM.equals("NOV")) {
+                maxDays = 30;
+            }
+        }
+        
+        for (int i = 1; i <= maxDays; i++) {
+            dayCB.addItem(String.format("%02d", i));
+        }
+        
+        if (currentDay != null && !currentDay.equals("None")) {
+        
+            int d = Integer.parseInt(currentDay);
+            if (d <= maxDays) {
+                dayCB.setSelectedItem(currentDay);
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -74,7 +110,7 @@ public class FacilityReportDateSelection extends javax.swing.JDialog {
         monthLabel.setText("Month:");
 
         dayLabel.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        dayLabel.setText("Day");
+        dayLabel.setText("Day:");
 
         yearLabel.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         yearLabel.setText("Year:");
@@ -103,6 +139,18 @@ public class FacilityReportDateSelection extends javax.swing.JDialog {
                 .addComponent(yearLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        monthCB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                monthCBActionPerformed(evt);
+            }
+        });
+
+        yearCB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                yearCBActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -156,7 +204,7 @@ public class FacilityReportDateSelection extends javax.swing.JDialog {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(cancelBT2, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(confirmBT2, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(confirmBT2, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -201,11 +249,31 @@ public class FacilityReportDateSelection extends javax.swing.JDialog {
 
     private void confirmBT2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmBT2ActionPerformed
         this.selectedDay = dayCB.getSelectedItem().toString();
-        this.selectedMonth = monthCB.getSelectedItem().toString();
         this.selectedYear = yearCB.getSelectedItem().toString();
+        
+        String displayMonth = monthCB.getSelectedItem().toString();
+        if (displayMonth.equals("None")) {
+            this.selectedMonth = "None";
+        } else {
+            for (int i = 0; i < monthNames.length; i++) {
+                if (monthNames[i].equals(displayMonth)) {
+                    this.selectedMonth = String.format("%02d", (i + 1)); // Turns "MAR" back to "03"
+                    break;
+                }
+            }
+        }
+       
         this.confirmed = true; 
-        this.dispose();       
+        this.dispose();   
     }//GEN-LAST:event_confirmBT2ActionPerformed
+
+    private void monthCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_monthCBActionPerformed
+        updateDays();
+    }//GEN-LAST:event_monthCBActionPerformed
+
+    private void yearCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_yearCBActionPerformed
+        updateDays();
+    }//GEN-LAST:event_yearCBActionPerformed
 
 
    
