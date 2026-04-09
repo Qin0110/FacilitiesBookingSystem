@@ -24,9 +24,8 @@ public class MainMenu extends javax.swing.JFrame {
 
     public MainMenu(AdminManagement adminManager, StudentManagement studentManager, BookingManagement bookingManager, FacilityManagement facilityManager, ScheduleControl scheduleManager) {
         initComponents();
-        setSize(1600, 800); 
-
-        //setResizable(false);
+        setSize(1173, 811);
+        setResizable(false);
   
         setLocationRelativeTo(null);
         
