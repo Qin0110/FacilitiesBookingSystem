@@ -1,0 +1,40 @@
+=====================================================
+               BOOKING SUMMARY REPORT
+=====================================================
+ Timeframe: All-Time Report
+
+ Total Bookings   : 89
+
+ -------------- SYSTEM HEALTH METRICS ---------------
+ Completion Rate  : 87.6% (78 bookings)
+ Cancellation Rate: 2.2% (2 bookings)
+ No-Show Rate     : 5.6% (5 bookings)
+ Other (Active)   : 4.5% (4 bookings)
+
+ ----------------- PEAK USAGE TIMES -----------------
+ Morning   (8am - 12pm) : 37 bookings
+ Afternoon (12pm - 5pm) : 51 bookings
+ Evening   (5pm - 10pm) : 1 bookings
+
+ --------------- FACILITY POPULARITY ----------------
+ Discussion Room with PC   : 15 bookings
+ Gymnasium 3               : 15 bookings
+ Discussion Room           : 15 bookings
+ Discussion Room (1PC)     : 14 bookings
+ Individual Study Room Q19 : 14 bookings
+ S.P. Foyer 6              : 13 bookings
+ Gymnasium 1               : 1 bookings
+ Arena Pickleball Court 1  : 1 bookings
+ Discussion Room (2PC)     : 1 bookings
+
+ ------------- BOOKING STATUS BREAKDOWN -------------
+ Completed        : 78
+ Cancelled        : 2
+ Not Attended     : 5
+ Confirmed        : 4
+ Pending          : 0
+ In Progress      : 0
+
+
+=====================================================
+                    End of Report

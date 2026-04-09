@@ -437,6 +437,8 @@ public class BookingManagement {
         
         double compRate = totalBookings == 0 ? 0 : (completedCount * 100.0) / totalBookings;
         double cancRate = totalBookings == 0 ? 0 : (cancelledCount * 100.0) / totalBookings;
+        int otherCount = pendingCount + confirmedCount + inProgressCount;
+        double otherRate = totalBookings == 0 ? 0 : (otherCount * 100.0) / totalBookings;
         double noShowRate = totalBookings == 0 ? 0 : (notAttendedCount * 100.0) / totalBookings;
 
         StringBuilder report = new StringBuilder();
@@ -450,7 +452,8 @@ public class BookingManagement {
         report.append(" -------------- SYSTEM HEALTH METRICS ---------------\n");
         report.append(String.format(" Completion Rate  : %.1f%% (%d bookings)\n", compRate, completedCount));
         report.append(String.format(" Cancellation Rate: %.1f%% (%d bookings)\n", cancRate, cancelledCount));
-        report.append(String.format(" No-Show Rate     : %.1f%% (%d bookings)\n\n", noShowRate, notAttendedCount));
+        report.append(String.format(" No-Show Rate     : %.1f%% (%d bookings)\n", noShowRate, notAttendedCount));
+        report.append(String.format(" Other (Active)   : %.1f%% (%d bookings)\n\n", otherRate, otherCount));
 
         report.append(" ----------------- PEAK USAGE TIMES -----------------\n");
         report.append(String.format(" Morning   (8am - 12pm) : %d bookings\n", morningCount));
