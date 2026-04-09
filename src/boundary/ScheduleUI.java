@@ -167,6 +167,7 @@ public class ScheduleUI extends javax.swing.JPanel {
         deleteScheduleSession = new javax.swing.JButton();
         modifyScheduleSession = new javax.swing.JButton();
         annualReport = new javax.swing.JButton();
+        peakHourAnalysis = new javax.swing.JButton();
 
         scheduleTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -276,6 +277,13 @@ public class ScheduleUI extends javax.swing.JPanel {
             }
         });
 
+        peakHourAnalysis.setText("Peak Hour Analysis");
+        peakHourAnalysis.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                peakHourAnalysisActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -284,6 +292,7 @@ public class ScheduleUI extends javax.swing.JPanel {
             .addComponent(deleteScheduleSession, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(modifyScheduleSession, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
             .addComponent(annualReport, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
+            .addComponent(peakHourAnalysis, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -296,6 +305,8 @@ public class ScheduleUI extends javax.swing.JPanel {
                 .addComponent(modifyScheduleSession, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(annualReport, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(peakHourAnalysis, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -578,11 +589,19 @@ public class ScheduleUI extends javax.swing.JPanel {
     private void annualReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_annualReportActionPerformed
         javax.swing.JFrame reportFrame = new javax.swing.JFrame("Annual Facility Usage Report");
         reportFrame.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
-        reportFrame.add(new ScheduleReport()); 
+        reportFrame.add(new ScheduleReport(this.myControl)); 
         reportFrame.pack();
         reportFrame.setLocationRelativeTo(null); 
         reportFrame.setVisible(true);
     }//GEN-LAST:event_annualReportActionPerformed
+
+    private void peakHourAnalysisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_peakHourAnalysisActionPerformed
+        SchedulePeakHourAnalysis peakWindow = new SchedulePeakHourAnalysis(this.myControl);
+        peakWindow.setTitle("Peak Hours Analysis");
+        peakWindow.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
+        peakWindow.setLocationRelativeTo(null); 
+        peakWindow.setVisible(true);
+    }//GEN-LAST:event_peakHourAnalysisActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -595,6 +614,7 @@ public class ScheduleUI extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton modifyScheduleSession;
+    private javax.swing.JButton peakHourAnalysis;
     private javax.swing.JTable scheduleTable;
     private javax.swing.JButton searchButton;
     private javax.swing.JTextField searchTextField;

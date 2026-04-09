@@ -179,6 +179,7 @@
                   <Component id="deleteScheduleSession" alignment="1" max="32767" attributes="0"/>
                   <Component id="modifyScheduleSession" alignment="1" pref="185" max="32767" attributes="0"/>
                   <Component id="annualReport" alignment="1" pref="185" max="32767" attributes="0"/>
+                  <Component id="peakHourAnalysis" alignment="1" pref="185" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
@@ -192,6 +193,8 @@
                       <Component id="modifyScheduleSession" min="-2" pref="45" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="annualReport" min="-2" pref="45" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="peakHourAnalysis" min="-2" pref="45" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
@@ -228,6 +231,14 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="annualReportActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="peakHourAnalysis">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Peak Hour Analysis"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="peakHourAnalysisActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>

@@ -5,17 +5,18 @@ import java.io.PrintStream;
 import control.ScheduleControl;
 
 public class ScheduleReport extends javax.swing.JPanel {
-    private ScheduleControl scheduleControl = new ScheduleControl();
-    public ScheduleReport() {
-            initComponents();
-            jComboBox1.removeAllItems();
-            jComboBox1.addItem("2025");
-            jComboBox1.addItem("2026");
-            
-            if (jComboBox1.getItemCount() > 0) {
-                jComboBox1.setSelectedIndex(0); 
-            }
+    private ScheduleControl scheduleControl;
+    public ScheduleReport(ScheduleControl scheduleControl) {
+        this.scheduleControl = scheduleControl;
+        initComponents();
+        jComboBox1.removeAllItems();
+        jComboBox1.addItem("2025");
+        jComboBox1.addItem("2026");
+
+        if (jComboBox1.getItemCount() > 0) {
+            jComboBox1.setSelectedIndex(0); 
         }
+    }
     
 
     /**
@@ -49,12 +50,11 @@ public class ScheduleReport extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 894, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 963, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

@@ -407,4 +407,133 @@ public class ScheduleControl implements Serializable{
         }
         return report.toString();
     }
+    
+    /**
+     * Generates a detailed Peak Hours report for a specific month and year,
+     * broken down by individual facility categories.
+     * @param targetYear The year to analyze
+     * @param targetMonth The month to analyze (1-12)
+     * @return Formatted String Report with a visual bar chart per facility
+     */
+    public String monthlyFacilityPeakReport(int targetYear, int targetMonth) {
+        StringBuilder report = new StringBuilder();
+        java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+        String[] categories = new String[100];
+        int categoryCount = 0;
+
+        String[] timeSlots = new String[50];
+        int slotCount = 0;
+
+        for (int i = 0; i < this.schedule.size(); i++) {
+            entity.Schedule s = this.schedule.get(i);
+            java.time.LocalDate date = java.time.LocalDate.parse(s.getDate(), formatter);
+
+            if (date.getYear() != targetYear || date.getMonthValue() != targetMonth) continue;
+
+            String categoryName = s.getFacility().getName().replaceAll("\\s*\\d+$", "").trim();
+
+            boolean catFound = false;
+            for (int c = 0; c < categoryCount; c++) {
+                if (categories[c].equals(categoryName)) { catFound = true; break; }
+            }
+            if (!catFound) categories[categoryCount++] = categoryName;
+
+            adt.ListInterface<entity.ScheduleSession> sessions = s.getSessions();
+            for (int k = 0; k < sessions.size(); k++) {
+                if (sessions.get(k).getAvailability().equals(entity.ScheduleSession.STATUS_BOOKED)) {
+                    String time = sessions.get(k).getSession();
+                    boolean timeFound = false;
+                    for (int t = 0; t < slotCount; t++) {
+                        if (timeSlots[t].equals(time)) { timeFound = true; break; }
+                    }
+                    if (!timeFound) timeSlots[slotCount++] = time;
+                }
+            }
+        }
+
+        if (categoryCount == 0 || slotCount == 0) {
+            return "No booking data found for " + targetMonth + "/" + targetYear + ".";
+        }
+
+        for (int i = 0; i < slotCount - 1; i++) {
+            for (int j = 0; j < slotCount - i - 1; j++) {
+                if (timeSlots[j].compareTo(timeSlots[j + 1]) > 0) {
+                    String temp = timeSlots[j];
+                    timeSlots[j] = timeSlots[j + 1];
+                    timeSlots[j + 1] = temp;
+                }
+            }
+        }
+
+        int[][] counts = new int[categoryCount][slotCount];
+        
+        for (int i = 0; i < this.schedule.size(); i++) {
+            entity.Schedule s = this.schedule.get(i);
+            java.time.LocalDate date = java.time.LocalDate.parse(s.getDate(), formatter);
+
+            if (date.getYear() != targetYear || date.getMonthValue() != targetMonth) continue;
+
+            String categoryName = s.getFacility().getName().replaceAll("\\s*\\d+$", "").trim();
+
+            int cIndex = -1;
+            for (int c = 0; c < categoryCount; c++) {
+                if (categories[c].equals(categoryName)) { cIndex = c; break; }
+            }
+
+            adt.ListInterface<entity.ScheduleSession> sessions = s.getSessions();
+            for (int k = 0; k < sessions.size(); k++) {
+                if (sessions.get(k).getAvailability().equals(entity.ScheduleSession.STATUS_BOOKED)) {
+                    String time = sessions.get(k).getSession();
+
+                    int tIndex = -1;
+                    for (int t = 0; t < slotCount; t++) {
+                        if (timeSlots[t].equals(time)) { tIndex = t; break; }
+                    }
+                    
+                    if (cIndex != -1 && tIndex != -1) counts[cIndex][tIndex]++;
+                }
+            }
+        }
+        String monthName = java.time.Month.of(targetMonth).getDisplayName(java.time.format.TextStyle.FULL, java.util.Locale.ENGLISH);
+        
+        report.append("=========================================================================\n");
+        report.append(String.format("          FACILITY PEAK HOURS REPORT: %s %d\n", monthName.toUpperCase(), targetYear));
+        report.append("=========================================================================\n\n");
+
+        for (int c = 0; c < categoryCount; c++) {
+            // First, scan this category to find its total bookings and its absolute highest peak
+            int totalCatBookings = 0;
+            int maxPeakForFacility = 0;
+            for (int t = 0; t < slotCount; t++) {
+                totalCatBookings += counts[c][t];
+                if (counts[c][t] > maxPeakForFacility) {
+                    maxPeakForFacility = counts[c][t];
+                }
+            }
+
+            if (totalCatBookings > 0) {
+                report.append(String.format("--- %s (Total Bookings: %d) ---\n", categories[c].toUpperCase(), totalCatBookings));
+                report.append(String.format("%-15s | %-8s | %s\n", "Time Slot", "Bookings", "Visual Distribution"));
+                report.append("-------------------------------------------------------------------------\n");
+
+                for (int t = 0; t < slotCount; t++) {
+                    int count = counts[c][t];
+                    if (count > 0) { 
+                        StringBuilder bar = new StringBuilder();
+                        for (int b = 0; b < count; b++) {
+                            bar.append("■");
+                        }
+                        
+                        String peakLabel = (count == maxPeakForFacility) ? "  <-- [PEAK HOUR]" : "";
+                        report.append(String.format("%-15s | %-8d | %s%s\n", timeSlots[t], count, bar.toString(), peakLabel));
+                    }
+                }
+                report.append("\n"); 
+            }
+        }
+        report.append("=========================================================================\n");
+        
+        return report.toString();
+    }
 }
