@@ -25,10 +25,6 @@ public class BookingManagement {
         this.adminManager = adminManager;
     }
 
-    /**
-     * Replaces the need for a single Schedule ID.
-     * <p>Returns an array containing [scheduleIndex, sessionIndex]. Returns null if not found.
-     */
     private int[] findScheduleIndices(String facilityId, String date, String timeSession) {
         ListInterface<Schedule> allSchedules = scheduleManager.getAllSchedule(); 
         
@@ -45,7 +41,6 @@ public class BookingManagement {
         return null;
     }
 
-    // ------------------------------------------------------------------
 
     public String createBooking(String studentId, String facilityId, String date, String timeSession) {
         Student student = studentManager.getStudentById(studentId);
@@ -94,12 +89,10 @@ public class BookingManagement {
             try {
                 String facilityId = targetBooking.getSchedule().getFacility().getFacilityId();
 
-                // Extract the date and time from the session string 
                 String[] parts = targetBooking.getScheduleSession().split(" ");
                 String date = parts[0];
-                String timeSession = parts[1] + " " + parts[2] + " " + parts[3]; // Reconstructs "10:00 - 12:00"
+                    String timeSession = parts[1] + " " + parts[2] + " " + parts[3]; 
 
-                // Find the exact schedule slot and changess it back to Available
                 int[] indices = findScheduleIndices(facilityId, date, timeSession);
                 if (indices != null) {
                     scheduleManager.modifyScheduleStatus(indices[0], indices[1], "Available");
@@ -129,12 +122,10 @@ public class BookingManagement {
         return false; 
     }
 
-    // For admin
     public boolean removeBooking(String bookingId) {
         return bookingCollection.remove(bookingId);
     }
     
-    // Updated to remove scheduleId requirement since bookingId should be unique
     public Booking getBookingById(String bookingId){
         return bookingCollection.getBookingById(bookingId);
     }
