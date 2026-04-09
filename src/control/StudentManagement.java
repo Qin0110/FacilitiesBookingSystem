@@ -346,8 +346,8 @@ public class StudentManagement {
     public String generateCrossProgrammeReport(LocalDate startDate, LocalDate endDate) {
         adt.ListInterface<entity.Booking> allBookings = bookingCollection.getAllBookings();
 
-        int dSCount = 0; // Data Science
-        int seCount = 0; // Software Engineering
+        int dSCount = 0; 
+        int seCount = 0; 
         int sdCount = 0;
         for (int i = 0; i < allBookings.size(); i++) {
             entity.Booking b = allBookings.get(i);

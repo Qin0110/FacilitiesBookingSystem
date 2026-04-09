@@ -8,11 +8,17 @@ import adt.ListInterface;
 import entity.Admin;
 
 import dao.AdminCollection;
+import dao.BookingCollection;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Duration;
+import java.time.format.DateTimeFormatter;
 
 public class AdminManagement {
     
     AdminCollection adminCollection = new AdminCollection();
+    BookingCollection bookingCollection = new BookingCollection(); 
     
     public AdminManagement() {
     }
@@ -222,4 +228,100 @@ public class AdminManagement {
         return report.toString();
     }
     
+    public String generateDetailedReport(String adminId, LocalDate startDate, LocalDate endDate) {
+        adt.ListInterface<entity.Booking> allBookings = bookingCollection.getAllBookings();
+        
+        entity.Admin admin = adminCollection.getAdminById(adminId); 
+
+        if (admin == null) {
+            return "Error: Admin ID " + adminId + " not found.";
+        }
+
+        StringBuilder report = new StringBuilder();
+        report.append("=========================================================================\n");
+        report.append("                     ADMIN PRODUCTIVITY LEDGER                           \n");
+        report.append("=========================================================================\n");
+        report.append("Admin Name   : ").append(admin.getName()).append("\n");
+        report.append("Admin ID     : ").append(adminId).append("\n");
+        report.append("Period       : ").append(startDate).append(" to ").append(endDate).append("\n\n");
+
+        report.append(String.format("%-12s %-25s %-15s %-20s\n", "DATE", "FACILITY", "SLOT", "STUDENT ID"));
+        report.append("-------------------------------------------------------------------------\n");
+
+        boolean foundRecords = false;
+
+        for (int i = 0; i < allBookings.size(); i++) {
+            entity.Booking b = allBookings.get(i);
+
+            if (b.getApprovedBy() != null && b.getApprovedBy().equalsIgnoreCase(adminId)) {
+                entity.Schedule s = b.getSchedule();
+                
+                String realDate = b.getScheduleSession().substring(0, 10);
+                LocalDate bDate = LocalDate.parse(realDate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+
+                if (!bDate.isBefore(startDate) && !bDate.isAfter(endDate)) {
+
+                    foundRecords = true;
+                    
+                    String[] timeStrings = s.getTimeString();
+                    String slot = timeStrings[0] + " - " + timeStrings[1]; 
+
+                    report.append(String.format("%-12s %-25s %-15s %-20s\n", 
+                        realDate, s.getFacility().getName(), slot, b.getStudentId()));
+                }
+            }
+        }
+
+        if (!foundRecords) report.append("No bookings managed by this admin in the selected period.\n");
+        report.append("\n=========================== END OF REPORT ===========================");
+
+        return report.toString();
+    }
+    
+    public String generateCrossPositionReport(LocalDate startDate, LocalDate endDate) {
+        adt.ListInterface<entity.Booking> allBookings = bookingCollection.getAllBookings();
+
+        int managerCount = 0; 
+        int assisstantCount = 0; 
+        
+        for (int i = 0; i < allBookings.size(); i++) {
+            entity.Booking b = allBookings.get(i);
+            entity.Schedule s = b.getSchedule();
+            String realDate = b.getScheduleSession().substring(0, 10);
+            LocalDate bDate = LocalDate.parse(realDate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            
+            String status = b.getStatus(); 
+            if (!status.equalsIgnoreCase("Completed") && !status.equalsIgnoreCase("In Progress")) {
+                continue; 
+            }
+            
+            if (!bDate.isBefore(startDate) && !bDate.isAfter(endDate)) {                
+                
+                if (b.getApprovedBy() != null && !b.getApprovedBy().equalsIgnoreCase("N/A")) {
+                    entity.Admin admin = adminCollection.getAdminById(b.getApprovedBy());
+                    
+                    if (admin != null) {
+                        String position = admin.getPosition();
+                        
+                        if (position.equalsIgnoreCase("Facility Manager")) managerCount++;
+                        else if (position.equalsIgnoreCase("Facility Assistant")) assisstantCount++;
+                    }
+                }
+            }
+        }
+
+        StringBuilder report = new StringBuilder();
+        report.append("==================================================\n");
+        report.append("             ADMIN POSITION WORKLOAD REPORT       \n");
+        report.append("    Period: ").append(startDate).append(" to ").append(endDate).append("\n");
+        report.append("==================================================\n\n");
+
+        report.append(String.format("%-25s %-15s\n", "POSITION", "TOTAL BOOKINGS HANDLED"));
+        report.append("--------------------------------------------------\n");
+        report.append(String.format("%-25s %-15d\n", "Facility Manager", managerCount));
+        report.append(String.format("%-25s %-15d\n", "Facility Assisstant", assisstantCount));
+
+        report.append("\n=================== END OF REPORT ===================");
+        return report.toString();
+    }
 }
