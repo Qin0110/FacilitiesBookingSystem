@@ -8,27 +8,13 @@ public class ScheduleReport extends javax.swing.JPanel {
     private ScheduleControl scheduleControl = new ScheduleControl();
     public ScheduleReport() {
             initComponents();
+            jComboBox1.removeAllItems();
+            jComboBox1.addItem("2025");
+            jComboBox1.addItem("2026");
             
-            OutputStream customOut = new OutputStream() {
-                @Override
-                public void write(int b) {
-                    // Every time a character is printed, append it to the JTextArea
-                    consoleTextArea.append(String.valueOf((char) b));
-
-                    // Automatically scroll the window down to the newest line
-                    consoleTextArea.setCaretPosition(consoleTextArea.getDocument().getLength());
-                }
-            };
-
-            // Create a PrintStream out of our custom OutputStream
-            PrintStream printStream = new PrintStream(customOut);
-
-            // Tell Java to route all 'sout' and 'serr' traffic to our new PrintStream!
-            System.setOut(printStream);
-            System.setErr(printStream); // Also catches red error text
-
-            // --- TEST IT ---
-            System.out.println(scheduleControl.annualReport(2025));
+            if (jComboBox1.getItemCount() > 0) {
+                jComboBox1.setSelectedIndex(0); 
+            }
         }
     
 
@@ -43,46 +29,54 @@ public class ScheduleReport extends javax.swing.JPanel {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         consoleTextArea = new javax.swing.JTextArea();
+        jComboBox1 = new javax.swing.JComboBox<>();
 
         consoleTextArea.setEditable(false);
         consoleTextArea.setColumns(20);
+        consoleTextArea.setFont(new java.awt.Font("Courier New", 0, 16)); // NOI18N
         consoleTextArea.setRows(5);
         jScrollPane1.setViewportView(consoleTextArea);
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 628, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 894, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 468, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 553, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-    public static void main(String args[]) {
-        /* Create and display the form inside a frame */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                javax.swing.JFrame frame = new javax.swing.JFrame("Console Output Window");
-                frame.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
-                
-                // Put your NewJPanel inside the JFrame
-                frame.add(new ScheduleReport()); 
-                
-                frame.pack();
-                frame.setLocationRelativeTo(null); // Center on screen
-                frame.setVisible(true);
-            }
-        });
-    }
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        if (jComboBox1.getSelectedItem() != null) {
+            int selectedYear = Integer.parseInt(jComboBox1.getSelectedItem().toString());
+            String reportText = scheduleControl.annualReport(selectedYear);
+            consoleTextArea.setText(reportText);
+            consoleTextArea.setCaretPosition(0);
+        }
+    }//GEN-LAST:event_jComboBox1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea consoleTextArea;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }

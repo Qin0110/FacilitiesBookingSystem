@@ -178,6 +178,7 @@
                   <Component id="deleteFacilitySchedule" alignment="1" max="32767" attributes="0"/>
                   <Component id="deleteScheduleSession" alignment="1" max="32767" attributes="0"/>
                   <Component id="modifyScheduleSession" alignment="1" pref="185" max="32767" attributes="0"/>
+                  <Component id="annualReport" alignment="1" pref="185" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
@@ -189,6 +190,8 @@
                       <Component id="deleteScheduleSession" min="-2" pref="45" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="modifyScheduleSession" min="-2" pref="45" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="annualReport" min="-2" pref="45" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
@@ -217,6 +220,14 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="modifyScheduleSessionActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="annualReport">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Annual Report"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="annualReportActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>

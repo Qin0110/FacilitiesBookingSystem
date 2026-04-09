@@ -166,6 +166,7 @@ public class ScheduleUI extends javax.swing.JPanel {
         deleteFacilitySchedule = new javax.swing.JButton();
         deleteScheduleSession = new javax.swing.JButton();
         modifyScheduleSession = new javax.swing.JButton();
+        annualReport = new javax.swing.JButton();
 
         scheduleTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -268,6 +269,13 @@ public class ScheduleUI extends javax.swing.JPanel {
             }
         });
 
+        annualReport.setText("Annual Report");
+        annualReport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                annualReportActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -275,6 +283,7 @@ public class ScheduleUI extends javax.swing.JPanel {
             .addComponent(deleteFacilitySchedule, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(deleteScheduleSession, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(modifyScheduleSession, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
+            .addComponent(annualReport, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -285,6 +294,8 @@ public class ScheduleUI extends javax.swing.JPanel {
                 .addComponent(deleteScheduleSession, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(modifyScheduleSession, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(annualReport, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -564,8 +575,18 @@ public class ScheduleUI extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_searchButtonActionPerformed
 
+    private void annualReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_annualReportActionPerformed
+        javax.swing.JFrame reportFrame = new javax.swing.JFrame("Annual Facility Usage Report");
+        reportFrame.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
+        reportFrame.add(new ScheduleReport()); 
+        reportFrame.pack();
+        reportFrame.setLocationRelativeTo(null); 
+        reportFrame.setVisible(true);
+    }//GEN-LAST:event_annualReportActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton annualReport;
     private javax.swing.JComboBox<String> dateCB;
     private javax.swing.JButton deleteFacilitySchedule;
     private javax.swing.JButton deleteScheduleSession;

@@ -315,47 +315,95 @@ public class ScheduleControl implements Serializable{
         StringBuilder report = new StringBuilder();
         ListInterface<String> facilityCategory = new SingleLinkedList<>();
         ListInterface<String> monthsContains = new SingleLinkedList<>();
+        int monthIndex = 0;
+        int facilityIndex = 0;
         
         for (int i = 0; i < this.schedule.size(); i++) {
             boolean facilityExist = false;
             boolean monthExist = false;
-            String categoryName = this.schedule.get(i).getFacility().getName().replaceAll("\\s*\\d+$", "").trim();
-            String currentMonth = LocalDate.parse(this.schedule.get(i).getDate(), Schedule.DATE_FORMATTER).getMonth().toString();
-            if (facilityCategory == null) {
-                facilityCategory.add(categoryName);
-            } else {
-                for (int j = 0; j < facilityCategory.size(); j++) {
-                    if (categoryName.equals(facilityCategory.get(j))) {
-                        facilityExist = true;
-                        break;
-                    }
+
+            String categoryName = this.schedule.get(i).getFacility().getName()
+                    .replaceAll("\\s*[A-Za-z]?\\d+$", "").trim();
+            String currentMonth = LocalDate.parse(this.schedule.get(i).getDate(), Schedule.DATE_FORMATTER)
+                    .getMonth().toString();
+            int currentYear = LocalDate.parse(this.schedule.get(i).getDate(), Schedule.DATE_FORMATTER)
+                    .getYear();
+
+            if (targetYear != currentYear) continue;
+
+            for (int j = 0; j < facilityCategory.size(); j++) {
+                if (categoryName.equals(facilityCategory.get(j))) {
+                    facilityExist = true;
+                    break;
                 }
             }
-            if (monthsContains == null) {
-                monthsContains.add(currentMonth);
-            } else {
-                for (int j = 0; j < monthsContains.size(); j++) {
-                    if (currentMonth.equals(monthsContains.get(j))) {
-                        monthExist = true;
-                        break;
-                    }
+            for (int j = 0; j < monthsContains.size(); j++) {
+                if (currentMonth.equals(monthsContains.get(j))) {
+                    monthExist = true;
+                    break;
                 }
             }
-            if (!monthExist) {
-                monthsContains.add(currentMonth);
-            }
-            if (!facilityExist) {
-                facilityCategory.add(categoryName);
+
+            if (!facilityExist) facilityCategory.add(categoryName);
+            if (!monthExist) monthsContains.add(currentMonth);
+        }
+        
+        int[][] bookedStatus = new int[monthsContains.size()][facilityCategory.size()];
+        int[][] maintenanceStatus = new int[monthsContains.size()][facilityCategory.size()];
+        int[][] notAvailableStatus = new int[monthsContains.size()][facilityCategory.size()];
+        
+        // Months Loop
+        for (int i = 0; i < monthsContains.size(); i++) {
+            // Loop Schedule
+            for (int j = 0; j < this.schedule.size(); j++) {
+                int currentYear = LocalDate.parse(this.schedule.get(j).getDate(), Schedule.DATE_FORMATTER).getYear();
+                if (currentYear != targetYear) {
+                    continue;
+                }
+                if (LocalDate.parse(this.schedule.get(j).getDate(), Schedule.DATE_FORMATTER).getMonth().toString().equals(monthsContains.get(i))) {
+                    // Loop Facility Name
+                    for (int k = 0; k < facilityCategory.size(); k++) {
+                        if (facilityCategory.get(k).equals(this.schedule.get(j).getFacility().getName().replaceAll("\\s*[A-Za-z]?\\d+$", "").trim())) {
+                            // Loop the Schedule Session
+                            for (int l = 0; l < this.schedule.get(j).getSessions().size(); l++) {
+                                String status = this.schedule.get(j).getSessions().get(l).getAvailability();
+                                if (status.equals(ScheduleSession.STATUS_BOOKED)) {
+                                    bookedStatus[i][k] ++;
+                                } else if (status.equals(ScheduleSession.STATUS_MAINTENANCE)) {
+                                    maintenanceStatus[i][k] ++;
+                                } else if (status.equals(ScheduleSession.STATUS_NOT_AVAILABLE)) {
+                                    notAvailableStatus[i][k] ++;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
         
-        report.append("\nFacility found: \n");
-        for (int i = 0; i < facilityCategory.size(); i++) {
-            report.append(facilityCategory.get(i) + "\n");
-        }
-        report.append("\nMonths found: \n");
-        for (int i = 0; i < monthsContains.size(); i++) {
-            report.append(monthsContains.get(i) + "\n");
+//        report.append("\nFacility found: \n");
+//        for (int i = 0; i < facilityCategory.size(); i++) {
+//            report.append(facilityCategory.get(i) + "\n");
+//        }
+//        report.append("\nMonths found: \n");
+//        for (int i = 0; i < monthsContains.size(); i++) {
+//            report.append(monthsContains.get(i) + "\n");
+//        }
+        report.append("=".repeat(40) + " " + targetYear + " Report " + "=".repeat(40) + "\n");
+        for (int i = 0; i < bookedStatus.length; i++) {
+            report.append("Months: " + monthsContains.get(i) + "\n");
+            report.append(String.format("%-40s %-15s %-18s %-20s%n",
+                    "Facility", "Booked Count", "Maintain Count", "Not Available Count"));
+            report.append("-".repeat(100) + "\n");
+            for (int j = 0; j < maintenanceStatus[i].length; j++) {
+                report.append(String.format("%-40s %-15d %-18d %-20d%n",
+                        facilityCategory.get(j),
+                        bookedStatus[i][j],
+                        maintenanceStatus[i][j],
+                        notAvailableStatus[i][j]
+                ));
+            }
+            report.append("\n");
         }
         return report.toString();
     }
