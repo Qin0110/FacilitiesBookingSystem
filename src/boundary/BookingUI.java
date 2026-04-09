@@ -499,7 +499,7 @@ public class BookingUI extends javax.swing.JPanel {
             javax.swing.JOptionPane.showMessageDialog(this, "This facility is already booked! Please choose an Available schedule.", "Facility Full", javax.swing.JOptionPane.WARNING_MESSAGE);
         }
         else if(result.equals("LIMIT_REACHED")){
-            javax.swing.JOptionPane.showMessageDialog(this, "Booking Limit Exceeded!\nYou can only make a maximum of 3 bookings per day", "Limit Reached", javax.swing.JOptionPane.WARNING_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(this, "Booking Limit Exceeded!\nYou can only make a maximum of 2 bookings per day", "Limit Reached", javax.swing.JOptionPane.WARNING_MESSAGE);
 
         
         }

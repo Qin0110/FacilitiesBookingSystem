@@ -207,6 +207,17 @@ public class BookingManagement {
                     case "STATUS":
                         cmp = a.getStatus().compareToIgnoreCase(b.getStatus());
                         break;
+                    case "FACILITY NAME":
+                        String fNameA = "";
+                        if (a.getSchedule() != null && a.getSchedule().getFacility() != null) {
+                            fNameA = a.getSchedule().getFacility().getName();
+                        }
+                        String fNameB = "";
+                        if (b.getSchedule() != null && b.getSchedule().getFacility() != null) {
+                            fNameB = b.getSchedule().getFacility().getName();
+                        }
+                        cmp = fNameA.compareToIgnoreCase(fNameB);
+                        break;
                     case "SESSION":
                         try {
                             java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
@@ -229,6 +240,11 @@ public class BookingManagement {
                     default:
                         cmp = a.getBookingId().compareToIgnoreCase(b.getBookingId());
                 }
+                
+                if (cmp == 0) {
+                    cmp = a.getBookingId().compareToIgnoreCase(b.getBookingId());
+                }
+                
                 return ascending ? cmp : -cmp;
             }
         };
@@ -449,7 +465,7 @@ public class BookingManagement {
         
         report.append(String.format(" Total Bookings   : %d\n\n", totalBookings));
         
-        report.append(" -------------- SYSTEM HEALTH METRICS ---------------\n");
+        report.append(" ------------- BOOKING OUTCOME SUMMARY --------------\n");
         report.append(String.format(" Completion Rate  : %.1f%% (%d bookings)\n", compRate, completedCount));
         report.append(String.format(" Cancellation Rate: %.1f%% (%d bookings)\n", cancRate, cancelledCount));
         report.append(String.format(" No-Show Rate     : %.1f%% (%d bookings)\n", noShowRate, notAttendedCount));
