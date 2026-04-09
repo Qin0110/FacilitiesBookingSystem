@@ -22,9 +22,7 @@ public class StudentManagement {
     public StudentManagement() {}
     
     public String addNewStudent(String name, String programme, String email, String phoneNumber) {
-         // Automatically generate the next ID
          String id = generateNextStudentId();
-         // returns null if limit is reached
          if (id == null) {
             return "Error: Maximum student limit (9999) reached! Cannot add more students.";
          }
@@ -49,7 +47,6 @@ public class StudentManagement {
              studentCollection.addStudent(newStudent);
              return "Student added successfully! ID: " + id;
          } catch (IllegalArgumentException e) {
-             // Catches format errors from Entity layer
              return "Error: " + e.getMessage(); 
          }
     }
@@ -57,8 +54,7 @@ public class StudentManagement {
     public String generateNextStudentId() {
         ListInterface<Student> studentList = studentCollection.getAllStudent();
         String prefix = "25WMR";
-
-        //Limit Check (09999 is the max)
+        
         if (studentList.size() >= 9999) {
             return null; 
         }
@@ -72,12 +68,12 @@ public class StudentManagement {
         for (int i = 0; i < studentList.size(); i++) {
             String currentId = studentList.get(i).getStudentId();
             try {
-                // Extract numeric part after "25WMR" (length is 5)
+                // Extract after "25WMR" (length is 5)
                 int currentNum = Integer.parseInt(currentId.substring(5));
                 if (currentNum > highestNum) {
                     highestNum = currentNum;
                 }
-            } catch (Exception e) { /* Skip invalid formats */ }
+            } catch (Exception e) { }// Skip invalid formats 
         }
 
         if (highestNum >= 9999) return null;
@@ -250,13 +246,20 @@ public class StudentManagement {
         for (int i = 0; i < allBookings.size(); i++) {
             entity.Booking b = allBookings.get(i);
             entity.Schedule s = b.getSchedule();
-            LocalDate bDate = LocalDate.parse(s.getDate(), DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            
+            String realDate = b.getScheduleSession().substring(0, 10);
+            LocalDate bDate = LocalDate.parse(realDate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            
+            String status = b.getStatus(); 
 
-            // Filter by Date Range
+            if (!status.equalsIgnoreCase("Completed") && !status.equalsIgnoreCase("In Progress")) {
+                continue; 
+            }
+
             if (!bDate.isBefore(startDate) && !bDate.isAfter(endDate)) {
-
+                
                 totalBookingsInRange++;
-                String facilityType = s.getFacility().getType(); // Assuming Facility has getType()
+                String facilityType = s.getFacility().getType(); 
 
                 if (facilityType.equalsIgnoreCase("Sports")) sportsCount++;
                 else if (facilityType.equalsIgnoreCase("Study Room")) studyRoomCount++;
@@ -291,7 +294,7 @@ public class StudentManagement {
     
     public String generateDetailedReport(String studentId, LocalDate startDate, LocalDate endDate) {
         adt.ListInterface<entity.Booking> allBookings = bookingCollection.getAllBookings();
-        entity.Student student = studentCollection.getStudentById(studentId); // Assuming you have this method
+        entity.Student student = studentCollection.getStudentById(studentId); 
 
         if (student == null) {
             return "Error: Student ID " + studentId + " not found.";
@@ -305,7 +308,7 @@ public class StudentManagement {
         report.append("Student ID   : ").append(studentId).append("\n");
         report.append("Period       : ").append(startDate).append(" to ").append(endDate).append("\n\n");
 
-        report.append(String.format("%-12s %-20s %-15s %-20s\n", "DATE", "FACILITY", "SLOT", "STATUS"));
+            report.append(String.format("%-12s %-23s %-15s %-20s\n", "DATE", "FACILITY", "SLOT", "STATUS"));
         report.append("-------------------------------------------------------------------------\n");
 
         boolean foundRecords = false;
@@ -315,28 +318,21 @@ public class StudentManagement {
 
             if (b.getStudentId().equalsIgnoreCase(studentId)) {
                 entity.Schedule s = b.getSchedule();
-                LocalDate bDate = LocalDate.parse(s.getDate(), DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+                
+                String realDate = b.getScheduleSession().substring(0, 10);
+                LocalDate bDate = LocalDate.parse(realDate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
 
-                if ((bDate.isEqual(startDate) || bDate.isAfter(startDate)) && 
-                    (bDate.isEqual(endDate) || bDate.isBefore(endDate))) {
+                if (!bDate.isBefore(startDate) && !bDate.isAfter(endDate)) {
 
                     foundRecords = true;
-                    
-                    java.time.LocalTime[] times = s.getTime();
-                    java.time.LocalTime endTime = times[1]; // Get the end time for calculations
                     
                     String[] timeStrings = s.getTimeString();
                     String slot = timeStrings[0] + " - " + timeStrings[1]; 
 
-                    String status = "Fully Utilized";
-                    if (b.getArrivalTime() == null) {
-                        status = "No Show";
-                    } else if (b.getLeavingTime() != null && b.getLeavingTime().toLocalTime().isBefore(endTime.minusMinutes(15))) {
-                        status = "Left Early";
-                    }
+                    String status = b.getStatus(); 
 
-                    report.append(String.format("%-12s %-20s %-15s %-20s\n", 
-                        s.getDate(), s.getFacility().getName(), slot, status));
+                    report.append(String.format("%-12s %-23s %-15s %-20s\n", 
+                        realDate, s.getFacility().getName(), slot, status));
                 }
             }
         }
@@ -356,12 +352,16 @@ public class StudentManagement {
         for (int i = 0; i < allBookings.size(); i++) {
             entity.Booking b = allBookings.get(i);
             entity.Schedule s = b.getSchedule();
-            LocalDate bDate = LocalDate.parse(s.getDate(), DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            String realDate = b.getScheduleSession().substring(0, 10);
+            LocalDate bDate = LocalDate.parse(realDate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            
+            String status = b.getStatus(); 
 
-            if ((bDate.isEqual(startDate) || bDate.isAfter(startDate)) && 
-                (bDate.isEqual(endDate) || bDate.isBefore(endDate))) {
-
-                // Cross-reference to find the student's programme
+            if (!status.equalsIgnoreCase("Completed") && !status.equalsIgnoreCase("In Progress")) {
+                continue; 
+            }
+            
+            if (!bDate.isBefore(startDate) && !bDate.isAfter(endDate)) {               
                 entity.Student student = studentCollection.getStudentById(b.getStudentId());
                 if (student != null) {
                     String prog = student.getProgramme();
@@ -382,7 +382,7 @@ public class StudentManagement {
         report.append("--------------------------------------------------\n");
         report.append(String.format("%-25s %-15d\n", "Data Science", dSCount));
         report.append(String.format("%-25s %-15d\n", "Software Engineering", seCount));
-        report.append(String.format("%-25s %-15d\n", "Software Developer", seCount));
+        report.append(String.format("%-25s %-15d\n", "Software Developer", sdCount));
 
         report.append("\n=================== END OF REPORT ===================");
         return report.toString();
