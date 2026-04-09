@@ -189,6 +189,8 @@ public class AdminUI extends javax.swing.JPanel {
     private void scheduleManagementBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_scheduleManagementBTActionPerformed
         ScheduleUI scheduleUI = new ScheduleUI(this.scheduleManager, this.bookingManager);
         showPanel(scheduleUI);
+        mainContentPanel.setLayout(new java.awt.BorderLayout());
+        mainContentPanel.add(scheduleUI, java.awt.BorderLayout.NORTH);
     }//GEN-LAST:event_scheduleManagementBTActionPerformed
 
     private void BookingBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BookingBTActionPerformed
