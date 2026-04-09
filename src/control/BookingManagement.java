@@ -15,7 +15,7 @@ import entity.ScheduleSession;
 public class BookingManagement {
     private BookingCollection bookingCollection;
     private StudentManagement studentManager;
-    private ScheduleControl scheduleManager; // Assuming this acts like ScheduleControl
+    private ScheduleControl scheduleManager;
     private AdminManagement adminManager;
 
     public BookingManagement(StudentManagement studentManager, ScheduleControl scheduleManager, AdminManagement adminManager) {
@@ -217,7 +217,23 @@ public class BookingManagement {
                         cmp = a.getStatus().compareToIgnoreCase(b.getStatus());
                         break;
                     case "SESSION":
-                        cmp = a.getScheduleSession().compareToIgnoreCase(b.getScheduleSession());
+                        try {
+                            java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+                            
+                            String[] partsA = a.getScheduleSession().split(" ");
+                            String cleanStringA = partsA[0] + " " + partsA[1]; 
+                            
+                            String[] partsB = b.getScheduleSession().split(" ");
+                            String cleanStringB = partsB[0] + " " + partsB[1];
+                            
+                            java.time.LocalDateTime dateA = java.time.LocalDateTime.parse(cleanStringA, formatter);
+                            java.time.LocalDateTime dateB = java.time.LocalDateTime.parse(cleanStringB, formatter);
+                            
+                            cmp = dateA.compareTo(dateB);
+                            
+                        } catch (Exception e) {
+                            cmp = a.getScheduleSession().compareToIgnoreCase(b.getScheduleSession());
+                        }
                         break;
                     default:
                         cmp = a.getBookingId().compareToIgnoreCase(b.getBookingId());
