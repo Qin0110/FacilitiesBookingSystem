@@ -465,6 +465,14 @@ public class BookingManagement {
         
         report.append(String.format(" Total Bookings   : %d\n\n", totalBookings));
         
+        report.append("\n ------------- BOOKING STATUS BREAKDOWN -------------\n");
+        report.append(String.format(" Completed        : %d\n", completedCount));
+        report.append(String.format(" Cancelled        : %d\n", cancelledCount));
+        report.append(String.format(" Not Attended     : %d\n", notAttendedCount));
+        report.append(String.format(" Confirmed        : %d\n", confirmedCount));
+        report.append(String.format(" Pending          : %d\n", pendingCount));
+        report.append(String.format(" In Progress      : %d\n\n", inProgressCount));
+        
         report.append(" ------------- BOOKING OUTCOME SUMMARY --------------\n");
         report.append(String.format(" Completion Rate  : %.1f%% (%d bookings)\n", compRate, completedCount));
         report.append(String.format(" Cancellation Rate: %.1f%% (%d bookings)\n", cancRate, cancelledCount));
@@ -484,13 +492,6 @@ public class BookingManagement {
             }
         }
         
-        report.append("\n ------------- BOOKING STATUS BREAKDOWN -------------\n");
-        report.append(String.format(" Completed        : %d\n", completedCount));
-        report.append(String.format(" Cancelled        : %d\n", cancelledCount));
-        report.append(String.format(" Not Attended     : %d\n", notAttendedCount));
-        report.append(String.format(" Confirmed        : %d\n", confirmedCount));
-        report.append(String.format(" Pending          : %d\n", pendingCount));
-        report.append(String.format(" In Progress      : %d\n\n", inProgressCount));
         report.append("\n=====================================================\n");
         report.append("                    End of Report\n");
         return report.toString();

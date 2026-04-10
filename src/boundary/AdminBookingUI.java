@@ -416,7 +416,14 @@ public class AdminBookingUI extends javax.swing.JPanel {
         
         if (result == 1) {
             try {
-                String safeFilename = timeframeLabel.replaceAll("[^a-zA-Z0-9 ]", "_") + "_Report.txt";
+                String safeFilename = timeframeLabel.replaceAll("[^a-zA-Z0-9]+", "_");
+                
+                if (safeFilename.endsWith("_")) {
+                    safeFilename = safeFilename.substring(0, safeFilename.length() - 1);
+                }
+                
+                safeFilename += ".txt";
+                
                 java.io.File reportFile = new java.io.File(safeFilename);
                 java.io.FileWriter writer = new java.io.FileWriter(reportFile);
                 writer.write(reportText);
