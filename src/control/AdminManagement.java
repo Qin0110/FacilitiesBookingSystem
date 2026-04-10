@@ -222,6 +222,74 @@ public class AdminManagement {
         return report.toString();
     }
     
+    public String generateSummaryReport(LocalDate startDate, LocalDate endDate) {
+        adt.ListInterface<entity.Booking> allBookings = bookingCollection.getAllBookings(); 
+
+        adt.ListInterface<String> adminIds = new adt.SingleLinkedList<>();
+        adt.ListInterface<Integer> adminCounts = new adt.SingleLinkedList<>();
+
+        int totalBookingsInRange = 0;
+                
+        for (int i = 0; i < allBookings.size(); i++) {
+            
+            entity.Booking b = allBookings.get(i);
+            
+            String realDate = b.getScheduleSession().substring(0, 10);
+            LocalDate bDate = LocalDate.parse(realDate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            
+            String status = b.getStatus(); 
+
+            // Only count Completed or In Progress bookings
+            if (!status.equalsIgnoreCase("Completed") && !status.equalsIgnoreCase("In Progress")) {
+                continue; 
+            }
+
+            if (!bDate.isBefore(startDate) && !bDate.isAfter(endDate)) {
+                
+                String currentAdminId = b.getApprovedBy(); 
+                
+                if (currentAdminId == null || currentAdminId.equalsIgnoreCase("N/A")) {
+                    continue;
+                }
+
+                totalBookingsInRange++;
+
+                int index = adminIds.indexOf(currentAdminId);
+                
+                // If index is -1, this admin is not in list yet, will add it
+                if (index == -1) {
+                    adminIds.add(currentAdminId);
+                    adminCounts.add(1); 
+                } 
+                // If they are already in the list, update their existing count
+                else {
+                    int currentCount = adminCounts.get(index);
+                    adminCounts.set(index, currentCount + 1);
+                }
+            }
+        }
+
+        StringBuilder report = new StringBuilder();
+        report.append("==================================================\n");
+        report.append("          ADMIN BOOKING SUMMARY REPORT            \n");
+        report.append("    Period: ").append(startDate).append(" to ").append(endDate).append("\n");
+        report.append("==================================================\n\n");
+
+        report.append("--- OVERALL STATISTICS ---\n");
+        report.append("Total Bookings Handled : ").append(totalBookingsInRange).append("\n\n");
+
+        report.append("--- BREAKDOWN BY ADMIN ID ---\n");
+        report.append(String.format("%-25s %-15s\n", "ADMIN ID", "TOTAL BOOKINGS APPROVAL"));
+        report.append("--------------------------------------------------\n");
+
+        for (int i = 0; i < adminIds.size(); i++) {
+            report.append(String.format("%-25s %-15d\n", adminIds.get(i), adminCounts.get(i)));
+        }
+
+        report.append("\n=================== END OF REPORT ===================");
+        return report.toString();
+    }
+    
     public String generateDetailedReport(String adminId, LocalDate startDate, LocalDate endDate) {
         adt.ListInterface<entity.Booking> allBookings = bookingCollection.getAllBookings();
         
@@ -304,18 +372,44 @@ public class AdminManagement {
             }
         }
 
+        int totalValidBookings = managerCount + assisstantCount;
+        
+        double managerPct = (totalValidBookings == 0) ? 0.0 : ((double) managerCount / totalValidBookings) * 100;
+        double assistantPct = (totalValidBookings == 0) ? 0.0 : ((double) assisstantCount / totalValidBookings) * 100;
+
         StringBuilder report = new StringBuilder();
-        report.append("==================================================\n");
-        report.append("             ADMIN POSITION WORKLOAD REPORT       \n");
+        report.append("=================================================================\n");
+        report.append("                 ADMIN POSITION WORKLOAD REPORT                  \n");
         report.append("    Period: ").append(startDate).append(" to ").append(endDate).append("\n");
-        report.append("==================================================\n\n");
+        report.append("=================================================================\n\n");
 
-        report.append(String.format("%-25s %-15s\n", "POSITION", "TOTAL BOOKINGS HANDLED"));
-        report.append("--------------------------------------------------\n");
-        report.append(String.format("%-25s %-15d\n", "Facility Manager", managerCount));
-        report.append(String.format("%-25s %-15d\n", "Facility Assisstant", assisstantCount));
+        report.append(String.format("%-25s %-15s %-15s\n", "POSITION", "TOTAL BOOKINGS", "PERCENTAGE OF TOTAL"));
+        report.append("-----------------------------------------------------------------\n");
+        report.append(String.format("%-25s %-15d %.2f%%\n", "Facility Manager", managerCount, managerPct));
+        report.append(String.format("%-25s %-15d %.2f%%\n", "Facility Assistant", assisstantCount, assistantPct));
+        report.append("\n\n");
 
-        report.append("\n=================== END OF REPORT ===================");
+        int maxBlocks = 10; // Maximum height of the chart in lines
+        
+        // Find the highest percentage to scale the chart dynamically
+        double maxPct = Math.max(managerPct, assistantPct);
+        if (maxPct == 0) maxPct = 1;
+
+        int mgrH = (int) Math.round((managerPct / maxPct) * maxBlocks);
+        int astH = (int) Math.round((assistantPct / maxPct) * maxBlocks);
+
+        for (int h = maxBlocks; h > 0; h--) {
+            String b1 = (mgrH >= h) ? "     ######" : "";
+            String b2 = (astH >= h) ? "     ######" : "";
+            
+            report.append(String.format("%-25s %-25s\n", b1, b2));
+        }
+
+        report.append("-----------------------------------------------------------------\n");
+        
+        report.append(String.format("%-25s %-25s\n", "Facility Manager", "Facility Assistant"));
+
+        report.append("\n======================= END OF REPORT ===========================");
         return report.toString();
     }
 }

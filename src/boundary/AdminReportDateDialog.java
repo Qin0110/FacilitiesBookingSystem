@@ -13,7 +13,7 @@ public class AdminReportDateDialog extends javax.swing.JDialog {
         this.reportType = reportType;
         initComponents();
         
-        if (reportType != 1) {
+        if (reportType != 1 ) {
             jLabel3.setVisible(false);
             txtAdminId.setVisible(false);
         }
@@ -176,6 +176,12 @@ public class AdminReportDateDialog extends javax.swing.JDialog {
             reportTitle = "Cross-Position Trends";
             defaultFileName = "Trends_Report.txt";
         }
+        else if (reportType == 3) {
+            finalReportText = adminManagement.generateSummaryReport(startDate, endDate); 
+            reportTitle = "Admin Booking Summary Report";
+            defaultFileName = "Admin_Summary_Report.txt";
+        }
+        
 
         this.dispose();
 

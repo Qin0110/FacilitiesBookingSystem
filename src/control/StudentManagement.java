@@ -233,15 +233,13 @@ public class StudentManagement {
     public String generateSummaryReport(LocalDate startDate, LocalDate endDate) {
         adt.ListInterface<entity.Booking> allBookings = bookingCollection.getAllBookings(); 
 
+        adt.ListInterface<String> studentIds = new adt.SingleLinkedList<>();
+        adt.ListInterface<Integer> studentCounts = new adt.SingleLinkedList<>();
+
         int totalBookingsInRange = 0;
-        int sportsCount = 0;
-        int studyRoomCount = 0;
-        int libraryStudyRoomCount = 0;
-        int eventSpaceCount = 0;
-        int cyberCentreDiscussionRoomCount = 0;
-        int RecreationCount = 0;
-               
+                
         for (int i = 0; i < allBookings.size(); i++) {
+            
             entity.Booking b = allBookings.get(i);
             entity.Schedule s = b.getSchedule();
             
@@ -257,34 +255,37 @@ public class StudentManagement {
             if (!bDate.isBefore(startDate) && !bDate.isAfter(endDate)) {
                 
                 totalBookingsInRange++;
-                String facilityType = s.getFacility().getType(); 
+                String currentStudentId = b.getStudentId(); 
 
-                if (facilityType.equalsIgnoreCase("Sports")) sportsCount++;
-                else if (facilityType.equalsIgnoreCase("Study Room")) studyRoomCount++;
-                else if (facilityType.equalsIgnoreCase("Library Study Room")) libraryStudyRoomCount++;
-                else if (facilityType.equalsIgnoreCase("Cyber Centre Discussion Room")) cyberCentreDiscussionRoomCount++;
-                else if (facilityType.equalsIgnoreCase("Event Space")) eventSpaceCount++;   
-                else if (facilityType.equalsIgnoreCase("Recreation")) RecreationCount++;
+                int index = studentIds.indexOf(currentStudentId);
+                
+                if (index == -1) {
+                    studentIds.add(currentStudentId);
+                    studentCounts.add(1);
+                } 
+                else {
+                    int currentCount = studentCounts.get(index);
+                    studentCounts.set(index, currentCount + 1);
+                }
             }
         }
 
         StringBuilder report = new StringBuilder();
-        report.append("==================================================\n");
-        report.append("       FACILITY UTILIZATION SUMMARY REPORT        \n");
-        report.append("    Period: ").append(startDate).append(" to ").append(endDate).append("\n");
-        report.append("==================================================\n\n");
+        report.append("========================================================\n");
+        report.append("       STUDENT UTILIZATION SUMMARY REPORT         \n");
+        report.append("            Period: ").append(startDate).append(" to ").append(endDate).append("\n");
+        report.append("========================================================\n\n");
 
         report.append("--- OVERALL STATISTICS ---\n");
-        report.append("Total Facilities Booked : ").append(totalBookingsInRange).append("\n\n");
+        report.append("Total Valid Bookings : ").append(totalBookingsInRange).append("\n\n");
 
-        report.append("--- BREAKDOWN BY FACILITY TYPE ---\n");
-        report.append(String.format("%-20s : %d\n", "Sports Facilities", sportsCount));
-        report.append(String.format("%-20s : %d\n", "Study Rooms", studyRoomCount));
-        report.append(String.format("%-20s : %d\n", "Library Study Room", libraryStudyRoomCount));
-        report.append(String.format("%-20s : %d\n", "Cyber Centre Discussion Room", cyberCentreDiscussionRoomCount));
-        report.append(String.format("%-20s : %d\n", "Event Space", eventSpaceCount));
-        report.append(String.format("%-20s : %d\n", "Recreation", RecreationCount));
+        report.append("--- BREAKDOWN BY STUDENT ID ---\n");
+        report.append(String.format("%-25s %-15s\n", "STUDENT ID", "TOTAL BOOKINGS"));
+        report.append("--------------------------------------------------------\n");
 
+        for (int i = 0; i < studentIds.size(); i++) {
+            report.append(String.format("%-25s %-15d\n", studentIds.get(i), studentCounts.get(i)));
+        }
 
         report.append("\n=================== END OF REPORT ===================");
         return report.toString();
@@ -306,7 +307,7 @@ public class StudentManagement {
         report.append("Student ID   : ").append(studentId).append("\n");
         report.append("Period       : ").append(startDate).append(" to ").append(endDate).append("\n\n");
 
-            report.append(String.format("%-12s %-23s %-15s %-20s\n", "DATE", "FACILITY", "SLOT", "STATUS"));
+            report.append(String.format("%-12s %-25s %-15s %-20s\n", "DATE", "FACILITY", "SLOT", "STATUS"));
         report.append("-------------------------------------------------------------------------\n");
 
         boolean foundRecords = false;
@@ -329,30 +330,38 @@ public class StudentManagement {
 
                     String status = b.getStatus(); 
 
-                    report.append(String.format("%-12s %-23s %-15s %-20s\n", 
+                    report.append(String.format("%-12s %-25s %-15s %-20s\n", 
                         realDate, s.getFacility().getName(), slot, status));
                 }
             }
         }
 
         if (!foundRecords) report.append("No bookings found for this student in the selected period.\n");
-        report.append("\n=========================== END OF REPORT ===========================");
+        report.append("\n=========================== END OF REPORT ==============================");
 
         return report.toString();
     }
     
-    public String generateCrossProgrammeReport(LocalDate startDate, LocalDate endDate) {
+   public String generateCrossProgrammeReport(LocalDate startDate, LocalDate endDate) {
         adt.ListInterface<entity.Booking> allBookings = bookingCollection.getAllBookings();
 
-        int dSCount = 0; 
-        int seCount = 0; 
-        int sdCount = 0;
+        int overallDs = 0; 
+        int overallSe = 0; 
+        int overallSd = 0;
+        
+        // Index 0 = Data Science, Index 1 = Software Eng, Index 2 = Software Dev
+        int[] libCounts = new int[3];
+        int[] spoCounts = new int[3];
+        int[] cybCounts = new int[3];
+        int[] recCounts = new int[3];
+        int[] eveCounts = new int[3];
+        
         for (int i = 0; i < allBookings.size(); i++) {
             entity.Booking b = allBookings.get(i);
             entity.Schedule s = b.getSchedule();
+            
             String realDate = b.getScheduleSession().substring(0, 10);
             LocalDate bDate = LocalDate.parse(realDate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-            
             String status = b.getStatus(); 
 
             if (!status.equalsIgnoreCase("Completed") && !status.equalsIgnoreCase("In Progress")) {
@@ -361,30 +370,139 @@ public class StudentManagement {
             
             if (!bDate.isBefore(startDate) && !bDate.isAfter(endDate)) {               
                 entity.Student student = studentCollection.getStudentById(b.getStudentId());
-                if (student != null) {
-                    String prog = student.getProgramme();
-                    if (prog.equalsIgnoreCase("Data Science")) dSCount++;
-                    else if (prog.equalsIgnoreCase("Software Engineering")) seCount++;
-                    else if (prog.equalsIgnoreCase("Software Developer")) sdCount++;
+                if (student == null) continue;
+
+                // see which programme this student is it
+                String prog = student.getProgramme();
+                int progIndex = -1;
+                if (prog.equalsIgnoreCase("Data Science")) progIndex = 0;
+                else if (prog.equalsIgnoreCase("Software Engineering")) progIndex = 1;
+                else if (prog.equalsIgnoreCase("Software Developer")) progIndex = 2;
+
+                if (progIndex != -1) {
+                    // Count for Overall Chart 
+                    if (progIndex == 0) overallDs++;
+                    else if (progIndex == 1) overallSe++;
+                    else if (progIndex == 2) overallSd++;
+
+                    // Count for Facility-Specific Chart 
+                    String facilityType = s.getFacility().getType();
+                    if (facilityType.equalsIgnoreCase("Library Study Room") || facilityType.equalsIgnoreCase("Study Room")) {
+                        libCounts[progIndex]++;
+                    } else if (facilityType.equalsIgnoreCase("Sports")) {
+                        spoCounts[progIndex]++;
+                    } else if (facilityType.equalsIgnoreCase("Cyber Centre Discussion Room")) {
+                        cybCounts[progIndex]++;
+                    } else if (facilityType.equalsIgnoreCase("Recreation")) {
+                        recCounts[progIndex]++;
+                    } else if (facilityType.equalsIgnoreCase("Event Space")) {
+                        eveCounts[progIndex]++;
+                    }
                 }
             }
         }
 
         StringBuilder report = new StringBuilder();
-        report.append("==================================================\n");
-        report.append("           CROSS-PROGRAMME TRENDS REPORT          \n");
-        report.append("    Period: ").append(startDate).append(" to ").append(endDate).append("\n");
-        report.append("==================================================\n\n");
+        int maxBlocks = 8; // Standard height for all charts to keep them neat
 
-        report.append(String.format("%-25s %-15s\n", "PROGRAMME", "TOTAL BOOKINGS"));
-        report.append("--------------------------------------------------\n");
-        report.append(String.format("%-25s %-15d\n", "Data Science", dSCount));
-        report.append(String.format("%-25s %-15d\n", "Software Engineering", seCount));
-        report.append(String.format("%-25s %-15d\n", "Software Developer", sdCount));
+        report.append("========================================================================\n");
+        report.append("                    CROSS-PROGRAMME TRENDS REPORT                       \n");
+        report.append("               Period: ").append(startDate).append(" to ").append(endDate).append("\n");
+        report.append("========================================================================\n\n");
 
-        report.append("\n=================== END OF REPORT ===================");
+
+        report.append(">>> OVERALL DISTRIBUTION (ALL FACILITIES) <<<\n");
+        report.append("------------------------------------------------------------------------\n");
+
+        int totalOverall = overallDs + overallSe + overallSd;
+        if (totalOverall == 0) {
+            report.append("  (No valid bookings found in the selected period)\n\n\n");
+        } else {
+            double pDs = ((double) overallDs / totalOverall) * 100;
+            double pSe = ((double) overallSe / totalOverall) * 100;
+            double pSd = ((double) overallSd / totalOverall) * 100;
+
+            // Overall Data Table
+            report.append(String.format("%-25s %-15s %-15s\n", "PROGRAMME", "TOTAL BOOKINGS", "PERCENTAGE OF TOTAL"));
+            report.append("------------------------------------------------------------------------\n");
+            report.append(String.format("%-25s %-15d %.2f%%\n", "Data Science", overallDs, pDs));
+            report.append(String.format("%-25s %-15d %.2f%%\n", "Software Engineering", overallSe, pSe));
+            report.append(String.format("%-25s %-15d %.2f%%\n", "Software Developer", overallSd, pSd));
+            report.append("\n");
+
+            // Overall Bar Chart
+            double maxOverallPct = Math.max(pDs, Math.max(pSe, pSd));
+            if (maxOverallPct == 0) maxOverallPct = 1;
+
+            int hDs = (int) Math.round((pDs / maxOverallPct) * maxBlocks);
+            int hSe = (int) Math.round((pSe / maxOverallPct) * maxBlocks);
+            int hSd = (int) Math.round((pSd / maxOverallPct) * maxBlocks);
+
+            for (int h = maxBlocks; h > 0; h--) {
+                String b1 = (hDs >= h) ? "   ######" : "";
+                String b2 = (hSe >= h) ? "   ######" : "";
+                String b3 = (hSd >= h) ? "   ######" : "";
+                report.append(String.format("%-24s %-24s %-24s\n", b1, b2, b3));
+            }
+            report.append("------------------------------------------------------------------------\n");
+            report.append(String.format("%-24s %-24s %-24s\n\n\n\n\n", "Data Science", "Software Engineering", "Software Developer"));
+        }
+
+        report.append("========================================================================\n");
+        report.append("                   FACILITY-SPECIFIC BREAKDOWN                          \n");
+        report.append("========================================================================\n\n");
+
+        String[] facilityNames = {
+            "Library Study Room", "Sports", "Cyber Centre Discussion Room", "Recreation", "Event Space"
+        };
+        int[][] allCounts = {libCounts, spoCounts, cybCounts, recCounts, eveCounts};
+
+        for (int f = 0; f < facilityNames.length; f++) {
+            String facName = facilityNames[f];
+            int[] counts = allCounts[f];
+
+            int total = counts[0] + counts[1] + counts[2];
+
+            report.append(">>> FACILITY: ").append(facName.toUpperCase()).append(" <<<\n");
+            report.append("------------------------------------------------------------------------\n");
+
+            if (total == 0) {
+                report.append("  (No bookings found for this facility in the selected period)\n\n\n");
+                continue; 
+            }
+
+            double p0 = ((double) counts[0] / total) * 100;
+            double p1 = ((double) counts[1] / total) * 100;
+            double p2 = ((double) counts[2] / total) * 100;
+
+            // Specific Data Table
+            report.append(String.format("%-25s %-15s %-15s\n", "PROGRAMME", "TOTAL BOOKINGS", "PERCENTAGE OF TOTAL"));
+            report.append("------------------------------------------------------------------------\n");
+            report.append(String.format("%-25s %-15d %.2f%%\n", "Data Science", counts[0], p0));
+            report.append(String.format("%-25s %-15d %.2f%%\n", "Software Engineering", counts[1], p1));
+            report.append(String.format("%-25s %-15d %.2f%%\n", "Software Developer", counts[2], p2));
+            report.append("\n");
+
+            // Specific Bar Chart
+            double maxPct = Math.max(p0, Math.max(p1, p2));
+            if (maxPct == 0) maxPct = 1;
+
+            int h0 = (int) Math.round((p0 / maxPct) * maxBlocks);
+            int h1 = (int) Math.round((p1 / maxPct) * maxBlocks);
+            int h2 = (int) Math.round((p2 / maxPct) * maxBlocks);
+
+            for (int h = maxBlocks; h > 0; h--) {
+                String b1 = (h0 >= h) ? "   ######" : "";
+                String b2 = (h1 >= h) ? "   ######" : "";
+                String b3 = (h2 >= h) ? "   ######" : "";
+                report.append(String.format("%-24s %-24s %-24s\n", b1, b2, b3));
+            }
+            
+            report.append("------------------------------------------------------------------------\n");
+            report.append(String.format("%-24s %-22s %-24s\n\n\n\n\n", "Data Science", "Software Engineering", "Software Developer"));
+        }
+
+        report.append("=========================== END OF REPORT ==============================\n");
         return report.toString();
     }
-    
-
 }
