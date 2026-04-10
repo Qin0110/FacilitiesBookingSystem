@@ -399,7 +399,7 @@ public class AdminBookingUI extends javax.swing.JPanel {
         textArea.setMargin(new java.awt.Insets(10, 10, 10, 10));
         
         javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textArea);
-        scrollPane.setPreferredSize(new java.awt.Dimension(450, 500));
+        scrollPane.setPreferredSize(new java.awt.Dimension(590, 700));
 
         Object[] dialogButtons = {"OK", "Save to .txt"};
         
