@@ -25,6 +25,8 @@ public class BookingUI extends javax.swing.JPanel {
     
     public BookingUI(BookingManagement bookingManager, ScheduleControl scheduleManager, FacilityManagement facilityManager, StudentManagement studentManager) {
         initComponents();
+        FacilityName.setEditable(false);
+        SessionField.setEditable(false);
         sortingComboBox.removeAllItems();
         sortingComboBox.addItem("Default (Chronological)");
         sortingComboBox.addItem("By Facility & Status");
