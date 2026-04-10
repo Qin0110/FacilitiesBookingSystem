@@ -36,19 +36,12 @@
               <Group type="102" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <EmptySpace min="-2" pref="51" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="2" attributes="0">
-                              <Component id="adminBT" alignment="2" pref="560" max="32767" attributes="0"/>
-                              <Component id="studentBT" alignment="2" max="32767" attributes="0"/>
-                              <Component id="jButton3" alignment="2" max="32767" attributes="0"/>
-                          </Group>
-                      </Group>
-                      <Group type="102" attributes="0">
-                          <EmptySpace max="32767" attributes="0"/>
-                          <Component id="jLabel1" min="-2" pref="556" max="-2" attributes="0"/>
-                      </Group>
+                  <EmptySpace min="-2" pref="51" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="2" attributes="0">
+                      <Component id="adminBT" alignment="2" pref="560" max="32767" attributes="0"/>
+                      <Component id="studentBT" alignment="2" max="32767" attributes="0"/>
+                      <Component id="jButton3" alignment="2" max="32767" attributes="0"/>
+                      <Component id="jLabel1" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="jPanel6" min="-2" max="-2" attributes="0"/>
