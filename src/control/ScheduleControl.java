@@ -138,8 +138,8 @@ public class ScheduleControl implements Serializable{
      * @return [facilityDateIndex, sessionIndex]
      */
     public int[] getSpecificScheduleIndex(String facilityName, String date, String session){
-        int facilityDateIndex = 0;
-        int sessionIndex = 0;
+        int facilityDateIndex = -1;
+        int sessionIndex = -1;
         for (int i = 0; i < schedule.size(); i++) {
             if (schedule.get(i).getFacility().getName().equals(facilityName) && 
                     schedule.get(i).getDate().equals(date)) {

@@ -25,8 +25,7 @@ public class BookingUI extends javax.swing.JPanel {
     
     public BookingUI(BookingManagement bookingManager, ScheduleControl scheduleManager, FacilityManagement facilityManager, StudentManagement studentManager) {
         initComponents();
-        FacilityName.setEditable(false);
-        SessionField.setEditable(false);
+
         sortingComboBox.removeAllItems();
         sortingComboBox.addItem("Default (Chronological)");
         sortingComboBox.addItem("By Facility & Status");
@@ -395,6 +394,14 @@ public class BookingUI extends javax.swing.JPanel {
         }
         
         int[] selectedScheduleIndex = scheduleManager.getSpecificScheduleIndex(facility, date, session);
+        
+        if (selectedScheduleIndex[0] == -1 || selectedScheduleIndex[1] == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Invalid Facility or Session! Please select a valid slot from the table.", 
+                "Selection Error", 
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+            return; 
+        }
         
         if (selectedScheduleIndex[0] != -1 && selectedScheduleIndex[1] != -1) {
             facilityId = scheduleManager.getAllSchedule().get(selectedScheduleIndex[0]).getFacility().getFacilityId();
