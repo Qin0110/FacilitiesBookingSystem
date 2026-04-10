@@ -11,8 +11,6 @@ import dao.AdminCollection;
 import dao.BookingCollection;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Duration;
 import java.time.format.DateTimeFormatter;
 
 public class AdminManagement {
@@ -184,7 +182,6 @@ public class AdminManagement {
 
         int managerCount = 0;
         int assistantCount = 0;
-        int systemAdminCount = 0; 
 
         // Count the positions
         for (int i = 0; i < totalAdmins; i++) {
@@ -194,8 +191,6 @@ public class AdminManagement {
                 managerCount++;
             } else if (pos.equalsIgnoreCase("Facility Assistant")) {
                 assistantCount++;
-            } else if (pos.equalsIgnoreCase("System Admin")) {
-                systemAdminCount++;
             }
         }
 
@@ -211,7 +206,6 @@ public class AdminManagement {
         report.append("--- POSITION BREAKDOWN ---\n");
         report.append(String.format("%-25s : %d\n", "Facility Manager", managerCount));
         report.append(String.format("%-25s : %d\n", "Facility Assistant", assistantCount));
-        report.append(String.format("%-25s : %d\n\n", "System Admin", systemAdminCount)); // Optional
 
         report.append("--- DETAILED STAFF LIST ---\n");
         report.append(String.format("%-15s %-25s %-20s\n", "STAFF ID", "NAME", "POSITION"));

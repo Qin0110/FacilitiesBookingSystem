@@ -11,8 +11,6 @@ import dao.StudentCollection;
 import dao.BookingCollection;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Duration;
 import java.time.format.DateTimeFormatter;
 
 public class StudentManagement {
@@ -233,7 +231,7 @@ public class StudentManagement {
     }
     
     public String generateSummaryReport(LocalDate startDate, LocalDate endDate) {
-        adt.ListInterface<entity.Booking> allBookings = bookingCollection.getAllBookings(); // Adjust to your actual getter
+        adt.ListInterface<entity.Booking> allBookings = bookingCollection.getAllBookings(); 
 
         int totalBookingsInRange = 0;
         int sportsCount = 0;

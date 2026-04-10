@@ -9,9 +9,7 @@ public class AdminDialog extends javax.swing.JDialog {
     private AdminManagement adminManager;
     private boolean isUpdateMode = false;
     private entity.Admin originalAdmin;
-    /**
-     * Creates new form AdminDialog
-     */
+
     public AdminDialog(java.awt.Frame parent, boolean modal, control.AdminManagement adminManager) {
         super(parent, modal);
         initComponents();
@@ -27,11 +25,9 @@ public class AdminDialog extends javax.swing.JDialog {
         cancelButton.setVisible(false);
         saveButton.setVisible(true);
         
-        // 1. Lock the ID field so users can't change the auto-generated ID
         idTextField.setEditable(false);
         idTextField.setFocusable(false);
 
-        // 2. Fetch and display the next ID
         String nextId = adminManager.generateNextId();
         if (nextId != null) {
             idTextField.setText(nextId);
@@ -41,9 +37,7 @@ public class AdminDialog extends javax.swing.JDialog {
             saveButton.setEnabled(false); 
         }
     }
-    /**
-     * Constructor for VIEWING/UPDATING an existing admin
-     */
+
     public AdminDialog(java.awt.Frame parent, boolean modal, control.AdminManagement adminManager, entity.Admin adminToEdit) {
         super(parent, modal);
         initComponents();
@@ -337,15 +331,14 @@ public class AdminDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        // 1. Collect data from fields
-        // Note: We still get 'id' because updateAdmin needs it
+
         String id = idTextField.getText().trim();
         String name = nameTextField.getText().trim();
         String position = positionComboBox.getSelectedItem().toString();
         String email = emailTextField.getText().trim();
         String phoneNumber = phoneNumberTextField.getText().trim();
 
-        // 2. Validation
+
         if (name.isEmpty() || email.isEmpty() || phoneNumber.isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(this,
                 "Please fill in all text fields!", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
@@ -356,20 +349,16 @@ public class AdminDialog extends javax.swing.JDialog {
             String message;
 
             if (isUpdateMode) {
-                // UPDATE: Needs the ID to find the record to change
                 message = adminManager.updateAdmin(id, name, position, email, phoneNumber);
             } else {
-                // NEW: ID is now generated automatically inside the manager
-                // We only pass 4 parameters now (removed 'id')
                 message = adminManager.addNewAdmin(name, position, email, phoneNumber);
             }
 
-            // 3. Handle result messages
             if (message.contains("Error") || message.contains("Invalid") || message.contains("INVALID_INPUT")) {
                 javax.swing.JOptionPane.showMessageDialog(this, message, "Input Error", javax.swing.JOptionPane.ERROR_MESSAGE);
             } else {
                 javax.swing.JOptionPane.showMessageDialog(this, message, "Success", javax.swing.JOptionPane.INFORMATION_MESSAGE);
-                this.dispose(); // Close window on success
+                this.dispose(); 
             }
 
         } catch (Exception e) {

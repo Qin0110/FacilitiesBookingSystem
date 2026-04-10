@@ -3,8 +3,6 @@
  * @author Ng Wei Hao
  */
 package boundary;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 public class StudentReportSelectionDialog extends javax.swing.JDialog {
 

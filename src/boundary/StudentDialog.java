@@ -10,9 +10,7 @@ public class StudentDialog extends javax.swing.JDialog {
     private StudentManagement studentManager;
     private boolean isUpdateMode = false;
     private entity.Student originalStudent;
-    /**
-     * Constructor for ADDING a new student
-     */
+
     public StudentDialog(java.awt.Frame parent, boolean modal, control.StudentManagement studentManager) {
         super(parent, modal);
         initComponents();
@@ -32,7 +30,6 @@ public class StudentDialog extends javax.swing.JDialog {
         idTextField.setEditable(false);
         idTextField.setFocusable(false);
 
-        // 2. Pre-fill the Student ID
         String nextId = studentManager.generateNextStudentId();
         if (nextId != null) {
             idTextField.setText(nextId);
@@ -42,14 +39,9 @@ public class StudentDialog extends javax.swing.JDialog {
             saveButton.setEnabled(false);
         }
         
-        // Ensure ID is editable when creating a new student
-//        idTextField.setEditable(true);
     }
     
-    
-    /**
-     * Constructor for VIEWING/UPDATING an existing student
-     */
+
     public StudentDialog(java.awt.Frame parent, boolean modal, control.StudentManagement studentManager, entity.Student studentToEdit) {
         super(parent, modal);
         initComponents();
@@ -373,18 +365,14 @@ public class StudentDialog extends javax.swing.JDialog {
                 message = studentManager.addNewStudent(name, programme, email, phoneNumber);
             }
             
-           // Handles string messages returned by the Manager (e.g., Duplicate ID)
             if (message.contains("INVALID_INPUT") || message.contains("Invalid") || message.contains("Error")  ) {
-                // Show as an Error Dialog (Red X icon) and DO NOT call dispose()
                 javax.swing.JOptionPane.showMessageDialog(this, message, "Input Error", javax.swing.JOptionPane.ERROR_MESSAGE);
             } else {
-                // Show as a Success Dialog (Blue 'i' icon) AND close the window
                 javax.swing.JOptionPane.showMessageDialog(this, message, "Success", javax.swing.JOptionPane.INFORMATION_MESSAGE);
                 this.dispose(); // Close dialog on success
             }
             
         } catch (Exception e) {
-            // Handles actual system crashes (like .dat file reading errors)
             javax.swing.JOptionPane.showMessageDialog(this,
                 "System Error: " + e.getMessage(), "Critical Error", javax.swing.JOptionPane.ERROR_MESSAGE);
         }
