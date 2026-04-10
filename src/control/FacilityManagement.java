@@ -225,14 +225,15 @@ public class FacilityManagement {
 
         StringBuilder report = new StringBuilder();
         
-        report.append("+---------------------------------------------------+\n");
-        report.append("|            FACILITY POPULARITY REPORT             |\n");
-        report.append("+---------------------------------------------------+\n");
-        report.append(String.format("| Timeframe: %-38s |\n", timeframeLabel.trim()));
+        // ---- WIDENED THE BORDERS TO 75 CHARACTERS ----
+        report.append("+---------------------------------------------------------------------------------+\n");
+        report.append("|                           FACILITY POPULARITY REPORT                            |\n");
+        report.append("+---------------------------------------------------------------------------------+\n");
+        report.append(String.format("| Timeframe: %-68s |\n", timeframeLabel.trim()));
 
         if (allBookings.isEmpty()) {
-            report.append("| Total Valid Bookings: 0                           |\n");
-            report.append("+---------------------------------------------------+\n\n");
+            report.append("| Total Valid Bookings: 0                                                         |\n");
+            report.append("+---------------------------------------------------------------------------------+\n\n");
             report.append("  No bookings have been made in the system yet.\n");
             return report.toString();
         }
@@ -277,8 +278,8 @@ public class FacilityManagement {
             }
         }
 
-        report.append(String.format("| Total Valid Bookings: %-27d |\n", validBookings));
-        report.append("+---------------------------------------------------+\n\n");
+        report.append(String.format("| Total Valid Bookings: %-57d |\n", validBookings));
+        report.append("+---------------------------------------------------------------------------------+\n\n");
 
         for (int i = 1; i < facilityTypes.size(); i++) {
             int currentCount = typeCounts.get(i);
@@ -300,22 +301,32 @@ public class FacilityManagement {
             report.append("[ ACTIVITY BREAKDOWN ]\n\n");
             for (int i = 0; i < facilityTypes.size(); i++) {
                 int count = typeCounts.get(i);
+                int maxBars = 20;
                 String type = facilityTypes.get(i);
                 
                 double percentage = ((double) count / validBookings) * 100;
                 
-                int filledBars = (int) (percentage / 5); 
+                int filledBars = (int) Math.round((percentage / 100.0) * maxBars); 
                 StringBuilder barChart = new StringBuilder();
               
+                barChart.append("[");
+                for (int b = 0; b < maxBars; b++) {
+                    if (b < filledBars) {
+                        barChart.append("█"); 
+                    } else {
+                        barChart.append("░");
+                    }
+                }
+                barChart.append("]");
                 
                 report.append(String.format("  %-28s [ %2d ]  %5.1f%%  %s\n", 
                         type, count, percentage, barChart.toString()));
             }
         }
 
-        report.append("\n+---------------------------------------------------+\n");
-        report.append("|                  End of Report                    |\n");
-        report.append("+---------------------------------------------------+\n");
+        report.append("\n+---------------------------------------------------------------------------------+\n");
+        report.append("|                                  End of Report                                  |\n");
+        report.append("+---------------------------------------------------------------------------------+\n");
 
         return report.toString();
     }
@@ -339,7 +350,7 @@ public class FacilityManagement {
         }
     }
     
-   public String generateFacilityUtilizationReport(adt.ListInterface<entity.Booking> allBookings, String targetDay, String targetMonth, String targetYear) {
+    public String generateFacilityUtilizationReport(adt.ListInterface<entity.Booking> allBookings, String targetDay, String targetMonth, String targetYear) {
         
         targetDay = (targetDay == null || targetDay.equalsIgnoreCase("none") || targetDay.trim().isEmpty()) ? null : targetDay;
         targetMonth = (targetMonth == null || targetMonth.equalsIgnoreCase("none") || targetMonth.trim().isEmpty()) ? null : targetMonth;
@@ -535,9 +546,10 @@ public class FacilityManagement {
         }
 
         StringBuilder report = new StringBuilder();
-        report.append("===========================================================================\n");
-        report.append("              OPERATIONAL EFFICIENCY & RESOURCE WASTE REPORT               \n");
-        report.append("===========================================================================\n");
+        
+        report.append("=====================================================================================\n");
+        report.append("                    OPERATIONAL EFFICIENCY & RESOURCE WASTE REPORT                   \n");
+        report.append("=====================================================================================\n");
         report.append(">> Timeframe : ").append(timeframeLabel).append("\n");
         report.append(">> Metric    : 'Wasted Hours' = Cancelled or No-Show Bookings\n");
         report.append(String.format(">> Total System Wasted Time : %.1f Hours\n\n", totalSystemWastedHours));
@@ -545,9 +557,9 @@ public class FacilityManagement {
         if (facilityNames.isEmpty()) {
             report.append("  No historical booking data available for this timeframe.\n\n");
         } else {
-            report.append("---------------------------------------------------------------------------\n");
-            report.append(String.format(" %-24s | %-10s | %-10s | %-15s \n", "Facility Category", "Used Hrs", "Wasted Hrs", "Efficiency Rate"));
-            report.append("---------------------------------------------------------------------------\n");
+            report.append("-------------------------------------------------------------------------------------\n");
+            report.append(String.format(" %-22s | %-8s | %-10s | %-14s | %-12s \n", "Facility Category", "Used Hrs", "Wasted Hrs", "Efficiency", "Visual Graph"));
+            report.append("-------------------------------------------------------------------------------------\n");
             
             for (int i = 0; i < facilityNames.size(); i++) {
                 String name = facilityNames.get(i);
@@ -557,20 +569,30 @@ public class FacilityManagement {
                 
                 double efficiency = (total == 0) ? 0 : (used / total) * 100;
                 
-                if (name.length() > 22) name = name.substring(0, 19) + "...";
+                if (name.length() > 20) name = name.substring(0, 17) + "...";
                 
-                String alert = (efficiency < 75.0 && wasted > 0) ? "[POOR]" : "[OK]";
+                String alert = (efficiency < 75.0 && wasted > 0) ? "⚠ POOR" : "✔ OK";
                 
-                report.append(String.format(" %-24s | %8.1f   | %8.1f   | %6.1f%% %-8s \n", name, used, wasted, efficiency, alert));
+                int maxBars = 10;
+                int filledBars = (int) Math.round((efficiency / 100.0) * maxBars); 
+                StringBuilder barChart = new StringBuilder();
+                
+                barChart.append("[");
+                for (int b = 0; b < maxBars; b++) {
+                    if (b < filledBars) barChart.append("█"); 
+                    else barChart.append("░");                
+                }
+                barChart.append("]");
+                
+                report.append(String.format(" %-22s | %8.1f | %10.1f | %5.1f%% %-6s | %s \n", 
+                        name, used, wasted, efficiency, alert, barChart.toString()));
             }
-            report.append("---------------------------------------------------------------------------\n");
+            report.append("-------------------------------------------------------------------------------------\n");
             
             if (totalSystemWastedHours > 50.0) {
                 report.append("\n [!] SYSTEM WARNING: High rate of resource waste detected.\n");
                 report.append("     Recommendation: Implement temporary booking bans for repeat No-Shows.\n");
-                report.append("\n===========================================================================\n");
-
-                
+                report.append("\n=====================================================================================\n");
             }
         }
 

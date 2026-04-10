@@ -450,7 +450,7 @@ public class FacilityUI extends javax.swing.JPanel {
         textArea.setBackground(new java.awt.Color(240, 240, 240));
 
         javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textArea);
-        scrollPane.setPreferredSize(new java.awt.Dimension(450, 450));
+        scrollPane.setPreferredSize(new java.awt.Dimension(700, 450));
 
         Object[] options = {"Close", "Save as .TXT (Visual)"}; 
 
