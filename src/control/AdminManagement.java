@@ -317,19 +317,18 @@ public class AdminManagement {
 
             if (b.getApprovedBy() != null && b.getApprovedBy().equalsIgnoreCase(adminId)) {
                 entity.Schedule s = b.getSchedule();
-                
-                String realDate = b.getScheduleSession().substring(0, 10);
-                LocalDate bDate = LocalDate.parse(realDate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+
+                String fullSession = b.getScheduleSession(); 
+                String realDateStr = fullSession.substring(0, 10); 
+                String slot = fullSession.substring(11);        
+
+                LocalDate bDate = LocalDate.parse(realDateStr, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
 
                 if (!bDate.isBefore(startDate) && !bDate.isAfter(endDate)) {
-
                     foundRecords = true;
-                    
-                    String[] timeStrings = s.getTimeString();
-                    String slot = timeStrings[0] + " - " + timeStrings[1]; 
 
                     report.append(String.format("%-12s %-25s %-15s %-20s\n", 
-                        realDate, s.getFacility().getName(), slot, b.getStudentId()));
+                        realDateStr, s.getFacility().getName(), slot, b.getStudentId()));
                 }
             }
         }
